@@ -828,22 +828,35 @@ class _AdisyonState extends ConsumerState<Adisyon> {
         //         ),
         //   ),
         // ),
-        ListeMenu(
-          ikon: const Icon(
-            CupertinoIcons.circle_fill,
-            color: Colors.grey,
-            size: 12,
-          ),
-          baslik: const Text("Genel Toplam : "),
-          komponet: Text(
-            totali(),
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: Colors.green.shade800,
-              letterSpacing: 1.4,
-            ),
-          ),
+        Consumer(
+          builder: (context, ref, child) {
+            final total = ref.watch(adisyonNotifierProvider.notifier).total;
+            return ListeMenu(
+              ikon: const Icon(
+                CupertinoIcons.circle_fill,
+                color: Colors.grey,
+                size: 19,
+              ),
+              baslik: Text(
+                "Genel Toplam: ",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.green[800],
+                  letterSpacing: 1.4,
+                ),
+              ),
+              komponet: Text(
+                Config.formatter.format(total),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.green.shade800,
+                  letterSpacing: 1.4,
+                ),
+              ),
+            );
+          },
         ),
       ],
     );

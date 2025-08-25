@@ -59,4 +59,11 @@ class AdisyonNotifier extends StateNotifier<AdisyonState> {
   Future<void> refreshAdisyonList(int masaId) async {
     await getAdisyonList(masaId);
   }
+
+  double get total =>
+      state.adisyonList?.fold(
+        0,
+        (sum, item) => (sum ?? 0) + (item.genel ?? 0),
+      ) ??
+      0;
 }
