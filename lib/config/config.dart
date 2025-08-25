@@ -174,18 +174,18 @@ class Config {
                     child: Text(message),
                   )
                 : null,
-            cancelButton: CupertinoActionSheetAction(
-              isDefaultAction: true,
-              child: const Text("Bitti"),
-              onPressed: () {
-                FocusScopeNode currentFocus = FocusScope.of(context);
+            // cancelButton: CupertinoActionSheetAction(
+            //   isDefaultAction: true,
+            //   child: const Text("Bitti"),
+            //   onPressed: () {
+            //     FocusScopeNode currentFocus = FocusScope.of(context);
 
-                if (!currentFocus.hasPrimaryFocus) {
-                  currentFocus.unfocus();
-                }
-                Navigator.pop(context);
-              },
-            ),
+            //     if (!currentFocus.hasPrimaryFocus) {
+            //       currentFocus.unfocus();
+            //     }
+            //     Navigator.pop(context);
+            //   },
+            // ),
             actions: <CupertinoActionSheetAction>[
               CupertinoActionSheetAction(
                 child: SizedBox(

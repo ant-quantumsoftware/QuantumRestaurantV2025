@@ -261,16 +261,16 @@ class _AdsMiktarState extends ConsumerState<AdsMiktar> {
         borderRadius: BorderRadius.circular(15.0),
         border: Border.all(color: Colors.purple, width: 1.0),
       ),
+      height: 65.0 * _options.length,
       constraints: BoxConstraints(
         maxHeight: 65.0 * _options.length,
         minHeight: 65.0,
       ),
       child: ListView.separated(
         padding: const EdgeInsets.all(15),
-        physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: _options.length,
-        separatorBuilder: (context, index) => const Divider(height: 1),
+        separatorBuilder: (context, index) => const Divider(height: 10),
         itemBuilder: (context, index) => _buildOptionItem(index),
       ),
     );
@@ -323,7 +323,7 @@ class _AdsMiktarState extends ConsumerState<AdsMiktar> {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
-            color: Colors.white,
+
             border: Border.all(color: Colors.purple, width: 1.0),
           ),
           child: Input2(
@@ -355,43 +355,36 @@ class _AdsMiktarState extends ConsumerState<AdsMiktar> {
       persistentFooterButtons: [
         FadeInUp(
           duration: const Duration(milliseconds: 500),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Ana buton
-              SizedBox(
-                width: 300,
-                height: 50,
-                child: MaterialButton(
-                  onPressed: _isSubmitting
-                      ? null
-                      : () async {
-                          await _submitForm();
-                        },
-                  color: _isSubmitting ? Colors.grey : Colors.blue,
-                  splashColor: Colors.blue.withValues(alpha: 0.3),
-                  highlightColor: Colors.blue.withValues(alpha: 0.1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: _isSubmitting
-                      ? const CupertinoActivityIndicator(color: Colors.white)
-                      : Text(
-                          widget.adisyon ? 'Güncelle' : "Ekle",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                ),
+          child: SizedBox(
+            width: 300,
+            height: 50,
+            child: MaterialButton(
+              onPressed: _isSubmitting
+                  ? null
+                  : () async {
+                      await _submitForm();
+                    },
+              color: _isSubmitting ? Colors.grey : Colors.blue,
+              splashColor: Colors.blue.withValues(alpha: 0.3),
+              highlightColor: Colors.blue.withValues(alpha: 0.1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-            ],
+              child: _isSubmitting
+                  ? const CupertinoActivityIndicator(color: Colors.white)
+                  : Text(
+                      widget.adisyon ? 'Güncelle' : "Ekle",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+            ),
           ),
         ),
       ],
       body: SingleChildScrollView(
-        primary: true,
         child: Column(
           children: [
             _buildQuantitySection(),
