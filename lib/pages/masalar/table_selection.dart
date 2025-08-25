@@ -185,6 +185,7 @@ class TableSelectionPageState extends State<TableSelectionPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       key: scaffoldKey,
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
         onPressed: () {
@@ -197,6 +198,8 @@ class TableSelectionPageState extends State<TableSelectionPage> {
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           CupertinoSliverNavigationBar(
+            
+            backgroundColor: Theme.of(context).colorScheme.surface,
             automaticallyImplyLeading: false,
             largeTitle: FadeInUp(
               duration: const Duration(milliseconds: 1700),
