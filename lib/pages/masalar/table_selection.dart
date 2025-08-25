@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/cupertino.dart';
@@ -182,175 +184,216 @@ class TableSelectionPageState extends State<TableSelectionPage> {
     garsonId = arguments['garsonId'];
     garsonadi = arguments['garsonadi'];
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      key: scaffoldKey,
-
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        onPressed: () {
-          scaffoldKey.currentState?.openDrawer();
-        },
-        child: Image.asset("assets/logo.png"),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-      drawer: builddrawer(context),
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          CupertinoSliverNavigationBar(
-            
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            automaticallyImplyLeading: false,
-            largeTitle: FadeInUp(
-              duration: const Duration(milliseconds: 1700),
-              child: Align(
-                alignment: Alignment.center,
-                child: VeriSecici(
-                  liste: MyList.masalar,
-                  index: filterindex,
-                  degistir: (int selectedItem) {
-                    filterindex = selectedItem;
-                    login = true;
-
-                    setState(() {
-                      verigetir();
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Çıkış Yap'),
+              content: const Text('Çıkış yapmak istediğinize emin misiniz?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Hayır'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Uygulamayı kapat
+                    Navigator.of(context).pop(true);
+                    Future.delayed(const Duration(milliseconds: 200), () {
+                      // import 'dart:io' is required at the top of the file
+                      exit(0);
                     });
                   },
+                  child: const Text('Evet'),
                 ),
-              ),
+              ],
             ),
-            middle: Padding(
-              padding: const EdgeInsets.only(right: 30, left: 100, top: 3),
-              child: FadeInUp(
+          );
+        }
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        key: scaffoldKey,
+
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.white,
+          onPressed: () {
+            scaffoldKey.currentState?.openDrawer();
+          },
+          child: Image.asset("assets/logo.png"),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+        drawer: builddrawer(context),
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            CupertinoSliverNavigationBar(
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              automaticallyImplyLeading: false,
+              largeTitle: FadeInUp(
                 duration: const Duration(milliseconds: 1700),
                 child: Align(
                   alignment: Alignment.center,
-                  child: SearchTextField(
-                    fieldValue: (String value) {
-                      searchFunc(value, seciliMasaGrubu);
+                  child: VeriSecici(
+                    liste: MyList.masalar,
+                    index: filterindex,
+                    degistir: (int selectedItem) {
+                      filterindex = selectedItem;
+                      login = true;
+
+                      setState(() {
+                        verigetir();
+                      });
                     },
                   ),
                 ),
               ),
-            ),
-          ),
-        ],
-        body: (login)
-            ? const Center(child: CupertinoActivityIndicator(radius: 10.0))
-            : RefreshIndicator.adaptive(
-                triggerMode: RefreshIndicatorTriggerMode.anywhere,
-                onRefresh: _refreshlist,
-                child: GridView.builder(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 15,
-                  ),
-                  itemCount: ordersLists.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 5,
-                    mainAxisSpacing: 5,
-                    childAspectRatio: 1.65,
-                  ),
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () => {
-                        Config.gotopage(
-                          context,
-                          Adisyon(
-                            masaid: ordersLists[index].id!,
-                            masaadi: ordersLists[index].adi.toString(),
-                          ),
-                          "",
-                          "Ana Menü",
-                        ),
+              middle: Padding(
+                padding: const EdgeInsets.only(right: 30, left: 100, top: 3),
+                child: FadeInUp(
+                  duration: const Duration(milliseconds: 1700),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: SearchTextField(
+                      fieldValue: (String value) {
+                        searchFunc(value, seciliMasaGrubu);
                       },
-                      child: FadedScaleAnimation(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 20,
-                          ),
-                          height: 90,
-                          decoration: BoxDecoration(
-                            color: ordersLists[index].masaAcik == true
-                                ? ordersLists[index].adisyonYazildi == true
-                                      ? Colors.orange[400]
-                                      : Colors.red[400]
-                                : const Color.fromARGB(81, 10, 103, 13),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: ordersLists[index].masaAcik == true
-                                  ? ordersLists[index].adisyonYazildi == true
-                                        ? Colors.orange
-                                        : Colors.red
-                                  : Colors.green,
-                              width: 2,
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                ordersLists[index].adi.toString(),
-                                style: Theme.of(context).textTheme.titleMedium!
-                                    .copyWith(
-                                      color:
-                                          ordersLists[index].adisyonYazildi ==
-                                              true
-                                          ? Colors.white
-                                          : Colors.black,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                              ),
-                              Text(
-                                ordersLists[index].masaAcik == true
-                                    ? '${Utils.format.format(ordersLists[index].sureDk)} Dk'
-                                    : 'Kapalı',
-                                style: Theme.of(context).textTheme.bodyMedium!
-                                    .copyWith(fontSize: 12, color: whiteColor),
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.end,
-                              ),
-                              Text(
-                                ordersLists[index].sonUrun != null
-                                    ? '₺${Utils.format.format(ordersLists[index].toplam)}'
-                                    : "",
-                                style: Theme.of(context).textTheme.titleMedium!
-                                    .copyWith(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: const Color.fromARGB(
-                                        255,
-                                        255,
-                                        255,
-                                        255,
-                                      ),
-                                    ),
-                              ),
-                              const Spacer(),
-                              // ListTile(
-                              //   onTap: (){},
-                              //   contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                              //   title: Text('Table 1'), trailing: Text('1:33'),),
-                              Text(
-                                ordersLists[index].masaAcik == true
-                                    ? '${ordersLists[index].acanGarson}'
-                                    : 'Kapalı',
-                                style: Theme.of(context).textTheme.bodyMedium!
-                                    .copyWith(fontSize: 12, color: whiteColor),
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.end,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                    ),
+                  ),
                 ),
               ),
+            ),
+          ],
+          body: (login)
+              ? const Center(child: CupertinoActivityIndicator(radius: 10.0))
+              : RefreshIndicator.adaptive(
+                  triggerMode: RefreshIndicatorTriggerMode.anywhere,
+                  onRefresh: _refreshlist,
+                  child: GridView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: 15,
+                    ),
+                    itemCount: ordersLists.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 5,
+                          childAspectRatio: 1.65,
+                        ),
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () => {
+                          Config.gotopage(
+                            context,
+                            Adisyon(
+                              masaid: ordersLists[index].id!,
+                              masaadi: ordersLists[index].adi.toString(),
+                            ),
+                            "",
+                            "Ana Menü",
+                          ),
+                        },
+                        child: FadedScaleAnimation(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 20,
+                            ),
+                            height: 90,
+                            decoration: BoxDecoration(
+                              color: ordersLists[index].masaAcik == true
+                                  ? ordersLists[index].adisyonYazildi == true
+                                        ? Colors.orange[400]
+                                        : Colors.red[400]
+                                  : const Color.fromARGB(81, 10, 103, 13),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: ordersLists[index].masaAcik == true
+                                    ? ordersLists[index].adisyonYazildi == true
+                                          ? Colors.orange
+                                          : Colors.red
+                                    : Colors.green,
+                                width: 2,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  ordersLists[index].adi.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        color:
+                                            ordersLists[index].adisyonYazildi ==
+                                                true
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                ),
+                                Text(
+                                  ordersLists[index].masaAcik == true
+                                      ? '${Utils.format.format(ordersLists[index].sureDk)} Dk'
+                                      : 'Kapalı',
+                                  style: Theme.of(context).textTheme.bodyMedium!
+                                      .copyWith(
+                                        fontSize: 12,
+                                        color: whiteColor,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.end,
+                                ),
+                                Text(
+                                  ordersLists[index].sonUrun != null
+                                      ? '₺${Utils.format.format(ordersLists[index].toplam)}'
+                                      : "",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color.fromARGB(
+                                          255,
+                                          255,
+                                          255,
+                                          255,
+                                        ),
+                                      ),
+                                ),
+                                const Spacer(),
+                                // ListTile(
+                                //   onTap: (){},
+                                //   contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                                //   title: Text('Table 1'), trailing: Text('1:33'),),
+                                Text(
+                                  ordersLists[index].masaAcik == true
+                                      ? '${ordersLists[index].acanGarson}'
+                                      : 'Kapalı',
+                                  style: Theme.of(context).textTheme.bodyMedium!
+                                      .copyWith(
+                                        fontSize: 12,
+                                        color: whiteColor,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+        ),
       ),
     );
   }
