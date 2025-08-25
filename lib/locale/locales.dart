@@ -1,0 +1,233 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show SynchronousFuture;
+import 'package:flutter/material.dart';
+
+import '../config/app_config.dart';
+import 'languages/arabic.dart';
+import 'languages/english.dart';
+import 'languages/french.dart';
+import 'languages/indonesian.dart';
+import 'languages/italian.dart';
+import 'languages/portuguese.dart';
+import 'languages/spanish.dart';
+import 'languages/swahili.dart';
+import 'languages/turkish.dart';
+import 'languages/german.dart';
+import 'languages/romanian.dart';
+
+class AppLocalizations {
+  final Locale locale;
+  AppLocalizations(this.locale);
+
+  static AppLocalizations? of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  }
+
+  static final Map<String, Map<String, String>> _localizedValues = {
+    'tr': turkish(),
+    'en': english(),
+    'ar': arabic(),
+    'pt': portuguese(),
+    'fr': french(),
+    'id': indonesian(),
+    'es': spanish(),
+    'it': italian(),
+    'sw': swahili(),
+    "de": german(),
+    "ro": romanian(),
+  };
+
+  String? get fastFood {
+    return _localizedValues[locale.languageCode]!['fastFood'];
+  }
+
+  String? get anytimeSoon {
+    return _localizedValues[locale.languageCode]!['anytimeSoon'];
+  }
+
+  String? get served {
+    return _localizedValues[locale.languageCode]!['served'];
+  }
+
+  String? get seaFood {
+    return _localizedValues[locale.languageCode]!['seaFood'];
+  }
+
+  String? get chinesee {
+    return _localizedValues[locale.languageCode]!['chinesee'];
+  }
+
+  String? get dessert {
+    return _localizedValues[locale.languageCode]!['dessert'];
+  }
+
+  String? get tableNo {
+    return _localizedValues[locale.languageCode]!['tableNo'];
+  }
+
+  String? get totalAmount {
+    return _localizedValues[locale.languageCode]!['totalAmount'];
+  }
+
+  String? get finishOrdering {
+    return _localizedValues[locale.languageCode]!['finishOrdering'];
+  }
+
+  String? get searchItem {
+    return _localizedValues[locale.languageCode]!['searchItem'];
+  }
+
+  String? get itemsInCart {
+    return _localizedValues[locale.languageCode]!['itemsInCart'];
+  }
+
+  String? get weMustSay {
+    return _localizedValues[locale.languageCode]!['weMustSay'];
+  }
+
+  String? get youveGreatChoiceOfTaste {
+    return _localizedValues[locale.languageCode]!['youveGreatChoiceOfTaste'];
+  }
+
+  String? get orderConfirmedWith {
+    return _localizedValues[locale.languageCode]!['orderConfirmedWith'];
+  }
+
+  String? get yourOrderWillBeAtYourTable {
+    return _localizedValues[locale.languageCode]!['yourOrderWillBeAtYourTable'];
+  }
+
+  String? get description {
+    return _localizedValues[locale.languageCode]!['description'];
+  }
+
+  String? get knowHowWeCookIt {
+    return _localizedValues[locale.languageCode]!['knowHowWeCookIt'];
+  }
+
+  String? get minVideo {
+    return _localizedValues[locale.languageCode]!['minVideo'];
+  }
+
+  String? get servings {
+    return _localizedValues[locale.languageCode]!['servings'];
+  }
+
+  String? get cookTime {
+    return _localizedValues[locale.languageCode]!['cookTime'];
+  }
+
+  String? get people {
+    return _localizedValues[locale.languageCode]!['people'];
+  }
+
+  String? get mins {
+    return _localizedValues[locale.languageCode]!['mins'];
+  }
+
+  String? get energy {
+    return _localizedValues[locale.languageCode]!['energy'];
+  }
+
+  String? get cal {
+    return _localizedValues[locale.languageCode]!['cal'];
+  }
+
+  String? get ingredients {
+    return _localizedValues[locale.languageCode]!['ingredients'];
+  }
+
+  String? get foodItems {
+    return _localizedValues[locale.languageCode]!['foodItems'];
+  }
+
+  String? get addOptions {
+    return _localizedValues[locale.languageCode]!['addOptions'];
+  }
+
+  String? get addToCart {
+    return _localizedValues[locale.languageCode]!['addToCart'];
+  }
+
+  String? get relatedItemsYouMayLike {
+    return _localizedValues[locale.languageCode]!['relatedItemsYouMayLike'];
+  }
+
+  String? get ordered {
+    return _localizedValues[locale.languageCode]!['ordered'];
+  }
+
+  String? get items {
+    return _localizedValues[locale.languageCode]!['items'];
+  }
+
+  String? get table {
+    return _localizedValues[locale.languageCode]!['table'];
+  }
+
+  String? get noOrder {
+    return _localizedValues[locale.languageCode]!['noOrder'];
+  }
+
+  String? get popular {
+    return _localizedValues[locale.languageCode]!['popular'];
+  }
+
+  String? get starter {
+    return _localizedValues[locale.languageCode]!['starter'];
+  }
+
+  String? get mainCourse {
+    return _localizedValues[locale.languageCode]!['mainCourse'];
+  }
+
+  String? get beverages {
+    return _localizedValues[locale.languageCode]!['beverages'];
+  }
+
+  String? get orderList {
+    return _localizedValues[locale.languageCode]!['orderList'];
+  }
+
+  String? get close {
+    return _localizedValues[locale.languageCode]!['close'];
+  }
+
+  String? get tableNum {
+    return _localizedValues[locale.languageCode]!['tableNum'];
+  }
+
+  String? get addMoreItems {
+    return _localizedValues[locale.languageCode]!['addMoreItems'];
+  }
+
+  String? get confirmOrder {
+    return _localizedValues[locale.languageCode]!['confirmOrder'];
+  }
+
+  static List<Locale> getSupportedLocales() {
+    List<Locale> toReturn = [];
+    for (String langCode in AppConfig.languagesSupported.keys) {
+      toReturn.add(Locale(langCode));
+    }
+    return toReturn;
+  }
+}
+
+class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+  const AppLocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) =>
+      AppConfig.languagesSupported.keys.contains(locale.languageCode);
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(AppLocalizations(locale));
+  }
+
+  @override
+  bool shouldReload(AppLocalizationsDelegate old) => false;
+}
