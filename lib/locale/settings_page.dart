@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../components/bottom_bar.dart';
 import '../config/app_config.dart';
-import '../routes/routes.dart';
+import '../core/routes/routes.dart';
 import 'language_cubit.dart';
 
 class LanguageList {

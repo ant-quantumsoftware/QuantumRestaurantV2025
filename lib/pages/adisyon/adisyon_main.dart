@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +12,10 @@ import '../../components/cuper_form_2.dart';
 import '../../components/liste_menu.dart';
 import '../../config/config.dart';
 import '../../config/settings.dart';
-import '../../dataGet/card_item_model.dart';
-import '../../dataGet/food_categori_model.dart';
-import '../../dataGet/food_item_model.dart';
-import '../../dataPost/adisyon_model.dart';
+import '../../features/data/models/dataGet/card_item_model.dart';
+import '../../features/data/models/dataGet/food_categori_model.dart';
+import '../../features/data/models/dataGet/food_item_model.dart';
+import '../../features/data/models/dataPost/adisyon_model.dart';
 import '../../models/food_item_info.dart';
 import '../adisyon/module/adisyon_notifier.dart';
 import '../dialog_aciklama_siparis.dart';
@@ -393,6 +395,16 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                   child: ListView.separated(
                     padding: const EdgeInsets.all(10),
                     itemBuilder: (context, index) {
+                      final item = favori
+                          ? (ref
+                                .watch(adisyonNotifierProvider)
+                                .favoriteItems?[index])
+                          : foodItemsS[index];
+                      final isFavorite = ref
+                          .watch(adisyonNotifierProvider)
+                          .favoriteItems
+                          ?.contains(foodItemsS[index]);
+
                       return Slidable(
                         closeOnScroll: true,
                         endActionPane: ActionPane(
@@ -404,14 +416,21 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                                 bottomLeft: Radius.circular(10),
                               ),
                               autoClose: true,
-                              backgroundColor: const Color.fromARGB(
-                                255,
-                                17,
-                                81,
-                                255,
-                              ),
+                              backgroundColor: (isFavorite ?? false)
+                                  ? Colors.green
+                                  : Colors.red,
                               label: 'Fav',
-                              onPressed: (BuildContext context) async {},
+                              onPressed: (BuildContext context) async {
+                                if (isFavorite ?? false) {
+                                  ref
+                                      .read(adisyonNotifierProvider.notifier)
+                                      .removeFavoriteItem(item!);
+                                } else {
+                                  ref
+                                      .read(adisyonNotifierProvider.notifier)
+                                      .addFavoriteItem(item!);
+                                }
+                              },
                             ),
                           ],
                         ),
@@ -423,8 +442,7 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                           child: Cuperform2(
                             onpress: () async {
                               setState(() {
-                                foodItemsS[index].isSelected =
-                                    !foodItemsS[index].isSelected;
+                                item?.isSelected = !(item.isSelected);
                                 //itemSelected = true;
                               });
 
@@ -434,8 +452,8 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                                   AdsMiktar(
                                     masaid: masaid,
                                     masaadi: masaadi,
-                                    urunid: foodItemsS[index].id!,
-                                    urunadi: foodItemsS[index].adi!,
+                                    urunid: item!.id!,
+                                    urunadi: item.adi!,
                                     aciklama: '',
                                     mevcut: 1,
                                     fruitliste: createFruit(index, false),
@@ -448,7 +466,7 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                                   "",
                                   "Miktar",
                                   yarim: true,
-                                  baslik: foodItemsS[index].adi ?? 'Ürün',
+                                  baslik: item.adi ?? 'Ürün',
                                 );
                               } else {
                                 CuperAlert.show(
@@ -461,7 +479,7 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                             },
                             onlongpress: () {},
                             baslik: Text(
-                              foodItemsS[index].adi.toString(),
+                              item?.adi.toString() ?? '',
                               style: TextStyle(
                                 color: Theme.of(context).hintColor,
                                 fontSize: 12,
@@ -469,7 +487,7 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                               ),
                             ),
                             komponet: Text(
-                              "${Config.formatter.format(foodItemsS[index].fiyatd)} ₺",
+                              "${Config.formatter.format(item?.fiyatd)} ₺",
                               style: TextStyle(
                                 color: Theme.of(context).hintColor,
                               ),
@@ -481,7 +499,13 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                     separatorBuilder: (context, index) {
                       return const Divider(color: Colors.transparent);
                     },
-                    itemCount: foodItemsS.length,
+                    itemCount: favori
+                        ? ref
+                                  .watch(adisyonNotifierProvider)
+                                  .favoriteItems
+                                  ?.length ??
+                              0
+                        : foodItemsS.length,
                   ),
                 ),
               ],

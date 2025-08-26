@@ -12,9 +12,9 @@ import '../../components/cuper_picker.dart';
 import '../../components/custom_circular_button.dart';
 import '../../config/config.dart';
 import '../../config/sabit_list.dart';
-import '../../dataGet/table_item_group.dart';
-import '../../dataGet/table_item_model.dart';
-import '../../theme/colors.dart';
+import '../../features/data/models/dataGet/table_item_group.dart';
+import '../../features/data/models/dataGet/table_item_model.dart';
+import '../../core/theme/colors.dart';
 import '../../utils.dart';
 import '../adisyon/adisyon_main.dart';
 

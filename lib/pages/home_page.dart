@@ -2,13 +2,13 @@ import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../DataGet/card_item_model.dart';
-import '../DataGet/food_categori_model.dart';
-import '../DataGet/food_item_model.dart';
+import '../features/data/models/dataGet/card_item_model.dart';
+import '../features/data/models/dataGet/food_categori_model.dart';
+import '../features/data/models/dataGet/food_item_model.dart';
 import '../components/custom_circular_button.dart';
 import '../locale/locales.dart';
 import '../pages/siparis_onaylama.dart';
-import '../theme/colors.dart';
+import '../core/theme/colors.dart';
 import '../utils.dart';
 import 'dialog_miktar_siparis.dart';
 import 'item_info.dart';

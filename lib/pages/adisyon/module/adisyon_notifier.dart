@@ -1,16 +1,32 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quantum_restaurant/core/usecase/result.dart';
 
-import '../../../dataGet/card_item_model.dart';
-import '../../../dataPost/adisyon_model.dart';
+import '../../../features/data/models/dataGet/card_item_model.dart';
+import '../../../features/data/models/dataGet/food_item_model.dart';
+import '../../../features/data/models/dataPost/adisyon_model.dart';
+import '../../../features/domain/usecase/bill/add_favorite_item_usecase.dart';
+import '../../../features/domain/usecase/bill/get_favorite_items_usecase.dart';
+import '../../../features/domain/usecase/bill/remove_favorite_item_usecase.dart';
 import '../../../pages/adisyon/module/adisyon_state.dart';
 
 final adisyonNotifierProvider =
     StateNotifierProvider<AdisyonNotifier, AdisyonState>((ref) {
-      return AdisyonNotifier();
+      return AdisyonNotifier(
+        ref.read(getFavoriteItemsUsecaseProvider),
+        ref.read(addFavoriteItemUsecaseProvider),
+        ref.read(removeFavoriteItemUsecaseProvider),
+      );
     });
 
 class AdisyonNotifier extends StateNotifier<AdisyonState> {
-  AdisyonNotifier() : super(AdisyonState());
+  final GetFavoriteItemsUsecase _getFavoriteItemsUsecase;
+  final AddFavoriteItemUsecase _addFavoriteItemUsecase;
+  final RemoveFavoriteItemUsecase _removeFavoriteItemUsecase;
+  AdisyonNotifier(
+    this._getFavoriteItemsUsecase,
+    this._addFavoriteItemUsecase,
+    this._removeFavoriteItemUsecase,
+  ) : super(AdisyonState());
 
   Future<void> getAdisyonList(int masaId) async {
     state = state.copyWith(isLoading: true);
@@ -66,4 +82,23 @@ class AdisyonNotifier extends StateNotifier<AdisyonState> {
         (sum, item) => (sum ?? 0) + (item.genel ?? 0),
       ) ??
       0;
+
+  Future<void> getFavoriteItems() async {
+    final result = await _getFavoriteItemsUsecase.call(null);
+    state = state.copyWith(favoriteItems: result.data);
+  }
+
+  Future<void> addFavoriteItem(FoodItemModel item) async {
+    final result = await _addFavoriteItemUsecase.call(item);
+    if (result.isSuccess) {
+      await getFavoriteItems();
+    }
+  }
+
+  Future<void> removeFavoriteItem(FoodItemModel item) async {
+    final result = await _removeFavoriteItemUsecase.call(item);
+    if (result.isSuccess) {
+      await getFavoriteItems();
+    }
+  }
 }

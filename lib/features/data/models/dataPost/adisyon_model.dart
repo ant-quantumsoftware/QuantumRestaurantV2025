@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import '../config/http_services.dart';
-
+import '../../dataSources/remote/http_services.dart';
 
 class AdisyonModel {
   int? id;

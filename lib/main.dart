@@ -5,15 +5,17 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'Pages/login/login.dart';
+import 'features/data/models/dataGet/food_item_model.dart';
 import 'locale/language_cubit.dart';
 import 'locale/locales.dart';
-import 'routes/routes.dart';
+import 'core/routes/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Veritabanı Ayarla
   await Hive.initFlutter();
+  Hive.registerAdapter(FoodItemModelAdapter());
   /*SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeRight,
     DeviceOrientation.landscapeLeft,

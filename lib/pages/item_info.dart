@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../Components/custom_circular_button.dart';
 import '../locale/locales.dart';
 import '../models/food_item_info.dart';
-import '../theme/colors.dart';
+import '../core/theme/colors.dart';
 
 class ItemInfoPage extends StatefulWidget {
   final String? name;

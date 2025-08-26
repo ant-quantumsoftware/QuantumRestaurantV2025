@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../Pages/dialogmasa_aktar.dart';
-import '../Pages/home_page.dart';
-import '../Pages/login/api_ayari.dart';
-import '../Pages/login/login.dart';
+import '../../Pages/dialogmasa_aktar.dart';
+import '../../Pages/home_page.dart';
+import '../../Pages/login/api_ayari.dart';
+import '../../Pages/login/login.dart';
 
 class PageRoutes {
   static const String homePage = 'home_page';

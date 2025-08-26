@@ -1,43 +1,81 @@
 import 'dart:async';
 import 'dart:convert';
 
-import '../config/http_services.dart';
+import 'package:hive/hive.dart';
+import '../../dataSources/remote/http_services.dart';
 
-class FoodItemModel {
+part 'food_item_model.g.dart';
+
+@HiveType(typeId: 0)
+class FoodItemModel extends HiveObject {
+  @HiveField(0)
   int? id;
+
+  @HiveField(1)
   String? adi;
+
+  @HiveField(2)
   String? resim;
+
+  @HiveField(3)
   String? fiyats;
+
+  @HiveField(4)
   String? birim;
+
+  @HiveField(5)
   String? kategori;
+
+  @HiveField(6)
   double? fiyatd;
+
+  @HiveField(7)
   double? stok;
+
+  @HiveField(8)
   int count = 0;
+
+  @HiveField(9)
   bool isVeg = false;
+
+  @HiveField(10)
   bool isSelected = false;
+
+  @HiveField(11)
   String? secenek1;
+
+  @HiveField(12)
   String? secenek2;
+
+  @HiveField(13)
   String? secenek3;
+
+  @HiveField(14)
   String? secenek4;
+
+  @HiveField(15)
   String? secenek5;
+
+  @HiveField(16)
   String? secenek6;
 
-  FoodItemModel(
-      {this.id,
-      this.adi,
-      this.resim,
-      this.fiyats,
-      this.stok,
-      this.fiyatd,
-      this.count = 0,
-      this.birim,
-      this.kategori,
-      this.secenek1,
-      this.secenek2,
-      this.secenek3,
-      this.secenek4,
-      this.secenek5,
-      this.secenek6});
+  FoodItemModel({
+    this.id,
+    this.adi,
+    this.resim,
+    this.fiyats,
+    this.stok,
+    this.fiyatd,
+    this.count = 0,
+    this.birim,
+    this.kategori,
+    this.secenek1,
+    this.secenek2,
+    this.secenek3,
+    this.secenek4,
+    this.secenek5,
+    this.secenek6,
+  });
 
   FoodItemModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -82,8 +120,9 @@ Future<List<FoodItemModel>> getFoodItemAll() async {
 }
 
 Future<List<FoodItemModel>> getFoodItemCategories(String kategoriKodu) async {
-  var sonuc = await HttpServices()
-      .getMethod("ItemsV1/GetCategories?KategoriKodu=$kategoriKodu");
+  var sonuc = await HttpServices().getMethod(
+    "ItemsV1/GetCategories?KategoriKodu=$kategoriKodu",
+  );
   var body = jsonDecode(sonuc) as List;
   return body.map((e) => FoodItemModel.fromJson(e)).toList();
 }

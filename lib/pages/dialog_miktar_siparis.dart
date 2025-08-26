@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../dataPost/adisyon_model.dart';
+import '../features/data/models/dataPost/adisyon_model.dart';
 import '../pages/cuper_alert.dart';
 
 class MyDialog extends StatefulWidget {

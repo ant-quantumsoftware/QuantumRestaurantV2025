@@ -3,15 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-
-
 import '../../components/input2.dart';
 import '../../components/tablo_satir.dart';
 import '../../config/config.dart';
 import '../../config/settings.dart';
-import '../../dataGet/food_categori_model.dart';
-import '../../dataGet/food_item_model.dart';
-import '../../dataPost/login_model.dart';
+import '../../features/data/models/dataGet/food_categori_model.dart';
+import '../../features/data/models/dataGet/food_item_model.dart';
+import '../../features/data/models/dataPost/login_model.dart';
 import '../../pages/cuper_alert.dart';
 import '../../pages/masalar/table_selection.dart';
 import 'api_ayari.dart';

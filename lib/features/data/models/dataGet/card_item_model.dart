@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../config/http_services.dart';
+import '../../dataSources/remote/http_services.dart';
 
 class CardItemModel {
   int? id;
@@ -18,17 +18,18 @@ class CardItemModel {
 
   // Sipariş Girilen ürünler
 
-  CardItemModel(
-      {this.id,
-      this.adi,
-      this.fiyats,
-      this.extraozellikler,
-      this.fiyatd,
-      this.ozellik1,
-      this.ozellik2,
-      this.ozellik3,
-      this.miktar = 0,
-      this.secenek});
+  CardItemModel({
+    this.id,
+    this.adi,
+    this.fiyats,
+    this.extraozellikler,
+    this.fiyatd,
+    this.ozellik1,
+    this.ozellik2,
+    this.ozellik3,
+    this.miktar = 0,
+    this.secenek,
+  });
 
   CardItemModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
