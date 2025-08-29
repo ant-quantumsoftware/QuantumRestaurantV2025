@@ -33,7 +33,6 @@ class _HomeState extends State<Home> {
   final dio = Dio();
   FocusNode? _focusNode;
 
-  /// TODO: Arama işlemi değişkenleri
   TextEditingController searchController = TextEditingController();
   bool isSearch = false;
   List<Malzeme> peopleList = [];

@@ -22,8 +22,8 @@ final ThemeData appTheme = ThemeData(
   ).apply(bodyColor: Colors.black),
 
   radioTheme: RadioThemeData(
-    overlayColor: WidgetStateProperty.all(whiteColor),
-    fillColor: WidgetStateProperty.all(whiteColor),
+    overlayColor: WidgetStateProperty.all(AppColors.whiteColor),
+    fillColor: WidgetStateProperty.all(AppColors.whiteColor),
   ),
   colorScheme: ColorScheme.fromSwatch(
     backgroundColor: Color.fromARGB(255, 143, 143, 170),

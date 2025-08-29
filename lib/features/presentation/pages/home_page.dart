@@ -604,7 +604,7 @@ class HomePageState extends State<HomePage> {
             : '${locale!.itemsInCart!} (0)',
         style: Theme.of(context).textTheme.bodyLarge,
       ),
-      bgColor: cartItems.isNotEmpty ? buttonColor : Colors.grey[600],
+      bgColor: cartItems.isNotEmpty ? AppColors.buttonColor : Colors.grey[600],
     );
   }
 
@@ -757,7 +757,7 @@ class HomePageState extends State<HomePage> {
                                       Theme.of(context).primaryColor.withValues(
                                         alpha: 0.3,
                                       ), // withOpacity(0.3)
-                                      transparentColor,
+                                      AppColors.transparentColor,
                                     ],
                                     stops: const [0.2, 0.4, 1.0],
                                   ),
@@ -795,7 +795,7 @@ class HomePageState extends State<HomePage> {
                                     const Spacer(),
                                     CircleAvatar(
                                       radius: 10,
-                                      backgroundColor: whiteColor,
+                                      backgroundColor: AppColors.whiteColor,
                                       child: Text(
                                         foodItemsS[index].count.toString(),
                                         style: Theme.of(context)

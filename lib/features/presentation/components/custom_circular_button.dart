@@ -31,7 +31,7 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(
             borderRadius != null ? borderRadius! : 50,
           ),
-          color: bgColor ?? buttonColor,
+          color: bgColor ?? AppColors.buttonColor,
         ),
         margin: margin ?? const EdgeInsets.symmetric(),
         padding:

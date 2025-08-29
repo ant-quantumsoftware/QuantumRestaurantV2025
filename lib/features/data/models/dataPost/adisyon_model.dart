@@ -5,7 +5,6 @@ import '../../dataSources/remote/http_services.dart';
 class AdisyonModel {
   int? id;
   String? adi;
-
   double? fiyatd;
   String? ozellik1;
   String? ozellik2;

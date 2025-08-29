@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-Color buttonColor = const Color(0xffED3F40);
-Color newOrderColor = const Color(0xffFBAF03);
-Color transparentColor = const Color.fromARGB(0, 255, 253, 253);
-Color whiteColor = Colors.white;
+class AppColors {
+  static const Color buttonColor = Color(0xffED3F40);
+  static const Color newOrderColor = Color(0xffFBAF03);
+  static const Color transparentColor = Color.fromARGB(0, 255, 253, 253);
+  static const Color whiteColor = Colors.white;
+}

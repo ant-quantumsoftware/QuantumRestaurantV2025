@@ -105,7 +105,7 @@ class ItemInfoPageState extends State<ItemInfoPage> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: Icon(Icons.arrow_back, color: whiteColor),
+                        icon: Icon(Icons.arrow_back, color: AppColors.whiteColor),
                       ),
                     ),
                     Expanded(
@@ -513,7 +513,7 @@ class ItemInfoPageState extends State<ItemInfoPage> {
                                       end: Alignment.topCenter,
                                       colors: [
                                         Theme.of(context).colorScheme.surface,
-                                        transparentColor,
+                                        AppColors.transparentColor,
                                       ],
                                       stops: const [0.0, 0.5],
                                     ),
@@ -643,7 +643,7 @@ class ItemInfoPageState extends State<ItemInfoPage> {
           Transform.scale(
             scale: 0.7,
             child: Checkbox(
-              activeColor: newOrderColor,
+              activeColor: AppColors.newOrderColor,
               checkColor: Theme.of(context).colorScheme.surface,
               fillColor: WidgetStateProperty.all(
                 Theme.of(context).primaryColor,
@@ -733,7 +733,7 @@ class ItemInfoPageState extends State<ItemInfoPage> {
         '${locale.itemsInCart!} (3)',
         style: Theme.of(context).textTheme.bodyLarge,
       ),
-      bgColor: buttonColor,
+      bgColor: AppColors.buttonColor,
     );
   }
 }

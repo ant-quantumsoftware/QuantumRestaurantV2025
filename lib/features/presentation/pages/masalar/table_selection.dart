@@ -345,7 +345,7 @@ class TableSelectionPageState extends State<TableSelectionPage> {
                                   style: Theme.of(context).textTheme.bodyMedium!
                                       .copyWith(
                                         fontSize: 12,
-                                        color: whiteColor,
+                                        color: AppColors.whiteColor,
                                       ),
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.end,
@@ -380,7 +380,7 @@ class TableSelectionPageState extends State<TableSelectionPage> {
                                   style: Theme.of(context).textTheme.bodyMedium!
                                       .copyWith(
                                         fontSize: 12,
-                                        color: whiteColor,
+                                        color: AppColors.whiteColor,
                                       ),
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.end,

@@ -160,7 +160,9 @@ class _AdsMiktarState extends ConsumerState<AdsMiktar> {
           if (widget.onOrderAdded != null) {
             widget.onOrderAdded!();
           }
-          Navigator.pop(context);
+          if (mounted) {
+            Navigator.pop(context);
+          }
         }
       }
     } catch (e) {
@@ -213,7 +215,9 @@ class _AdsMiktarState extends ConsumerState<AdsMiktar> {
       if (widget.onOrderAdded != null) {
         widget.onOrderAdded!();
       }
-      Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+      }
     }
   }
 
