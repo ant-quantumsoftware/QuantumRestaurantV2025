@@ -2,31 +2,32 @@ import 'package:animate_do/animate_do.dart';
 import 'package:animation_wrappers/animations/faded_scale_animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gridview_menu/gridview_menu.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../components/custom_circular_button.dart';
 import '../components/liste_menu.dart';
-import '../config/settings.dart';
-import '../features/data/models/dataGet/card_item_model.dart';
-import '../features/data/models/dataGet/food_categori_model.dart';
-import '../features/data/models/dataGet/food_item_model.dart';
-import '../features/data/models/dataPost/adisyon_model.dart';
-import '../locale/locales.dart';
+import '../../../core/config/settings.dart';
+import '../../../core/routes/routes.dart';
+import '../../data/models/dataGet/card_item_model.dart';
+import '../../data/models/dataGet/food_categori_model.dart';
+import '../../data/models/dataGet/food_item_model.dart';
+import '../../data/models/dataPost/adisyon_model.dart';
 import '../pages/cuper_alert.dart';
-import '../core/routes/routes.dart';
-import '../utils.dart';
+import '../../../core/utils/utils.dart';
 import 'dialog_aciklama_siparis.dart';
 import 'dialog_miktar_siparis.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class AdisyonPage extends StatefulWidget {
+  final int masaid;
+  final String masaadi;
+  const AdisyonPage({super.key, required this.masaid, required this.masaadi});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<AdisyonPage> createState() => _AdisyonPageState();
 }
 
-class _HomeState extends State<Home> with TickerProviderStateMixin {
+class _AdisyonPageState extends State<AdisyonPage>
+    with TickerProviderStateMixin {
   // Yeni Metodlar
   bool login = true;
   bool logindetails = true;
@@ -57,6 +58,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     super.initState();
     _tabcontroller = TabController(length: list.length, vsync: this);
 
+    masaid = widget.masaid;
+    masaadi = widget.masaadi;
+
     _tabcontroller.addListener(() {
       setState(() {
         if (_tabcontroller.index == 1) {
@@ -64,22 +68,20 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         }
       });
     });
-
     verigetironcelikli();
   }
 
   Future<void> verigetironcelikli() async {
     setState(() {
       foodCategoriItems = Settings.getFoodCategoriItems();
-
-      verigetir();
     });
+    await verigetir();
   }
 
   Future<void> verigetir() async {
-    var cartItem = await getCardItemGetirId(masaid);
+    var cartItems = await getCardItemGetirId(masaid);
     setState(() {
-      cartItems = cartItem;
+      cartItems = cartItems;
 
       login = false;
       verigetirMalzeme();
@@ -90,10 +92,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     yazdirmaDurumuAdisyon = "";
     yazdirmaDurumuMutfak = "";
 
-    var cartItem = await getCardItemGetirId(masaid);
+    var cartItems = await getCardItemGetirId(masaid);
 
     setState(() {
-      cartItems = cartItem;
+      cartItems = cartItems;
 
       login = false;
       verigetirMalzeme();
@@ -151,15 +153,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   int currentIndex = 0;
   String masaadi = "";
   int masaid = 0;
-  int selectedIndex = 0;
 
   final PageController _pageController = PageController();
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   bool isOrderPlaced = false;
 
   late Dialog dialog;
-  String aktifMiktarstr = "1.00";
-  double aktifmiktar = 1;
+  String aktifMiktarStr = "1.00";
+  double aktifMiktar = 1;
 
   void openAlertYeni(
     BuildContext context,
@@ -225,98 +226,116 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    var locale = AppLocalizations.of(context)!;
-
-    final arguments =
-        (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{})
-            as Map;
-
-    masaadi = arguments['masaadi'];
-    masaid = arguments['masaid'];
-
-    int backButtonPressCount = 0;
-
-    return PopScope(
-      canPop: false,
-      // onPopInvoked: (didPop) async {
-      //   // Disable speed dial function after 3 back button presses
-      //   if (backButtonPressCount >= 3) {
-      //     setState(() {});
-      //   }
-      //   backButtonPressCount++;
-      // },
-      onPopInvokedWithResult: (didPop, result) {
-        // Disable speed dial function after 3 back button presses
-        if (backButtonPressCount >= 3) {
-          setState(() {});
-        }
-        backButtonPressCount++;
-      },
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            appBar: AppBar(
-              bottom: TabBar(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              CupertinoSliverNavigationBar(
+                automaticallyImplyLeading: true,
+                padding: const EdgeInsetsDirectional.all(0),
+                largeTitle: FadeInUp(
+                  duration: const Duration(milliseconds: 1700),
+                  child: Text(masaadi),
+                ),
+              ),
+            ],
+            body: SizedBox(
+              height: 500,
+              child: TabBarView(
                 physics: const NeverScrollableScrollPhysics(),
                 controller: _tabcontroller,
-                tabs: list,
+                children: [
+                  Container(
+                    color: Colors.white,
+                    child: Center(child: siparisgirisi(context)),
+                  ),
+                  Container(
+                    color: Colors.white,
+                    child: Center(child: girilensiparisadisyon(context)),
+                  ),
+                  SingleChildScrollView(child: _islemlerMenuYeni(context)),
+                ],
               ),
-              actions: [
-                buildItemsGeriButon(context),
-                buildItemsInMasaButton(context),
-                Container(
-                  width: 190,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 4,
-                  ),
-                  child: TextFormField(
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
-                      prefixIconColor: const Color(0x917a7b82),
-                      prefixIcon: const Icon(Icons.search),
-                      hintText: locale.searchItem,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                      filled: true,
-                      hintStyle: Theme.of(context).textTheme.bodyLarge
-                          ?.copyWith(color: const Color(0x917a7b82)),
-                      fillColor: Theme.of(context).scaffoldBackgroundColor,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                    ),
-                    onFieldSubmitted: (value) {
-                      setState(() {
-                        searchFunc(value);
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            body: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: _tabcontroller,
-              children: [
-                Container(
-                  color: Colors.white,
-                  child: Center(child: siparisgirisi(context)),
-                ),
-                Container(
-                  color: Colors.white,
-                  child: Center(child: girilensiparisadisyon(context)),
-                ),
-                SingleChildScrollView(child: islemlerMenuYeni(context)),
-              ],
             ),
           ),
         ),
       ),
     );
   }
+
+  // @override
+  // Widget build2(BuildContext context) {
+  //   var locale = AppLocalizations.of(context)!;
+
+  //   return MaterialApp(
+  //     debugShowCheckedModeBanner: false,
+  //     home: DefaultTabController(
+  //       length: 3,
+  //       child: Scaffold(
+  //         appBar: AppBar(
+  //           bottom: TabBar(
+  //             physics: const NeverScrollableScrollPhysics(),
+  //             controller: _tabcontroller,
+  //             tabs: list,
+  //           ),
+  //           actions: [
+  //             buildItemsGeriButon(context),
+  //             buildItemsInMasaButton(context),
+  //             Container(
+  //               width: 190,
+  //               padding: const EdgeInsets.symmetric(
+  //                 vertical: 10,
+  //                 horizontal: 4,
+  //               ),
+  //               child: TextFormField(
+  //                 textAlignVertical: TextAlignVertical.center,
+  //                 decoration: InputDecoration(
+  //                   prefixIconColor: const Color(0x917a7b82),
+  //                   prefixIcon: const Icon(Icons.search),
+  //                   hintText: locale.searchItem,
+  //                   contentPadding: const EdgeInsets.symmetric(vertical: 0),
+  //                   filled: true,
+  //                   hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+  //                     color: const Color(0x917a7b82),
+  //                   ),
+  //                   fillColor: Theme.of(context).scaffoldBackgroundColor,
+  //                   border: OutlineInputBorder(
+  //                     borderSide: BorderSide.none,
+  //                     borderRadius: BorderRadius.circular(40),
+  //                   ),
+  //                 ),
+  //                 onFieldSubmitted: (value) {
+  //                   setState(() {
+  //                     searchFunc(value);
+  //                   });
+  //                 },
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         body: TabBarView(
+  //           physics: const NeverScrollableScrollPhysics(),
+  //           controller: _tabcontroller,
+  //           children: [
+  //             Container(
+  //               color: Colors.white,
+  //               child: Center(child: siparisgirisi(context)),
+  //             ),
+  //             Container(
+  //               color: Colors.white,
+  //               child: Center(child: girilensiparisadisyon(context)),
+  //             ),
+  //             SingleChildScrollView(child: _islemlerMenuYeni(context)),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget buildPage() {
     if (logindetails) {
@@ -887,7 +906,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               Padding(
                 padding: const EdgeInsetsDirectional.only(end: 10.0),
                 child: Text(
-                  'Kdv Dahil  : ${toplamGenel()}',
+                  'Kdv Dahil  : ${toplamgenel()}',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -918,7 +937,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               Padding(
                 padding: const EdgeInsetsDirectional.only(end: 10.0),
                 child: Text(
-                  'Vergi  : ${toplamVergi()}',
+                  'Vergi  : ${toplamvergi()}',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -943,19 +962,20 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       if (stringFuture) {
         verigetirgirilenler();
       } else {
-        if (!mounted) {
-          return false;
+        if (mounted) {
+          CuperAlert.show(
+            context: context,
+            destructive: true,
+            title: 'Hata',
+            content: 'Silme Hatası!\nMutfak veya Bar a Yazılmış!',
+          );
+          snackBar('hata Oluştu');
         }
-        CuperAlert.show(
-          context: context,
-          destructive: true,
-          title: 'Hata',
-          content: 'Silme Hatası!\nMutfak veya Bar a Yazılmış!',
-        );
-        snackBar('hata Oluştu');
       }
     } catch (error) {
-      snackBar('hata Oluştu : $error');
+      if (mounted) {
+        snackBar('hata Oluştu : $error');
+      }
     }
 
     return stringFuture;
@@ -1048,7 +1068,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return stringFuture;
   }
 
-  String toplamGenel() {
+  String toplamgenel() {
     double toplam = 0;
 
     for (var e in cartItems) {
@@ -1058,13 +1078,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return Utils.format.format(toplam);
   }
 
-  String toplamVergi() {
+  String toplamvergi() {
     double toplam = 0;
 
     return Utils.format.format(toplam);
   }
 
-  Widget islemlerMenuYeni(BuildContext context) {
+  Widget _islemlerMenuYeni(BuildContext context) {
     return FadeInUp(
       duration: const Duration(milliseconds: 500),
       child: CupertinoFormSection(
@@ -1083,7 +1103,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 size: 32,
               ),
               baslik: Text(
-                "Adisyon Yaz1",
+                "Adisyon Yaz",
                 style: TextStyle(color: Theme.of(context).hintColor),
               ),
               komponet: const Icon(
@@ -1228,117 +1248,117 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     );
   }
 
-  ListView islemlerMenuYeni2(BuildContext context) {
-    const Color colorr = Color.fromRGBO(70, 103, 48, 1);
-    List<MenuItem> menuItem = <MenuItem>[
-      MenuItem(
-        icon: Icons.print,
-        color: colorr,
-        title: 'Adisyon Yaz$yazdirmaDurumuAdisyon',
-        subtitle: '',
-        disabled: false,
-        child: const SizedBox(width: 0),
+  // ListView _islemlerMenuYeni2(BuildContext context) {
+  //   final Color colorr = const Color.fromRGBO(70, 103, 48, 1);
+  //   List<MenuItem> menuItem = <MenuItem>[
+  //     MenuItem(
+  //       icon: Icons.print,
+  //       color: colorr,
+  //       title: 'Adisyon Yaz$yazdirmaDurumuAdisyon',
+  //       subtitle: '',
+  //       disabled: false,
+  //       child: const SizedBox(width: 0),
 
-        // menüyü aç
-      ),
-      MenuItem(
-        icon: Icons.print,
-        color: colorr,
-        title: 'Mutfağa Yaz$yazdirmaDurumuMutfak',
-        subtitle: '',
-        disabled: false,
-        child: const SizedBox(width: 0),
+  //       // menüyü aç
+  //     ),
+  //     MenuItem(
+  //       icon: Icons.print,
+  //       color: colorr,
+  //       title: 'Mutfağa Yaz$yazdirmaDurumuMutfak',
+  //       subtitle: '',
+  //       disabled: false,
+  //       child: const SizedBox(width: 0),
 
-        // menüyü aç
-      ),
-      const MenuItem(
-        icon: Icons.event,
-        color: colorr,
-        title: 'Masa Aktar',
-        subtitle: '',
-        disabled: false,
-        child: SizedBox(width: 0), // menüyü aç
-      ),
-      const MenuItem(
-        icon: Icons.money,
-        color: colorr,
-        title: 'Tahsilat',
-        subtitle: '',
-        disabled: false,
-        child: SizedBox(width: 0), // menüyü aç
-      ),
-    ];
+  //       // menüyü aç
+  //     ),
+  //     MenuItem(
+  //       icon: Icons.event,
+  //       color: colorr,
+  //       title: 'Masa Aktar',
+  //       subtitle: '',
+  //       disabled: false,
+  //       child: const SizedBox(width: 0), // menüyü aç
+  //     ),
+  //     MenuItem(
+  //       icon: Icons.money,
+  //       color: colorr,
+  //       title: 'Tahsilat',
+  //       subtitle: '',
+  //       disabled: false,
+  //       child: const SizedBox(width: 0), // menüyü aç
+  //     ),
+  //   ];
 
-    return ListView(
-      physics: const BouncingScrollPhysics(),
-      children: [
-        ListView.separated(
-          physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.only(bottom: 10),
-          itemCount: menuItem.length,
-          shrinkWrap: true,
-          separatorBuilder: (context, index) {
-            return const Divider();
-          },
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    if (index == 0) {
-                      // Adisyon Yaz
-                      setState(() {
-                        adisyonYaz(masaid);
-                      });
-                    } else if (index == 1) {
-                      // Mutfağa Yaz
-                      setState(() {
-                        adisyonMutfakYaz(masaid);
-                      });
-                    } else if (index == 2) {
-                      // MasaAktar
-                      setState(() {
-                        masaAktar(masaid, masaadi);
-                      });
-                    }
-                  },
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 2,
-                      horizontal: 2,
-                    ),
-                    leading: FadedScaleAnimation(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: FadedScaleAnimation(
-                          child: Icon(
-                            menuItem[index].icon,
-                            size: 50,
-                            color: Colors.green,
-                          ),
-                        ),
-                      ),
-                    ),
-                    title: Text(
-                      menuItem[index].title,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.justify,
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    subtitle: Text(menuItem[index].subtitle),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ],
-    );
-  }
+  //   return ListView(
+  //     physics: const BouncingScrollPhysics(),
+  //     children: [
+  //       ListView.separated(
+  //         physics: const NeverScrollableScrollPhysics(),
+  //         padding: const EdgeInsets.only(bottom: 10),
+  //         itemCount: menuItem.length,
+  //         shrinkWrap: true,
+  //         separatorBuilder: (context, index) {
+  //           return const Divider();
+  //         },
+  //         itemBuilder: (context, index) {
+  //           return Column(
+  //             children: [
+  //               GestureDetector(
+  //                 onTap: () {
+  //                   if (index == 0) {
+  //                     // Adisyon Yaz
+  //                     setState(() {
+  //                       adisyonYaz(masaid);
+  //                     });
+  //                   } else if (index == 1) {
+  //                     // Mutfağa Yaz
+  //                     setState(() {
+  //                       adisyonMutfakYaz(masaid);
+  //                     });
+  //                   } else if (index == 2) {
+  //                     // MasaAktar
+  //                     setState(() {
+  //                       masaAktar(masaid, masaadi);
+  //                     });
+  //                   }
+  //                 },
+  //                 child: ListTile(
+  //                   contentPadding: const EdgeInsets.symmetric(
+  //                     vertical: 2,
+  //                     horizontal: 2,
+  //                   ),
+  //                   leading: FadedScaleAnimation(
+  //                     child: ClipRRect(
+  //                       borderRadius: BorderRadius.circular(20),
+  //                       child: FadedScaleAnimation(
+  //                         child: Icon(
+  //                           menuItem[index].icon,
+  //                           size: 50,
+  //                           color: Colors.green,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   title: Text(
+  //                     menuItem[index].title,
+  //                     maxLines: 3,
+  //                     overflow: TextOverflow.ellipsis,
+  //                     textAlign: TextAlign.justify,
+  //                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
+  //                       fontSize: 14,
+  //                       fontWeight: FontWeight.w700,
+  //                     ),
+  //                   ),
+  //                   subtitle: Text(menuItem[index].subtitle),
+  //                 ),
+  //               ),
+  //             ],
+  //           );
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 }
 
 // Girilen Siparişlerde

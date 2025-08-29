@@ -1,7 +1,7 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 
-import '../locale/locales.dart';
+import '../../../core/locale/locales.dart';
 
 class OrderPlaced extends StatefulWidget {
   const OrderPlaced({super.key});

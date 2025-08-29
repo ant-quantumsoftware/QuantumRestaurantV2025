@@ -1,11 +1,11 @@
 import 'package:animation_wrappers/animations/faded_scale_animation.dart';
 import 'package:flutter/material.dart';
 
-import '../config/settings.dart';
-import '../features/data/models/dataGet/table_item_model.dart';
-import '../features/data/models/dataPost/adisyon_model.dart';
+import '../../../core/config/settings.dart';
+import '../../../core/routes/routes.dart';
+import '../../data/models/dataGet/table_item_model.dart';
+import '../../data/models/dataPost/adisyon_model.dart';
 import '../pages/cuper_alert.dart';
-import '../core/routes/routes.dart';
 
 class MyDialogMasaAktar extends StatefulWidget {
   const MyDialogMasaAktar({super.key});

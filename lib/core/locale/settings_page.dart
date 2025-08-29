@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../components/bottom_bar.dart';
+import '../../features/presentation/components/bottom_bar.dart';
 import '../config/app_config.dart';
-import '../core/routes/routes.dart';
+import '../routes/routes.dart';
 import 'language_cubit.dart';
 
 class LanguageList {
@@ -12,14 +12,14 @@ class LanguageList {
   LanguageList({this.title});
 }
 
-class Settings extends StatefulWidget {
-  const Settings({super.key});
+class LocaleSettings extends StatefulWidget {
+  const LocaleSettings({super.key});
 
   @override
-  SettingsState createState() => SettingsState();
+  LocaleSettingsState createState() => LocaleSettingsState();
 }
 
-class SettingsState extends State<Settings> {
+class LocaleSettingsState extends State<LocaleSettings> {
   bool sliderValue = false;
   late LanguageCubit _languageCubit;
   String? selectedLocal;

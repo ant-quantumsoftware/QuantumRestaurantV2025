@@ -1,10 +1,10 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 
-import '../Components/custom_circular_button.dart';
-import '../locale/locales.dart';
-import '../models/food_item_info.dart';
-import '../core/theme/colors.dart';
+import '../components/custom_circular_button.dart';
+import '../../../core/locale/locales.dart';
+import '../../../core/theme/colors.dart';
+import '../../data/models/food_item_info.dart';
 
 class ItemInfoPage extends StatefulWidget {
   final String? name;

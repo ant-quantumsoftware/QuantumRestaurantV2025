@@ -7,8 +7,8 @@ import 'package:flutter_spinbox/cupertino.dart';
 import '../../components/cuper_form_2.dart';
 import '../../components/input2.dart';
 import '../../components/tablo_satir.dart';
-import '../../features/data/models/dataPost/adisyon_model.dart';
-import '../../models/food_item_info.dart';
+import '../../../data/models/food_item_info.dart';
+import '../../../data/models/dataPost/adisyon_model.dart';
 import '../../pages/cuper_alert.dart';
 import '../adisyon/module/adisyon_notifier.dart';
 

@@ -5,11 +5,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../components/input2.dart';
 import '../../components/tablo_satir.dart';
-import '../../config/config.dart';
-import '../../config/settings.dart';
-import '../../features/data/models/dataGet/food_categori_model.dart';
-import '../../features/data/models/dataGet/food_item_model.dart';
-import '../../features/data/models/dataPost/login_model.dart';
+
+import '../../../../core/config/config.dart';
+import '../../../../core/config/settings.dart';
+import '../../../data/models/dataGet/food_categori_model.dart';
+import '../../../data/models/dataGet/food_item_model.dart';
+import '../../../data/models/dataPost/login_model.dart';
 import '../../pages/cuper_alert.dart';
 import '../../pages/masalar/table_selection.dart';
 import 'api_ayari.dart';

@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:grock/grock.dart';
 
-import '../utils.dart';
+import '../../../core/utils/utils.dart';
 
 class YeniSiparis extends StatelessWidget {
   const YeniSiparis({super.key});
@@ -89,32 +89,29 @@ class _HomeState extends State<Home> {
         middle: appbarTitle(),
         trailing: searchIconWidget(),
       ),
-      body:
-          isLoading
-              ? const Center(child: CircularProgressIndicator.adaptive())
-              : GrockList(
-                itemCount:
-                    searchList.isNotEmpty
-                        ? searchList.length
-                        : peopleList.length,
-                itemBuilder: (context, index) {
-                  var item =
-                      searchList.isNotEmpty
-                          ? searchList[index]
-                          : peopleList[index];
-                  return Card(
-                    child: ListTile(
-                      title: Text("${item.adi}"),
-                      subtitle: Text('${item.kodu!} ${item.kodu!}'),
-                      leading: CircleAvatar(backgroundImage: NetworkImage('')),
-                      trailing: Text(Utils.format.format(item.fiyat1)),
-                      onTap: () {
-                        //navigateToDetail(item);
-                      },
-                    ),
-                  );
-                },
-              ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator.adaptive())
+          : GrockList(
+              itemCount: searchList.isNotEmpty
+                  ? searchList.length
+                  : peopleList.length,
+              itemBuilder: (context, index) {
+                var item = searchList.isNotEmpty
+                    ? searchList[index]
+                    : peopleList[index];
+                return Card(
+                  child: ListTile(
+                    title: Text("${item.adi}"),
+                    subtitle: Text('${item.kodu!} ${item.kodu!}'),
+                    leading: CircleAvatar(backgroundImage: NetworkImage('')),
+                    trailing: Text(Utils.format.format(item.fiyat1)),
+                    onTap: () {
+                      //navigateToDetail(item);
+                    },
+                  ),
+                );
+              },
+            ),
     );
   }
 

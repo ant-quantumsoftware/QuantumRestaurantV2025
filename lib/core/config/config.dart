@@ -10,8 +10,6 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../models/qr_sonucmodel.dart';
-
 class Config {
   static NumberFormat formatter = NumberFormat('###,###.##');
 
@@ -22,7 +20,6 @@ class Config {
   static Image? avatar;
 
   static List<int> bakimidler = [];
-  static List<QrSonucModel> newqrsonuc = [];
 
   static Map<String, Object> repset = {};
 

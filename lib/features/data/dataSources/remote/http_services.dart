@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 
-import '../../../../config/settings.dart';
+import '../../../../core/config/settings.dart';
 
 class HttpServices {
   late String token;

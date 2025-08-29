@@ -1,5 +1,6 @@
-import '../features/data/models/dataGet/food_categori_model.dart';
-import '../features/data/models/dataGet/food_item_model.dart';
+import '../../features/data/models/dataGet/food_categori_model.dart';
+import '../../features/data/models/dataGet/food_item_model.dart';
+
 
 class Settings {
   //One instance, needs factory

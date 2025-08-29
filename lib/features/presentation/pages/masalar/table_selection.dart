@@ -6,16 +6,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../../../core/config/config.dart';
+import '../../../../core/config/sabit_list.dart';
+import '../../../../core/theme/colors.dart';
+import '../../../../core/utils/utils.dart';
+import '../../../data/models/dataGet/table_item_group.dart';
+import '../../../data/models/dataGet/table_item_model.dart';
 import '../../components/arama_kutusu.dart';
 import '../../components/cuper_form_2.dart';
 import '../../components/cuper_picker.dart';
 import '../../components/custom_circular_button.dart';
-import '../../config/config.dart';
-import '../../config/sabit_list.dart';
-import '../../features/data/models/dataGet/table_item_group.dart';
-import '../../features/data/models/dataGet/table_item_model.dart';
-import '../../core/theme/colors.dart';
-import '../../utils.dart';
 import '../adisyon/adisyon_main.dart';
 
 class TableSelectionPage extends StatefulWidget {

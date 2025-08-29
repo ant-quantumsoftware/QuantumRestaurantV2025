@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import '../config/config.dart';
+import '../../../core/config/config.dart';
 
 class VeriSecici extends StatelessWidget {
   final Function? degistir;
