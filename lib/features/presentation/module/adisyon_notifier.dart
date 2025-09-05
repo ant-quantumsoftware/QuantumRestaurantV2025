@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quantum_restaurant/core/usecase/result.dart';
 
-  import '../../../../data/models/dataGet/card_item_model.dart';
-import '../../../../data/models/dataGet/food_item_model.dart';
-import '../../../../data/models/dataPost/adisyon_model.dart';
-import '../../../../domain/usecase/bill/add_favorite_item_usecase.dart';
-import '../../../../domain/usecase/bill/get_favorite_items_usecase.dart';
-import '../../../../domain/usecase/bill/remove_favorite_item_usecase.dart';
+  import '../../data/models/dataGet/card_item_model.dart';
+import '../../data/models/dataGet/food_item_model.dart';
+import '../../data/models/dataPost/adisyon_model.dart';
+import '../../domain/usecase/bill/add_favorite_item_usecase.dart';
+import '../../domain/usecase/bill/get_favorite_items_usecase.dart';
+import '../../domain/usecase/bill/remove_favorite_item_usecase.dart';
 import 'adisyon_state.dart';  
 
 final adisyonNotifierProvider =

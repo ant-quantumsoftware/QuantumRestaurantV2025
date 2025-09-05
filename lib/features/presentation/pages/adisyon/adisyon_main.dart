@@ -15,7 +15,7 @@ import '../../../data/models/dataGet/card_item_model.dart';
 import '../../../data/models/dataGet/food_categori_model.dart';
 import '../../../data/models/dataGet/food_item_model.dart';
 import '../../../data/models/dataPost/adisyon_model.dart';
-import '../adisyon/module/adisyon_notifier.dart';
+import '../../module/adisyon_notifier.dart';
 import '../dialog_aciklama_siparis.dart';
 import 'adisyon_miktar.dart';
 

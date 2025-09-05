@@ -2,7 +2,7 @@ import 'package:animation_wrappers/animations/faded_scale_animation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/config/settings.dart';
-import '../../../core/routes/routes.dart';
+import '../../../core/routes/route_names.dart';
 import '../../data/models/dataGet/table_item_model.dart';
 import '../../data/models/dataPost/adisyon_model.dart';
 import '../pages/cuper_alert.dart';
@@ -101,7 +101,7 @@ class MyDialogMasaAktarState extends State<MyDialogMasaAktar>
     setState(() {
       Navigator.pushNamed(
         context,
-        PageRoutes.tableSelectionPage,
+        RouteNames.tableSelectionPage,
         arguments: {
           'garsonId': Settings.getGarsonId(),
           'garsonadi': Settings.getGarsonAdi(),

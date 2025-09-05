@@ -1,5 +1,5 @@
-import '../../../../data/models/dataGet/card_item_model.dart';
-import '../../../../data/models/dataGet/food_item_model.dart';
+import '../../data/models/dataGet/card_item_model.dart';
+import '../../data/models/dataGet/food_item_model.dart';
 
 class AdisyonState {
   final List<CardItemModel>? adisyonList;

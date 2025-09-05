@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/presentation/components/bottom_bar.dart';
 import '../config/app_config.dart';
-import '../routes/routes.dart';
+import '../routes/route_names.dart';
 import 'language_cubit.dart';
 
 class LanguageList {
@@ -94,7 +94,7 @@ class LocaleSettingsState extends State<LocaleSettings> {
               text: 'Onayla',
               onTap: () {
                 _languageCubit.setCurrentLanguage(selectedLocal!, true);
-                Navigator.pushNamed(context, PageRoutes.tableSelectionPage);
+                Navigator.pushNamed(context, RouteNames.tableSelectionPage);
               },
             ),
           ),

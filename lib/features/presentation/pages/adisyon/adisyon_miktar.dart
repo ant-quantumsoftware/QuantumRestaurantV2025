@@ -10,7 +10,7 @@ import '../../components/tablo_satir.dart';
 import '../../../data/models/food_item_info.dart';
 import '../../../data/models/dataPost/adisyon_model.dart';
 import '../../pages/cuper_alert.dart';
-import '../adisyon/module/adisyon_notifier.dart';
+import '../../module/adisyon_notifier.dart';
 
 class AdsMiktar extends ConsumerStatefulWidget {
   final int masaid, urunid;
