@@ -4,6 +4,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../../core/config/config.dart';
@@ -16,6 +17,7 @@ import '../../components/arama_kutusu.dart';
 import '../../components/cuper_form_2.dart';
 import '../../components/cuper_picker.dart';
 import '../../components/custom_circular_button.dart';
+import '../../module/adisyon_notifier.dart';
 import '../adisyon/adisyon_main.dart';
 
 class TableSelectionPage extends StatefulWidget {
@@ -61,6 +63,8 @@ class TableSelectionPageState extends State<TableSelectionPage> {
   int? garsonId;
   int filterindex = 3;
   String? garsonadi;
+
+  int selectedPersonCount = 1;
 
   @override
   void initState() {
@@ -268,130 +272,171 @@ class TableSelectionPageState extends State<TableSelectionPage> {
           ],
           body: (login)
               ? const Center(child: CupertinoActivityIndicator(radius: 10.0))
-              : RefreshIndicator.adaptive(
-                  triggerMode: RefreshIndicatorTriggerMode.anywhere,
-                  onRefresh: _refreshlist,
-                  child: GridView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 15,
-                      horizontal: 15,
-                    ),
-                    itemCount: ordersLists.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 5,
-                          childAspectRatio: 1.65,
+              : Consumer(
+                  builder: (context, ref, child) {
+                    final adisyonNotifier = ref.watch(
+                      adisyonNotifierProvider.notifier,
+                    );
+                    return RefreshIndicator.adaptive(
+                      triggerMode: RefreshIndicatorTriggerMode.anywhere,
+                      onRefresh: _refreshlist,
+                      child: GridView.builder(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 15,
+                          horizontal: 15,
                         ),
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () => {
-                          Config.gotopage(
-                            context,
-                            Adisyon(
-                              masaid: ordersLists[index].id!,
-                              masaadi: ordersLists[index].adi.toString(),
+                        itemCount: ordersLists.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 5,
+                              mainAxisSpacing: 5,
+                              childAspectRatio: 1.65,
                             ),
-                            "",
-                            "Ana Menü",
-                          ),
-                        },
-                        child: FadedScaleAnimation(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 20,
-                            ),
-                            height: 90,
-                            decoration: BoxDecoration(
-                              color: ordersLists[index].masaAcik == true
-                                  ? ordersLists[index].adisyonYazildi == true
-                                        ? Colors.orange[400]
-                                        : Colors.red[400]
-                                  : const Color.fromARGB(81, 10, 103, 13),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
+                        itemBuilder: (context, index) {
+                          final table = ordersLists[index];
+                          return GestureDetector(
+                            onTap: () async {
+                              if (table.kisiSayisi == null ||
+                                  table.kisiSayisi == 0) {
+                                _showPersonCountDialog(context, table);
+                              } else {
+                                adisyonNotifier.setPersonCount(
+                                  table.kisiSayisi!,
+                                );
+                                Config.gotopage(
+                                  context,
+                                  Adisyon(
+                                    masaid: table.id!,
+                                    masaadi: table.adi.toString(),
+                                  ),
+                                  "",
+                                  "Ana Menü",
+                                );
+                              }
+                            },
+                            child: FadedScaleAnimation(
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(
+                                    color: ordersLists[index].masaAcik == true
+                                        ? ordersLists[index].adisyonYazildi ==
+                                                  true
+                                              ? Colors.orange
+                                              : Colors.red
+                                        : Colors.green,
+                                    width: 2,
+                                  ),
+                                ),
                                 color: ordersLists[index].masaAcik == true
                                     ? ordersLists[index].adisyonYazildi == true
-                                          ? Colors.orange
-                                          : Colors.red
-                                    : Colors.green,
-                                width: 2,
+                                          ? Colors.orange[400]
+                                          : Colors.red[400]
+                                    : const Color.fromARGB(81, 10, 103, 13),
+                                elevation: 5,
+                                // decoration: BoxDecoration(
+                                //   color: ordersLists[index].masaAcik == true
+                                //       ? ordersLists[index].adisyonYazildi == true
+                                //             ? Colors.orange[400]
+                                //             : Colors.red[400]
+                                //       : const Color.fromARGB(81, 10, 103, 13),
+                                //   borderRadius: BorderRadius.circular(10),
+                                //   border: Border.all(
+                                //     color: ordersLists[index].masaAcik == true
+                                //         ? ordersLists[index].adisyonYazildi == true
+                                //               ? Colors.orange
+                                //               : Colors.red
+                                //         : Colors.green,
+                                //     width: 2,
+                                //   ),
+                                // ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 20,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        ordersLists[index].adi.toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium!
+                                            .copyWith(
+                                              color:
+                                                  ordersLists[index]
+                                                          .adisyonYazildi ==
+                                                      true
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                      ),
+                                      Text(
+                                        ordersLists[index].masaAcik == true
+                                            ? '${Utils.format.format(ordersLists[index].sureDk)} Dk'
+                                            : 'Kapalı',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              fontSize: 12,
+                                              color: AppColors.whiteColor,
+                                            ),
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.end,
+                                      ),
+                                      Text(
+                                        ordersLists[index].sonUrun != null
+                                            ? '₺${Utils.format.format(ordersLists[index].toplam)}'
+                                            : "",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium!
+                                            .copyWith(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                              color: const Color.fromARGB(
+                                                255,
+                                                255,
+                                                255,
+                                                255,
+                                              ),
+                                            ),
+                                      ),
+                                      const Spacer(),
+                                      // ListTile(
+                                      //   onTap: (){},
+                                      //   contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                                      //   title: Text('Table 1'), trailing: Text('1:33'),),
+                                      Text(
+                                        ordersLists[index].masaAcik == true
+                                            ? '${ordersLists[index].acanGarson}'
+                                            : 'Kapalı',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              fontSize: 12,
+                                              color: AppColors.whiteColor,
+                                            ),
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.end,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  ordersLists[index].adi.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(
-                                        color:
-                                            ordersLists[index].adisyonYazildi ==
-                                                true
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                ),
-                                Text(
-                                  ordersLists[index].masaAcik == true
-                                      ? '${Utils.format.format(ordersLists[index].sureDk)} Dk'
-                                      : 'Kapalı',
-                                  style: Theme.of(context).textTheme.bodyMedium!
-                                      .copyWith(
-                                        fontSize: 12,
-                                        color: AppColors.whiteColor,
-                                      ),
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.end,
-                                ),
-                                Text(
-                                  ordersLists[index].sonUrun != null
-                                      ? '₺${Utils.format.format(ordersLists[index].toplam)}'
-                                      : "",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                        color: const Color.fromARGB(
-                                          255,
-                                          255,
-                                          255,
-                                          255,
-                                        ),
-                                      ),
-                                ),
-                                const Spacer(),
-                                // ListTile(
-                                //   onTap: (){},
-                                //   contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                                //   title: Text('Table 1'), trailing: Text('1:33'),),
-                                Text(
-                                  ordersLists[index].masaAcik == true
-                                      ? '${ordersLists[index].acanGarson}'
-                                      : 'Kapalı',
-                                  style: Theme.of(context).textTheme.bodyMedium!
-                                      .copyWith(
-                                        fontSize: 12,
-                                        color: AppColors.whiteColor,
-                                      ),
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.end,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
         ),
       ),
@@ -914,6 +959,518 @@ class TableSelectionPageState extends State<TableSelectionPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showPersonCountDialog(BuildContext context, TableItemModel table) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.grey[100]!, Colors.white, Colors.grey[50]!],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                  spreadRadius: 0,
+                ),
+                BoxShadow(
+                  color: AppColors.buttonColor.withOpacity(0.05),
+                  blurRadius: 25,
+                  offset: const Offset(0, 12),
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: Consumer(
+              builder: (context, ref, child) {
+                final personCount = ref
+                    .watch(adisyonNotifierProvider)
+                    .personCount;
+                final adisyonNotifier = ref.watch(
+                  adisyonNotifierProvider.notifier,
+                );
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Top decorative element
+                    Container(
+                      height: 6,
+                      width: 60,
+                      margin: const EdgeInsets.only(top: 16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.buttonColor.withOpacity(0.3),
+                            AppColors.buttonColor,
+                            AppColors.buttonColor.withOpacity(0.3),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          // Header with enhanced design
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  AppColors.buttonColor.withOpacity(0.06),
+                                  AppColors.buttonColor.withOpacity(0.08),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: AppColors.buttonColor.withOpacity(0.15),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        AppColors.buttonColor,
+                                        AppColors.buttonColor.withOpacity(0.8),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.buttonColor
+                                            .withOpacity(0.25),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.people_alt_rounded,
+                                    color: Colors.white,
+                                    size: 22,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Kişi Sayısı Seçin',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.buttonColor,
+                                          letterSpacing: 0.3,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.buttonColor
+                                              .withOpacity(0.08),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Masa: ${table.adi}',
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: AppColors.buttonColor
+                                                .withOpacity(0.7),
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 28),
+
+                          // Enhanced person count selector
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 24,
+                              horizontal: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.grey[100]!,
+                                  Colors.white,
+                                  Colors.grey[50]!,
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: AppColors.buttonColor.withOpacity(0.12),
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.buttonColor.withOpacity(
+                                    0.08,
+                                  ),
+                                  blurRadius: 15,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                // Decrease button with enhanced design
+                                GestureDetector(
+                                  onTap: () {
+                                    if (personCount > 1) {
+                                      adisyonNotifier.removePersonCount();
+                                    }
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 250),
+                                    curve: Curves.easeInOut,
+                                    width: 52,
+                                    height: 52,
+                                    decoration: BoxDecoration(
+                                      gradient: personCount > 1
+                                          ? LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                AppColors.buttonColor,
+                                                AppColors.buttonColor
+                                                    .withOpacity(0.8),
+                                              ],
+                                            )
+                                          : LinearGradient(
+                                              colors: [
+                                                Colors.grey[300]!,
+                                                Colors.grey[400]!,
+                                              ],
+                                            ),
+                                      borderRadius: BorderRadius.circular(26),
+                                      boxShadow: personCount > 1
+                                          ? [
+                                              BoxShadow(
+                                                color: AppColors.buttonColor
+                                                    .withOpacity(0.3),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ]
+                                          : null,
+                                    ),
+                                    child: Icon(
+                                      Icons.remove_rounded,
+                                      color: personCount > 1
+                                          ? Colors.white
+                                          : Colors.grey[500],
+                                      size: 24,
+                                    ),
+                                  ),
+                                ),
+
+                                // Enhanced person count display
+                                Container(
+                                  width: 80,
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        AppColors.buttonColor.withOpacity(0.08),
+                                        AppColors.buttonColor.withOpacity(0.04),
+                                        AppColors.buttonColor.withOpacity(0.12),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(40),
+                                    border: Border.all(
+                                      color: AppColors.buttonColor.withOpacity(
+                                        0.6,
+                                      ),
+                                      width: 2.5,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.buttonColor
+                                            .withOpacity(0.2),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 6),
+                                      ),
+                                      BoxShadow(
+                                        color: Colors.white,
+                                        blurRadius: 6,
+                                        offset: const Offset(0, -2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        AnimatedDefaultTextStyle(
+                                          duration: const Duration(
+                                            milliseconds: 250,
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.buttonColor,
+                                            letterSpacing: 0.8,
+                                          ),
+                                          child: Text('$personCount'),
+                                        ),
+                                        const SizedBox(height: 1),
+                                        Text(
+                                          'Kişi',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.buttonColor
+                                                .withOpacity(0.7),
+                                            letterSpacing: 0.3,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                // Increase button with enhanced design
+                                GestureDetector(
+                                  onTap: () {
+                                    if (personCount < 10) {
+                                      adisyonNotifier.addPersonCount();
+                                    }
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 250),
+                                    curve: Curves.easeInOut,
+                                    width: 52,
+                                    height: 52,
+                                    decoration: BoxDecoration(
+                                      gradient: personCount < 10
+                                          ? LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                AppColors.buttonColor,
+                                                AppColors.buttonColor
+                                                    .withOpacity(0.8),
+                                              ],
+                                            )
+                                          : LinearGradient(
+                                              colors: [
+                                                Colors.grey[300]!,
+                                                Colors.grey[400]!,
+                                              ],
+                                            ),
+                                      borderRadius: BorderRadius.circular(26),
+                                      boxShadow: personCount < 10
+                                          ? [
+                                              BoxShadow(
+                                                color: AppColors.buttonColor
+                                                    .withOpacity(0.3),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ]
+                                          : null,
+                                    ),
+                                    child: Icon(
+                                      Icons.add_rounded,
+                                      color: personCount < 10
+                                          ? Colors.white
+                                          : Colors.grey[500],
+                                      size: 24,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 32),
+
+                          // Enhanced action buttons
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.grey[200]!,
+                                        Colors.grey[100]!,
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(
+                                      color: Colors.grey[300]!,
+                                      width: 1,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.15),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      adisyonNotifier.setPersonCount(1);
+                                    },
+                                    style: TextButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.close_rounded,
+                                          color: Colors.grey[600],
+                                          size: 18,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          'İptal',
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 0.3,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Container(
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        AppColors.buttonColor,
+                                        AppColors.buttonColor.withOpacity(0.85),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(14),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.buttonColor
+                                            .withOpacity(0.3),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      Config.gotopage(
+                                        context,
+                                        Adisyon(
+                                          masaid: table.id!,
+                                          masaadi: table.adi.toString(),
+                                        ),
+                                        "",
+                                        "Ana Menü",
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.arrow_forward_rounded,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        const Text(
+                                          'Devam Et',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                            letterSpacing: 0.3,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }

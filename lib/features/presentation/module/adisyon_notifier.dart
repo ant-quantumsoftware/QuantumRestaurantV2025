@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quantum_restaurant/core/usecase/result.dart';
 
-  import '../../data/models/dataGet/card_item_model.dart';
+import '../../data/models/dataGet/card_item_model.dart';
 import '../../data/models/dataGet/food_item_model.dart';
 import '../../data/models/dataPost/adisyon_model.dart';
 import '../../domain/usecase/bill/add_favorite_item_usecase.dart';
 import '../../domain/usecase/bill/get_favorite_items_usecase.dart';
 import '../../domain/usecase/bill/remove_favorite_item_usecase.dart';
-import 'adisyon_state.dart';  
+import 'adisyon_state.dart';
 
 final adisyonNotifierProvider =
     StateNotifierProvider<AdisyonNotifier, AdisyonState>((ref) {
@@ -66,6 +66,18 @@ class AdisyonNotifier extends StateNotifier<AdisyonState> {
     }
     state = state.copyWith(isLoading: false);
     return success;
+  }
+
+  void addPersonCount() {
+    state = state.copyWith(personCount: state.personCount + 1);
+  }
+
+  void removePersonCount() {
+    state = state.copyWith(personCount: state.personCount - 1);
+  }
+
+  void setPersonCount(int count) {
+    state = state.copyWith(personCount: count);
   }
 
   void clearState() {

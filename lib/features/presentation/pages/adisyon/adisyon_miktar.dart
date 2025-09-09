@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinbox/cupertino.dart';
 
+import '../../../data/models/dataGet/table_item_model.dart';
 import '../../components/cuper_form_2.dart';
 import '../../components/input2.dart';
 import '../../components/tablo_satir.dart';
@@ -119,7 +120,7 @@ class _AdsMiktarState extends ConsumerState<AdsMiktar> {
   Future<void> _submitForm() async {
     if (_isSubmitting) return;
     if (!_validateForm()) return;
-
+    final personCount = ref.read(adisyonNotifierProvider).personCount;
     setState(() {
       _isSubmitting = true;
     });
@@ -132,7 +133,7 @@ class _AdsMiktarState extends ConsumerState<AdsMiktar> {
         // Yeni ekleme işlemi
         final model = AdisyonModel(
           id: 0,
-          kisisayisi: 1,
+          kisisayisi: personCount,
           miktar: _activeAmount,
           malzemeid: widget.urunid,
           fiyatd: 0,
@@ -184,9 +185,10 @@ class _AdsMiktarState extends ConsumerState<AdsMiktar> {
 
   Future<void> _updateOrder() async {
     // Güncelleme için AdisyonModel oluştur
+    final personCount = ref.read(adisyonNotifierProvider).personCount;
     final model = AdisyonModel(
       id: widget.urunid, // Güncellenecek siparişin ID'si
-      kisisayisi: 1,
+      kisisayisi: personCount,
       miktar: _activeAmount,
       malzemeid: widget.urunid,
       fiyatd: 0,
