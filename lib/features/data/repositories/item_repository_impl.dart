@@ -15,7 +15,7 @@ class ItemRepositoryImpl implements ItemRepository {
       var body = jsonDecode(sonuc) as List;
       return Success(body.map((e) => FoodItemModel.fromJson(e)).toList());
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 
@@ -30,7 +30,7 @@ class ItemRepositoryImpl implements ItemRepository {
       var body = jsonDecode(sonuc) as List;
       return Success(body.map((e) => FoodItemModel.fromJson(e)).toList());
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 
@@ -41,7 +41,7 @@ class ItemRepositoryImpl implements ItemRepository {
       var body = jsonDecode(sonuc) as List;
       return Success(body.map((e) => FoodItemModel.fromJson(e)).toList());
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

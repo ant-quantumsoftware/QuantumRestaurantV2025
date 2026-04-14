@@ -8,6 +8,7 @@ class AdisyonState {
 
   final bool? isSuccess;
   final bool? isLoading;
+  final String? errorMessage;
 
   AdisyonState({
     this.adisyonList,
@@ -15,6 +16,7 @@ class AdisyonState {
     this.personCount = 1,
     this.isSuccess,
     this.isLoading,
+    this.errorMessage,
   });
 
   //copyWith
@@ -24,6 +26,7 @@ class AdisyonState {
     int? personCount,
     bool? isSuccess,
     bool? isLoading,
+    String? Function()? errorMessage,
   }) {
     return AdisyonState(
       adisyonList: adisyonList ?? this.adisyonList,
@@ -31,6 +34,7 @@ class AdisyonState {
       personCount: personCount ?? this.personCount,
       isSuccess: isSuccess ?? this.isSuccess,
       isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
     );
   }
 }

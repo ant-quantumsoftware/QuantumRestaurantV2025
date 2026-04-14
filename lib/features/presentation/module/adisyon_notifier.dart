@@ -97,7 +97,14 @@ class AdisyonNotifier extends StateNotifier<AdisyonState> {
 
   Future<void> getFavoriteItems() async {
     final result = await _getFavoriteItemsUsecase.call(null);
-    state = state.copyWith(favoriteItems: result.data);
+
+    result.when(
+      success: (data) {
+        state = state.copyWith(favoriteItems: data);
+      },
+      failure: (error) =>
+          state = state.copyWith(errorMessage: () => error.message),
+    );
   }
 
   Future<void> addFavoriteItem(FoodItemModel item) async {

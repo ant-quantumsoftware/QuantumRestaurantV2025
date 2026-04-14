@@ -14,7 +14,7 @@ class TableRepositoryImpl implements TableRepository {
       var body = jsonDecode(sonuc) as List;
       return Success(body.map((e) => TableItemModel.fromJson(e)).toList());
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 
@@ -27,7 +27,7 @@ class TableRepositoryImpl implements TableRepository {
       var body = jsonDecode(sonuc) as List;
       return Success(body.map((e) => TableItemModel.fromJson(e)).toList());
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 
@@ -44,7 +44,7 @@ class TableRepositoryImpl implements TableRepository {
       var body = jsonDecode(sonuc) as List;
       return Success(body.map((e) => TableItemModel.fromJson(e)).toList());
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 
@@ -57,7 +57,7 @@ class TableRepositoryImpl implements TableRepository {
       var body = jsonDecode(sonuc) as List;
       return Success(body.map((e) => TableItemGroup.fromJson(e)).toList());
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

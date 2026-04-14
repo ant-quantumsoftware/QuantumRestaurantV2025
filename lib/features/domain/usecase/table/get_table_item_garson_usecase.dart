@@ -23,7 +23,7 @@ class GetTableItemGarsonUsecase
       final result = await _tableRepository.getTableItemGarson(params);
       return result;
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

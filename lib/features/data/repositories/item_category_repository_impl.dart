@@ -13,7 +13,7 @@ class ItemCategoryRepositoryImpl implements ItemCategoryRepository {
       var body = jsonDecode(sonuc) as List;
       return Success(body.map((e) => FoodCategoriModel.fromJson(e)).toList());
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 
@@ -26,7 +26,7 @@ class ItemCategoryRepositoryImpl implements ItemCategoryRepository {
       var body = jsonDecode(sonuc) as List;
       return Success(body.map((e) => FoodCategoriModel.fromJson(e)).toList());
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

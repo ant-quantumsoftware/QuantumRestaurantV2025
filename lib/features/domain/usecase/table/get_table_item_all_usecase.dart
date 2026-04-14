@@ -21,7 +21,7 @@ class GetTableItemAllUsecase
       final result = await _tableRepository.getTableItemAll();
       return result;
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

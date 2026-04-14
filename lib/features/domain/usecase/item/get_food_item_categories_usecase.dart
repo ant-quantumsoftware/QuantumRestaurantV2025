@@ -22,7 +22,7 @@ class GetFoodItemCategoriesUsecase
       final result = await _itemRepository.getFoodItemCategories(params);
       return result;
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

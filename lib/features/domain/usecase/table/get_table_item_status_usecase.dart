@@ -23,7 +23,7 @@ class GetTableItemStatusUsecase
       final result = await _tableRepository.getTableItemStatus(params);
       return result;
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

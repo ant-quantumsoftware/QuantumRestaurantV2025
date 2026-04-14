@@ -23,7 +23,7 @@ class GetFoodItemGetirIdUsecase
       final result = await _itemRepository.getFoodItemGetirId(params);
       return result;
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

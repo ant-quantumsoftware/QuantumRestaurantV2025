@@ -23,7 +23,7 @@ class GetCardItemGetirIdUsecase
       final result = await _orderRepository.getCardItemGetirId(params);
       return result;
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

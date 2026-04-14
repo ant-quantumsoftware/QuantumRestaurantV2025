@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:quantum_restaurant/core/usecase/result.dart';
-
 import 'package:quantum_restaurant/features/data/models/dataGet/card_item_model.dart';
 
 import '../../domain/repositories/order_repository.dart';
@@ -15,7 +14,7 @@ class OrderRepositoryImpl implements OrderRepository {
       var body = jsonDecode(sonuc) as List;
       return Success(body.map((e) => CardItemModel.fromJson(e)).toList());
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 
@@ -26,7 +25,7 @@ class OrderRepositoryImpl implements OrderRepository {
       var body = jsonDecode(sonuc) as List;
       return Success(body.map((e) => CardItemModel.fromJson(e)).toList());
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

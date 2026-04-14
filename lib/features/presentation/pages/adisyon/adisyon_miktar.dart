@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinbox/cupertino.dart';
 
-import '../../../data/models/dataGet/table_item_model.dart';
 import '../../components/cuper_form_2.dart';
 import '../../components/input2.dart';
 import '../../components/tablo_satir.dart';

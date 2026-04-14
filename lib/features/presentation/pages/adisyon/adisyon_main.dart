@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../components/arama_kutusu.dart';
-import '../../components/cuper_alert.dart';
-import '../../components/cuper_form_2.dart';
-import '../../components/liste_menu.dart';
 import '../../../../core/config/config.dart';
 import '../../../../core/config/settings.dart';
-import '../../../data/models/food_item_info.dart';
 import '../../../data/models/dataGet/card_item_model.dart';
 import '../../../data/models/dataGet/food_categori_model.dart';
 import '../../../data/models/dataGet/food_item_model.dart';
 import '../../../data/models/dataPost/adisyon_model.dart';
+import '../../../data/models/food_item_info.dart';
+import '../../components/arama_kutusu.dart';
+import '../../components/cuper_alert.dart';
+import '../../components/cuper_form_2.dart';
+import '../../components/liste_menu.dart';
 import '../../module/adisyon_notifier.dart';
 import '../dialog_aciklama_siparis.dart';
 import 'adisyon_miktar.dart';
@@ -178,15 +178,13 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                               children: [
                                 Icon(
                                   CupertinoIcons.back,
-                                  color: Color.fromARGB(255, 92, 20, 150),
+                                  color: Colors.white60,
                                   size: 28,
                                 ),
                                 Expanded(
                                   child: Text(
                                     "Masalara Dön",
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 92, 20, 150),
-                                    ),
+                                    style: TextStyle(color: Colors.white60),
                                   ),
                                 ),
                               ],

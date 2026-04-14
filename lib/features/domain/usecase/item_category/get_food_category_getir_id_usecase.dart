@@ -26,7 +26,7 @@ class GetFoodCategoryGetirIdUsecase
       );
       return result;
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

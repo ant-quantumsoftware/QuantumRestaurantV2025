@@ -23,7 +23,7 @@ class GetFavoriteItemsUsecase
       final result = await _billRepository.getFavoriteItems();
       return Success(result);
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

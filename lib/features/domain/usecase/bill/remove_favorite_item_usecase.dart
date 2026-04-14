@@ -22,7 +22,7 @@ class RemoveFavoriteItemUsecase extends UseCase<Result<void>, FoodItemModel> {
       await _billRepository.removeFavoriteItem(params);
       return const Success(null);
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

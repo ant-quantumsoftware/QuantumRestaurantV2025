@@ -20,7 +20,7 @@ class GetCardItemAllUsecase extends UseCase<Result<List<CardItemModel>>, void> {
       final result = await _orderRepository.getCardItemAll();
       return result;
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

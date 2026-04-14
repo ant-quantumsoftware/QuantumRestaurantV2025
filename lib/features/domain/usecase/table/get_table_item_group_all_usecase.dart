@@ -22,7 +22,7 @@ class GetTableItemGroupAllUsecase
       final result = await _tableRepository.getTableItemGroupAll();
       return result;
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }

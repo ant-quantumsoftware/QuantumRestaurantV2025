@@ -20,7 +20,7 @@ class GetFoodItemAllUsecase extends UseCase<Result<List<FoodItemModel>>, void> {
       final result = await _itemRepository.getFoodItemAll();
       return result;
     } catch (e) {
-      return Failure(e.toString());
+      return Failure(message: e.toString());
     }
   }
 }
