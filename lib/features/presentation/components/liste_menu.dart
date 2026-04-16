@@ -30,7 +30,14 @@ class ListeMenu extends StatelessWidget {
     return GestureDetector(
       onLongPress: onlongpress,
       child: Container(
-        color: selectedcolor,
+        decoration: BoxDecoration(
+          color: selectedcolor,
+          borderRadius: BorderRadius.circular(6.0),
+          border: Border.all(
+            color: aktif ? Colors.transparent : Colors.grey,
+            width: 1.0,
+          ),
+        ),
         child: Column(
           children: [
             CupertinoListTile(

@@ -65,6 +65,10 @@ class TableSelectionPageState extends State<TableSelectionPage> {
   String? garsonadi;
 
   int selectedPersonCount = 1;
+  bool itemSelected = false;
+  int drawerCount = 0;
+  int currentIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -123,6 +127,43 @@ class TableSelectionPageState extends State<TableSelectionPage> {
           break;
         }
     }
+
+    // TEST: 3 örnek masa — tüm renk durumlarını görmek için
+    cartItems.addAll([
+      TableItemModel(
+        id: -1,
+        adi: 'Test Kapalı',
+        masaAcik: false,
+        adisyonYazildi: false,
+        acanGarson: null,
+        sureDk: 0,
+        sonUrun: null,
+        toplam: 0,
+        grupadi: '',
+      ),
+      TableItemModel(
+        id: -2,
+        adi: 'Test Açık',
+        masaAcik: true,
+        adisyonYazildi: false,
+        acanGarson: 'Ahmet',
+        sureDk: 45,
+        sonUrun: 'Çay',
+        toplam: 120.50,
+        grupadi: '',
+      ),
+      TableItemModel(
+        id: -3,
+        adi: 'Test Adisyon',
+        masaAcik: true,
+        adisyonYazildi: true,
+        acanGarson: 'Mehmet',
+        sureDk: 90,
+        sonUrun: 'Kebap',
+        toplam: 850.00,
+        grupadi: '',
+      ),
+    ]);
 
     setState(() {
       ordersList = cartItems;
@@ -230,7 +271,7 @@ class TableSelectionPageState extends State<TableSelectionPage> {
           child: Image.asset("assets/logo.png"),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-        drawer: builddrawer(context),
+        drawer: _buildDrawer(context),
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             CupertinoSliverNavigationBar(
@@ -315,123 +356,7 @@ class TableSelectionPageState extends State<TableSelectionPage> {
                                 );
                               }
                             },
-                            child: FadedScaleAnimation(
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  side: BorderSide(
-                                    color: ordersLists[index].masaAcik == true
-                                        ? ordersLists[index].adisyonYazildi ==
-                                                  true
-                                              ? Colors.orange
-                                              : Colors.red
-                                        : Colors.green,
-                                    width: 2,
-                                  ),
-                                ),
-                                color: ordersLists[index].masaAcik == true
-                                    ? ordersLists[index].adisyonYazildi == true
-                                          ? Colors.orange[400]
-                                          : Colors.red[400]
-                                    : const Color.fromARGB(81, 10, 103, 13),
-                                elevation: 5,
-                                // decoration: BoxDecoration(
-                                //   color: ordersLists[index].masaAcik == true
-                                //       ? ordersLists[index].adisyonYazildi == true
-                                //             ? Colors.orange[400]
-                                //             : Colors.red[400]
-                                //       : const Color.fromARGB(81, 10, 103, 13),
-                                //   borderRadius: BorderRadius.circular(10),
-                                //   border: Border.all(
-                                //     color: ordersLists[index].masaAcik == true
-                                //         ? ordersLists[index].adisyonYazildi == true
-                                //               ? Colors.orange
-                                //               : Colors.red
-                                //         : Colors.green,
-                                //     width: 2,
-                                //   ),
-                                // ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 20,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        ordersLists[index].adi.toString(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium!
-                                            .copyWith(
-                                              color:
-                                                  ordersLists[index]
-                                                          .adisyonYazildi ==
-                                                      true
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                      ),
-                                      Text(
-                                        ordersLists[index].masaAcik == true
-                                            ? '${Utils.format.format(ordersLists[index].sureDk)} Dk'
-                                            : 'Kapalı',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                              fontSize: 12,
-                                              color: AppColors.whiteColor,
-                                            ),
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.end,
-                                      ),
-                                      Text(
-                                        ordersLists[index].sonUrun != null
-                                            ? '₺${Utils.format.format(ordersLists[index].toplam)}'
-                                            : "",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleMedium!
-                                            .copyWith(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w700,
-                                              color: const Color.fromARGB(
-                                                255,
-                                                255,
-                                                255,
-                                                255,
-                                              ),
-                                            ),
-                                      ),
-                                      const Spacer(),
-                                      // ListTile(
-                                      //   onTap: (){},
-                                      //   contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-                                      //   title: Text('Table 1'), trailing: Text('1:33'),),
-                                      Text(
-                                        ordersLists[index].masaAcik == true
-                                            ? '${ordersLists[index].acanGarson}'
-                                            : 'Kapalı',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                              fontSize: 12,
-                                              color: AppColors.whiteColor,
-                                            ),
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.end,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
+                            child: _buildTableCard(table),
                           );
                         },
                       ),
@@ -443,234 +368,193 @@ class TableSelectionPageState extends State<TableSelectionPage> {
     );
   }
 
-  // @override
-  // Widget build2(BuildContext context) {
-  //   var locale = AppLocalizations.of(context)!;
-  //   final arguments =
-  //       (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{})
-  //           as Map;
-  //   garsonId = 0;
-
-  //   garsonId = arguments['garsonId'];
-  //   garsonadi = arguments['garsonadi'];
-
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       backgroundColor: Theme.of(context).colorScheme.surface,
-  //       automaticallyImplyLeading: false,
-  //       title: GestureDetector(
-  //         onDoubleTap: () {},
-  //         child: FadedScaleAnimation(
-  //           child: RichText(
-  //             text: TextSpan(
-  //               children: <TextSpan>[
-  //                 TextSpan(
-  //                   text: 'Quantum',
-  //                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-  //                     letterSpacing: 1,
-  //                     fontWeight: FontWeight.bold,
-  //                     fontSize: 12,
-  //                   ),
-  //                 ),
-  //                 TextSpan(
-  //                   text: 'Restaurant',
-  //                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-  //                     color: const Color.fromARGB(255, 213, 233, 250),
-  //                     letterSpacing: 0,
-  //                     fontWeight: FontWeight.bold,
-  //                     fontSize: 11,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       actions: [
-  //         //masadurumuDropdown(context),
-  //         buildItemsmasagruplari(context),
-  //         buildItemsInGarson(context),
-
-  //         Container(
-  //           width: 150,
-  //           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-  //           child: TextFormField(
-  //             textAlignVertical: TextAlignVertical.center,
-  //             decoration: InputDecoration(
-  //               prefixIconColor: const Color(0x917a7b82),
-  //               prefixIcon: const Icon(Icons.search),
-  //               hintText: locale.searchItem,
-  //               contentPadding: const EdgeInsets.symmetric(vertical: 0),
-  //               filled: true,
-  //               hintStyle: Theme.of(
-  //                 context,
-  //               ).textTheme.bodyLarge?.copyWith(color: const Color(0x917a7b82)),
-  //               fillColor: Theme.of(context).scaffoldBackgroundColor,
-  //               border: OutlineInputBorder(
-  //                 borderSide: BorderSide.none,
-  //                 borderRadius: BorderRadius.circular(40),
-  //               ),
-  //             ),
-  //             onFieldSubmitted: (value) {
-  //               setState(() {
-  //                 seciliAramaTxt = value;
-  //                 searchFunc(value, seciliMasaGrubu);
-  //               });
-  //             },
-  //           ),
-  //         ),
-
-  //         //buildItemsInCartButton(context) // Butonu Ayarla
-  //       ],
-  //     ),
-  //     body:
-  //         (login)
-  //             ? const Center(child: CupertinoActivityIndicator(radius: 10.0))
-  //             : RefreshIndicator(
-  //               edgeOffset: 0,
-  //               color: Colors.white,
-  //               backgroundColor: const Color.fromARGB(255, 6, 174, 204),
-  //               triggerMode: RefreshIndicatorTriggerMode.anywhere,
-  //               onRefresh: _refreshlist,
-  //               child: GridView.builder(
-  //                 padding: const EdgeInsets.symmetric(
-  //                   vertical: 15,
-  //                   horizontal: 15,
-  //                 ),
-  //                 itemCount: ordersLists.length,
-  //                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  //                   crossAxisCount: 2,
-  //                   crossAxisSpacing: 5,
-  //                   mainAxisSpacing: 5,
-  //                   childAspectRatio: 1.8,
-  //                 ),
-  //                 itemBuilder: (context, index) {
-  //                   return GestureDetector(
-  //                     onTap:
-  //                         () => Navigator.pushNamed(
-  //                           context,
-  //                           PageRoutes.adisyonpage,
-  //                           arguments: {
-  //                             'masaid': ordersLists[index].id,
-  //                             'masaadi': ordersLists[index].adi,
-  //                           },
-  //                         ),
-  //                     child: FadedScaleAnimation(
-  //                       child: Container(
-  //                         padding: const EdgeInsets.symmetric(
-  //                           vertical: 10,
-  //                           horizontal: 20,
-  //                         ),
-  //                         height: 90,
-  //                         decoration: BoxDecoration(
-  //                           color:
-  //                               ordersLists[index].masaAcik == true
-  //                                   ? ordersLists[index].adisyonYazildi == true
-  //                                       ? Colors.orange[400]
-  //                                       : Colors.red[400]
-  //                                   : Colors.green[200],
-  //                           borderRadius: BorderRadius.circular(10),
-  //                           border: Border.all(
-  //                             color:
-  //                                 ordersLists[index].masaAcik == true
-  //                                     ? ordersLists[index].adisyonYazildi ==
-  //                                             true
-  //                                         ? Colors.orange
-  //                                         : Colors.red
-  //                                     : Colors.green,
-  //                             width: 2,
-  //                           ),
-  //                         ),
-  //                         child: Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           children: [
-  //                             Row(
-  //                               children: [
-  //                                 Text(
-  //                                   ordersLists[index].adi.toString(),
-  //                                   style: Theme.of(
-  //                                     context,
-  //                                   ).textTheme.titleMedium!.copyWith(
-  //                                     color:
-  //                                         ordersLists[index].adisyonYazildi ==
-  //                                                 true
-  //                                             ? Colors.white
-  //                                             : Colors.black,
-  //                                     fontSize: 18,
-  //                                     fontWeight: FontWeight.w700,
-  //                                   ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                             Row(
-  //                               children: [
-  //                                 Text(
-  //                                   ordersLists[index].masaAcik == true
-  //                                       ? '${Utils.format.format(ordersLists[index].sureDk)} Dk'
-  //                                       : 'Kapalı',
-  //                                   style: Theme.of(
-  //                                     context,
-  //                                   ).textTheme.bodyMedium!.copyWith(
-  //                                     fontSize: 12,
-  //                                     color: whiteColor,
-  //                                   ),
-  //                                   overflow: TextOverflow.ellipsis,
-  //                                   textAlign: TextAlign.end,
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                             Text(
-  //                               ordersLists[index].sonUrun != null
-  //                                   ? 'Tutar: ${Utils.format.format(ordersLists[index].toplam)}'
-  //                                   : "",
-  //                               style: Theme.of(
-  //                                 context,
-  //                               ).textTheme.titleMedium!.copyWith(
-  //                                 fontSize: 12,
-  //                                 fontWeight: FontWeight.w700,
-  //                                 color: Colors.deepPurple,
-  //                               ),
-  //                             ),
-  //                             const Spacer(),
-  //                             // ListTile(
-  //                             //   onTap: (){},
-  //                             //   contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 8),
-  //                             //   title: Text('Table 1'), trailing: Text('1:33'),),
-  //                             Text(
-  //                               ordersLists[index].sonUrun != null
-  //                                   ? 'Son Sip: ${ordersLists[index].sonUrun!.substring(0, (ordersLists[index].sonUrun!.length > 18 ? 18 : ordersLists[index].sonUrun!.length))}'
-  //                                   : "",
-  //                               style: Theme.of(
-  //                                 context,
-  //                               ).textTheme.titleMedium!.copyWith(
-  //                                 fontSize: 8,
-  //                                 fontWeight: FontWeight.w700,
-  //                                 color: Colors.blue,
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   );
-  //                 },
-  //               ),
-  //             ),
-  //     bottomNavigationBar: altbar(context),
-  //   );
-  // }
-
-  bool itemSelected = false;
-  int drawerCount = 0;
-  int currentIndex = 0;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   Future<void> _refreshlist() {
     setState(() {
       verigetir();
     });
 
     return Future.delayed(const Duration(seconds: 0));
+  }
+
+  Widget _buildTableCard(TableItemModel table) {
+    final bool isOpen = table.masaAcik == true;
+    final bool isBillWritten = table.adisyonYazildi == true;
+
+    final List<Color> gradientColors = isOpen
+        ? isBillWritten
+              ? [const Color(0xFF5C3A10), const Color(0xFF7A5228)]
+              : [const Color(0xFF5A2020), const Color(0xFF7A3535)]
+        : [const Color(0xFF1E3A2A), const Color(0xFF2E5540)];
+
+    final Color accentColor = isOpen
+        ? isBillWritten
+              ? const Color(0xFFD4A96A)
+              : const Color(0xFFCC8080)
+        : const Color(0xFF6DAF8A);
+
+    return FadedScaleAnimation(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: gradientColors,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: gradientColors[0].withOpacity(0.45),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+          border: Border.all(color: Colors.white.withOpacity(0.12), width: 1),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(14),
+          child: Stack(
+            children: [
+              // Decorative circle overlay
+              Positioned(
+                top: -28,
+                right: -28,
+                child: Container(
+                  width: 90,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withOpacity(0.07),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: -20,
+                left: -20,
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withOpacity(0.04),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 12,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Top row: masa adı + durum badge
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            table.adi.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.2,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.18),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            isOpen
+                                ? (isBillWritten ? 'Adisyon' : 'Açık')
+                                : 'Kapalı',
+                            style: TextStyle(
+                              color: accentColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Container(height: 1, color: Colors.white.withOpacity(0.18)),
+                    const Spacer(),
+                    // Süre
+                    if (isOpen)
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.access_time_rounded,
+                            size: 11,
+                            color: Colors.white.withOpacity(0.8),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${Utils.format.format(table.sureDk)} Dk',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.white.withOpacity(0.9),
+                            ),
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: 4),
+                    // Alt satır: garson + toplam
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.person_rounded,
+                                size: 11,
+                                color: Colors.white.withOpacity(0.75),
+                              ),
+                              const SizedBox(width: 3),
+                              Expanded(
+                                child: Text(
+                                  isOpen ? '${table.acanGarson}' : 'Kapalı',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.white.withOpacity(0.85),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (table.sonUrun != null)
+                          Text(
+                            '₺${Utils.format.format(table.toplam)}',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   CustomButton buildItemsInGarson(BuildContext context) {
@@ -765,7 +649,7 @@ class TableSelectionPageState extends State<TableSelectionPage> {
     });
   }
 
-  Widget builddrawer(BuildContext context) {
+  Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: Scaffold(
         backgroundColor: Theme.of(context).splashColor,

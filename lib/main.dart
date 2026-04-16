@@ -4,11 +4,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'features/presentation/pages/login/login.dart';
-import 'features/data/models/dataGet/food_item_model.dart';
+
 import 'core/locale/language_cubit.dart';
 import 'core/locale/locales.dart';
 import 'core/routes/routes.dart';
+import 'features/data/models/dataGet/food_item_model.dart';
+import 'features/presentation/pages/login/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:grock/grock.dart';
 
 import '../../../../core/config/config.dart';
 import '../../../../core/config/settings.dart';
@@ -174,17 +175,20 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                               Navigator.pop(context);
                             },
                             minimumSize: Size(20, 20),
-                            child: const Row(
+                            child: Row(
                               children: [
                                 Icon(
                                   CupertinoIcons.back,
-                                  color: Colors.white60,
+                                  color: context.theme.hintColor,
                                   size: 28,
                                 ),
                                 Expanded(
                                   child: Text(
                                     "Masalara Dön",
-                                    style: TextStyle(color: Colors.white60),
+                                    style: TextStyle(
+                                      color: context.theme.hintColor,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -240,6 +244,7 @@ class _AdisyonState extends ConsumerState<Adisyon> {
   }
 
   Widget yenipage(BuildContext context) {
+    final darkMode = Theme.of(context).brightness == Brightness.dark;
     return FadeInUp(
       duration: const Duration(milliseconds: 250),
       child: Row(
@@ -279,12 +284,12 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
+                      color: context.theme.cardColor,
                       border: const Border(
                         right: BorderSide(color: Colors.grey, width: 3.0),
                       ),
                     ),
-                    child: ListView.separated(
+                    child: ListView.builder(
                       padding: EdgeInsets.zero,
                       itemBuilder: (context, index) {
                         return Slidable(
@@ -337,11 +342,14 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                             selectedcolor: (foodCategoriItems[index].selected!)
                                 ? const Color.fromARGB(160, 91, 20, 150)
                                 : Colors.transparent,
+                            divider: true,
                             baslik: Text(
                               foodCategoriItems[index].adi.toString(),
                               style: TextStyle(
                                 color: !(foodCategoriItems[index].selected!)
-                                    ? Colors.black
+                                    ? darkMode
+                                          ? Colors.white70
+                                          : Colors.black
                                     : Colors.white,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -350,9 +358,9 @@ class _AdisyonState extends ConsumerState<Adisyon> {
                           ),
                         );
                       },
-                      separatorBuilder: (context, index) {
-                        return const Divider(color: Colors.grey);
-                      },
+                      // separatorBuilder: (context, index) {
+                      //   return const Divider(color: Colors.grey);
+                      // },
                       itemCount: foodCategoriItems.length,
                     ),
                   ),
