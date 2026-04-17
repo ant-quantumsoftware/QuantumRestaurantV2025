@@ -9,7 +9,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../../core/config/config.dart';
 import '../../../../core/config/sabit_list.dart';
-import '../../../../core/theme/colors.dart';
 import '../../../../core/utils/utils.dart';
 import '../../../data/models/dataGet/table_item_group.dart';
 import '../../../data/models/dataGet/table_item_model.dart';
@@ -851,33 +850,34 @@ class TableSelectionPageState extends State<TableSelectionPage> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        final isDark = theme.brightness == Brightness.dark;
+        final dialogBackground = Color.lerp(
+          colorScheme.surface,
+          colorScheme.primary,
+          isDark ? 0.12 : 0.05,
+        )!;
+
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(18),
           ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
+          elevation: 4,
+          backgroundColor: dialogBackground,
           child: Container(
-            width: MediaQuery.of(context).size.width * 0.9,
+            constraints: const BoxConstraints(maxWidth: 360),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Colors.grey[100]!, Colors.white, Colors.grey[50]!],
+              borderRadius: BorderRadius.circular(18),
+              color: dialogBackground,
+              border: Border.all(
+                color: colorScheme.outline.withOpacity(isDark ? 0.35 : 0.2),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                  spreadRadius: 0,
-                ),
-                BoxShadow(
-                  color: AppColors.buttonColor.withOpacity(0.05),
-                  blurRadius: 25,
-                  offset: const Offset(0, 12),
-                  spreadRadius: 2,
+                  color: Colors.black.withOpacity(isDark ? 0.35 : 0.12),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
                 ),
               ],
             ),
@@ -892,156 +892,73 @@ class TableSelectionPageState extends State<TableSelectionPage> {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Top decorative element
-                    Container(
-                      height: 6,
-                      width: 60,
-                      margin: const EdgeInsets.only(top: 16),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.buttonColor.withOpacity(0.3),
-                            AppColors.buttonColor,
-                            AppColors.buttonColor.withOpacity(0.3),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                    ),
-
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
                       child: Column(
                         children: [
-                          // Header with enhanced design
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  AppColors.buttonColor.withOpacity(0.06),
-                                  AppColors.buttonColor.withOpacity(0.08),
-                                ],
+                          Row(
+                            children: [
+                              Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primary.withOpacity(0.12),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Icon(
+                                  Icons.people_alt_rounded,
+                                  size: 20,
+                                  color: colorScheme.primary,
+                                ),
                               ),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: AppColors.buttonColor.withOpacity(0.15),
-                                width: 1,
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        AppColors.buttonColor,
-                                        AppColors.buttonColor.withOpacity(0.8),
-                                      ],
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Kişi Sayısı',
+                                      style: theme.textTheme.titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                            color: colorScheme.onSurface,
+                                          ),
                                     ),
-                                    borderRadius: BorderRadius.circular(12),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColors.buttonColor
-                                            .withOpacity(0.25),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Icon(
-                                    Icons.people_alt_rounded,
-                                    color: Colors.white,
-                                    size: 22,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Kişi Sayısı Seçin',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.buttonColor,
-                                          letterSpacing: 0.3,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.buttonColor
-                                              .withOpacity(0.08),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          'Masa: ${table.adi}',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: AppColors.buttonColor
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      table.adi ?? '',
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                            color: colorScheme.onSurface
                                                 .withOpacity(0.7),
-                                            fontWeight: FontWeight.w500,
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-
-                          const SizedBox(height: 28),
-
-                          // Enhanced person count selector
+                          const SizedBox(height: 14),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              vertical: 24,
-                              horizontal: 16,
+                              vertical: 12,
+                              horizontal: 10,
                             ),
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.grey[100]!,
-                                  Colors.white,
-                                  Colors.grey[50]!,
-                                ],
+                              color: colorScheme.surface.withOpacity(
+                                isDark ? 0.28 : 0.55,
                               ),
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(14),
                               border: Border.all(
-                                color: AppColors.buttonColor.withOpacity(0.12),
-                                width: 1.5,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.buttonColor.withOpacity(
-                                    0.08,
-                                  ),
-                                  blurRadius: 15,
-                                  offset: const Offset(0, 6),
+                                color: colorScheme.outline.withOpacity(
+                                  isDark ? 0.3 : 0.2,
                                 ),
-                              ],
+                              ),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                // Decrease button with enhanced design
                                 GestureDetector(
                                   onTap: () {
                                     if (personCount > 1) {
@@ -1049,83 +966,45 @@ class TableSelectionPageState extends State<TableSelectionPage> {
                                     }
                                   },
                                   child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 250),
+                                    duration: const Duration(milliseconds: 180),
                                     curve: Curves.easeInOut,
-                                    width: 52,
-                                    height: 52,
+                                    width: 40,
+                                    height: 40,
                                     decoration: BoxDecoration(
-                                      gradient: personCount > 1
-                                          ? LinearGradient(
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
-                                              colors: [
-                                                AppColors.buttonColor,
-                                                AppColors.buttonColor
-                                                    .withOpacity(0.8),
-                                              ],
-                                            )
-                                          : LinearGradient(
-                                              colors: [
-                                                Colors.grey[300]!,
-                                                Colors.grey[400]!,
-                                              ],
-                                            ),
-                                      borderRadius: BorderRadius.circular(26),
-                                      boxShadow: personCount > 1
-                                          ? [
-                                              BoxShadow(
-                                                color: AppColors.buttonColor
-                                                    .withOpacity(0.3),
-                                                blurRadius: 8,
-                                                offset: const Offset(0, 4),
-                                              ),
-                                            ]
-                                          : null,
+                                      color: personCount > 1
+                                          ? colorScheme.primary
+                                          : colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: colorScheme.outline.withOpacity(
+                                          0.25,
+                                        ),
+                                      ),
                                     ),
                                     child: Icon(
                                       Icons.remove_rounded,
                                       color: personCount > 1
-                                          ? Colors.white
-                                          : Colors.grey[500],
-                                      size: 24,
+                                          ? colorScheme.onPrimary
+                                          : colorScheme.onSurface.withOpacity(
+                                              0.4,
+                                            ),
+                                      size: 20,
                                     ),
                                   ),
                                 ),
-
-                                // Enhanced person count display
                                 Container(
-                                  width: 80,
-                                  height: 80,
+                                  width: 74,
+                                  height: 64,
                                   decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        AppColors.buttonColor.withOpacity(0.08),
-                                        AppColors.buttonColor.withOpacity(0.04),
-                                        AppColors.buttonColor.withOpacity(0.12),
-                                      ],
+                                    color: colorScheme.primary.withOpacity(
+                                      isDark ? 0.22 : 0.1,
                                     ),
-                                    borderRadius: BorderRadius.circular(40),
+                                    borderRadius: BorderRadius.circular(14),
                                     border: Border.all(
-                                      color: AppColors.buttonColor.withOpacity(
-                                        0.6,
+                                      color: colorScheme.primary.withOpacity(
+                                        0.45,
                                       ),
-                                      width: 2.5,
                                     ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColors.buttonColor
-                                            .withOpacity(0.2),
-                                        blurRadius: 12,
-                                        offset: const Offset(0, 6),
-                                      ),
-                                      BoxShadow(
-                                        color: Colors.white,
-                                        blurRadius: 6,
-                                        offset: const Offset(0, -2),
-                                      ),
-                                    ],
                                   ),
                                   child: Center(
                                     child: Column(
@@ -1134,33 +1013,27 @@ class TableSelectionPageState extends State<TableSelectionPage> {
                                       children: [
                                         AnimatedDefaultTextStyle(
                                           duration: const Duration(
-                                            milliseconds: 250,
+                                            milliseconds: 180,
                                           ),
                                           style: TextStyle(
-                                            fontSize: 28,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.buttonColor,
-                                            letterSpacing: 0.8,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w700,
+                                            color: colorScheme.primary,
                                           ),
                                           child: Text('$personCount'),
                                         ),
-                                        const SizedBox(height: 1),
                                         Text(
                                           'Kişi',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.buttonColor
-                                                .withOpacity(0.7),
-                                            letterSpacing: 0.3,
-                                          ),
+                                          style: theme.textTheme.labelSmall
+                                              ?.copyWith(
+                                                color: colorScheme.onSurface
+                                                    .withOpacity(0.7),
+                                              ),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ),
-
-                                // Increase button with enhanced design
                                 GestureDetector(
                                   onTap: () {
                                     if (personCount < 10) {
@@ -1168,138 +1041,74 @@ class TableSelectionPageState extends State<TableSelectionPage> {
                                     }
                                   },
                                   child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 250),
+                                    duration: const Duration(milliseconds: 180),
                                     curve: Curves.easeInOut,
-                                    width: 52,
-                                    height: 52,
+                                    width: 40,
+                                    height: 40,
                                     decoration: BoxDecoration(
-                                      gradient: personCount < 10
-                                          ? LinearGradient(
-                                              begin: Alignment.topLeft,
-                                              end: Alignment.bottomRight,
-                                              colors: [
-                                                AppColors.buttonColor,
-                                                AppColors.buttonColor
-                                                    .withOpacity(0.8),
-                                              ],
-                                            )
-                                          : LinearGradient(
-                                              colors: [
-                                                Colors.grey[300]!,
-                                                Colors.grey[400]!,
-                                              ],
-                                            ),
-                                      borderRadius: BorderRadius.circular(26),
-                                      boxShadow: personCount < 10
-                                          ? [
-                                              BoxShadow(
-                                                color: AppColors.buttonColor
-                                                    .withOpacity(0.3),
-                                                blurRadius: 8,
-                                                offset: const Offset(0, 4),
-                                              ),
-                                            ]
-                                          : null,
+                                      color: personCount < 10
+                                          ? colorScheme.primary
+                                          : colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: colorScheme.outline.withOpacity(
+                                          0.25,
+                                        ),
+                                      ),
                                     ),
                                     child: Icon(
                                       Icons.add_rounded,
                                       color: personCount < 10
-                                          ? Colors.white
-                                          : Colors.grey[500],
-                                      size: 24,
+                                          ? colorScheme.onPrimary
+                                          : colorScheme.onSurface.withOpacity(
+                                              0.4,
+                                            ),
+                                      size: 20,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-
-                          const SizedBox(height: 32),
-
-                          // Enhanced action buttons
+                          const SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Min: 1  Max: 10',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: colorScheme.onSurface.withOpacity(0.6),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
                           Row(
                             children: [
                               Expanded(
-                                child: Container(
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.grey[200]!,
-                                        Colors.grey[100]!,
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(
-                                      color: Colors.grey[300]!,
-                                      width: 1,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.15),
-                                        blurRadius: 6,
-                                        offset: const Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: TextButton(
+                                child: SizedBox(
+                                  height: 42,
+                                  child: OutlinedButton.icon(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       adisyonNotifier.setPersonCount(1);
                                     },
-                                    style: TextButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(14),
-                                      ),
+                                    icon: const Icon(
+                                      Icons.close_rounded,
+                                      size: 18,
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.close_rounded,
-                                          color: Colors.grey[600],
-                                          size: 18,
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          'İptal',
-                                          style: TextStyle(
-                                            color: Colors.grey[600],
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 0.3,
-                                          ),
-                                        ),
-                                      ],
+                                    label: const Text('İptal'),
+                                    style: OutlinedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 16),
+                              const SizedBox(width: 10),
                               Expanded(
-                                child: Container(
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        AppColors.buttonColor,
-                                        AppColors.buttonColor.withOpacity(0.85),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(14),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColors.buttonColor
-                                            .withOpacity(0.3),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: ElevatedButton(
+                                child: SizedBox(
+                                  height: 42,
+                                  child: FilledButton.icon(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                       Config.gotopage(
@@ -1312,33 +1121,15 @@ class TableSelectionPageState extends State<TableSelectionPage> {
                                         "Ana Menü",
                                       );
                                     },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.transparent,
-                                      shadowColor: Colors.transparent,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(14),
-                                      ),
+                                    icon: const Icon(
+                                      Icons.arrow_forward_rounded,
+                                      size: 18,
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Icon(
-                                          Icons.arrow_forward_rounded,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        const Text(
-                                          'Devam Et',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            letterSpacing: 0.3,
-                                          ),
-                                        ),
-                                      ],
+                                    label: const Text('Devam Et'),
+                                    style: FilledButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
                                     ),
                                   ),
                                 ),

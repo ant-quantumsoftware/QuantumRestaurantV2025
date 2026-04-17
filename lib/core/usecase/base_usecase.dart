@@ -1,13 +1,13 @@
-abstract class UseCase<Type, Params> {
-  Future<Type> call(Params params);
+abstract class UseCase<T, Params> {
+  Future<T> call(Params params);
 }
 
 // Params gerektirmeyen durumlar için
-abstract class NoParamsUseCase<Type> {
-  Future<Type> call();
+abstract class NoParamsUseCase<T> {
+  Future<T> call();
 }
 
 // Sync operations için
-abstract class SyncUseCase<Type, Params> {
-  Type call(Params params);
+abstract class SyncUseCase<T, Params> {
+  T call(Params params);
 }

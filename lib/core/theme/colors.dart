@@ -5,4 +5,6 @@ class AppColors {
   static const Color newOrderColor = Color(0xffFBAF03);
   static const Color transparentColor = Color.fromARGB(0, 255, 253, 253);
   static const Color whiteColor = Colors.white;
+  static const Color lightTextColor = Color(0xff222831);
+  static const Color darkTextColor = Color(0xffeeeeee);
 }
