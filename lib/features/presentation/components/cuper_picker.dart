@@ -47,7 +47,10 @@ class VeriSecici extends StatelessWidget {
                 style: TextStyle(fontSize: fontsize),
               ),
             )
-          : Text(liste[sonindex], style: TextStyle(fontSize: fontsize)),
+          : Text(
+              liste[sonindex],
+              style: TextStyle(fontSize: fontsize, fontWeight: FontWeight.w500),
+            ),
     );
   }
 }

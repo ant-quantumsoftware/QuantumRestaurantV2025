@@ -3,16 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../components/input2.dart';
-import '../../components/tablo_satir.dart';
-
 import '../../../../core/config/config.dart';
 import '../../../../core/config/settings.dart';
 import '../../../data/models/dataGet/food_categori_model.dart';
 import '../../../data/models/dataGet/food_item_model.dart';
 import '../../../data/models/dataPost/login_model.dart';
+import '../../components/input2.dart';
+import '../../components/tablo_satir.dart';
 import '../../pages/cuper_alert.dart';
-import '../../pages/masalar/table_selection.dart';
+import '../home/home_view.dart';
 import 'api_ayari.dart';
 
 class MyLogin extends StatefulWidget {
@@ -570,7 +569,7 @@ class _MyLoginState extends State<MyLogin> {
       if (mounted) {
         Config.gotopage(
           context,
-          TableSelectionPage(garsonid: 1, garsonadi: email.text),
+          HomeView(garsonid: 1, garsonadi: email.text),
           "",
           "Ana Menü",
         );

@@ -130,11 +130,7 @@ class Config {
 
       Widget gespage = GestureDetector(
         onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
+          FocusManager.instance.primaryFocus?.unfocus();
         },
         child: page,
       );
@@ -190,11 +186,7 @@ class Config {
                   child: page,
                 ),
                 onPressed: () {
-                  FocusScopeNode currentFocus = FocusScope.of(context);
-
-                  if (!currentFocus.hasPrimaryFocus) {
-                    currentFocus.unfocus();
-                  }
+                  FocusManager.instance.primaryFocus?.unfocus();
                 },
               ),
             ],
