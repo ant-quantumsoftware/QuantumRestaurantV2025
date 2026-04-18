@@ -25,10 +25,10 @@ class CheckLineCard extends ConsumerWidget {
     final theme = context.theme;
     final scheme = theme.colorScheme;
     final hasDetails =
-        (cartItem.ozellik1?.isNotEmpty ?? false) ||
-        (cartItem.ozellik2?.isNotEmpty ?? false) ||
-        (cartItem.ozellik3?.isNotEmpty ?? false) ||
-        (cartItem.secenek?.isNotEmpty ?? false);
+        (cartItem.ozellik1?.trim().isNotEmpty ?? false) ||
+        (cartItem.ozellik2?.trim().isNotEmpty ?? false) ||
+        (cartItem.ozellik3?.trim().isNotEmpty ?? false) ||
+        (cartItem.secenek?.trim().isNotEmpty ?? false);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(14),
@@ -119,7 +119,7 @@ class CheckLineCard extends ConsumerWidget {
   List<Widget> _buildDetailItems(BuildContext context) {
     final List<Widget> items = [];
 
-    if (cartItem.secenek?.isNotEmpty ?? false) {
+    if (cartItem.secenek?.trim().isNotEmpty ?? false) {
       items.add(
         _buildDetailLine(
           context,
@@ -130,7 +130,7 @@ class CheckLineCard extends ConsumerWidget {
       );
     }
 
-    if (cartItem.ozellik1?.isNotEmpty ?? false) {
+    if (cartItem.ozellik1?.trim().isNotEmpty ?? false) {
       items.add(
         _buildDetailLine(
           context,
@@ -141,7 +141,7 @@ class CheckLineCard extends ConsumerWidget {
       );
     }
 
-    if (cartItem.ozellik2?.isNotEmpty ?? false) {
+    if (cartItem.ozellik2?.trim().isNotEmpty ?? false) {
       items.add(
         _buildDetailLine(
           context,
@@ -152,7 +152,7 @@ class CheckLineCard extends ConsumerWidget {
       );
     }
 
-    if (cartItem.ozellik3?.isNotEmpty ?? false) {
+    if (cartItem.ozellik3?.trim().isNotEmpty ?? false) {
       items.add(
         _buildDetailLine(
           context,
