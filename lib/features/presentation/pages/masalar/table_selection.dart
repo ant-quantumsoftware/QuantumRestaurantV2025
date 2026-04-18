@@ -8,13 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../../core/config/config.dart';
-import '../../../../core/config/sabit_list.dart';
 import '../../../../core/utils/utils.dart';
 import '../../../data/models/dataGet/table_item_group.dart';
 import '../../../data/models/dataGet/table_item_model.dart';
 import '../../components/arama_kutusu.dart';
 import '../../components/cuper_form_2.dart';
-import '../../components/cuper_picker.dart';
 import '../../components/custom_circular_button.dart';
 import '../../module/adisyon_notifier.dart';
 import '../adisyon/adisyon_main.dart';
@@ -175,43 +173,23 @@ class TableSelectionPageState extends State<TableSelectionPage> {
 
   // Arama Fonksiyonu
   void searchFunc(String value, String grupadi) {
-    if (value == "" && grupadi == "") {
-      ordersLists = ordersList;
-    } else if (value != "" && grupadi == "") {
-      ordersLists = [];
+    final searchValue = value.toLowerCase().trim();
+    final searchGroup = grupadi.toLowerCase().trim();
 
-      for (var people in ordersList) {
-        if (people.adi!.toLowerCase().trim().contains(value)) {
-          if (!ordersLists.contains(people)) {
-            ordersLists.add(people);
-            setState(() {});
-          }
-        }
-      }
-    } else if (value == "" && grupadi != "") {
-      ordersLists = [];
+    seciliAramaTxt = searchValue;
+    seciliMasaGrubu = searchGroup;
 
-      for (var people in ordersList) {
-        if (people.grupadi!.trim().contains(grupadi)) {
-          if (!ordersLists.contains(people)) {
-            ordersLists.add(people);
-            setState(() {});
-          }
-        }
-      }
-    } else {
-      ordersLists = [];
+    ordersLists = ordersList.where((table) {
+      final tableName = (table.adi ?? '').toLowerCase().trim();
+      final tableGroup = (table.grupadi ?? '').toLowerCase().trim();
 
-      for (var people in ordersList) {
-        if (people.grupadi!.toLowerCase().trim().contains(grupadi) &&
-            people.adi!.toLowerCase().trim().contains(value)) {
-          if (!ordersLists.contains(people)) {
-            ordersLists.add(people);
-            setState(() {});
-          }
-        }
-      }
-    }
+      final nameMatches =
+          searchValue.isEmpty || tableName.contains(searchValue);
+      final groupMatches =
+          searchGroup.isEmpty || tableGroup.contains(searchGroup);
+
+      return nameMatches && groupMatches;
+    }).toList();
   }
 
   // Yeni Servisten Çekmek İçin
@@ -262,56 +240,81 @@ class TableSelectionPageState extends State<TableSelectionPage> {
         resizeToAvoidBottomInset: false,
         key: scaffoldKey,
 
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.white,
-          onPressed: () {
-            scaffoldKey.currentState?.openDrawer();
-          },
-          child: Image.asset("assets/logo.png"),
+        floatingActionButton: SizedBox(
+          width: 40,
+          height: 40,
+          child: FloatingActionButton(
+            backgroundColor: Colors.white,
+            onPressed: () {
+              scaffoldKey.currentState?.openDrawer();
+            },
+            child: Image.asset("assets/logo.png"),
+          ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
         drawer: _buildDrawer(context),
-        body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            CupertinoSliverNavigationBar(
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              automaticallyImplyLeading: false,
-              largeTitle: FadeInUp(
-                duration: const Duration(milliseconds: 1700),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: VeriSecici(
-                    liste: MyList.masalar,
-                    index: filterindex,
-                    degistir: (int selectedItem) {
-                      filterindex = selectedItem;
-                      login = true;
-
-                      setState(() {
-                        verigetir();
-                      });
-                    },
-                  ),
-                ),
-              ),
-              middle: Padding(
-                padding: const EdgeInsets.only(right: 30, left: 100, top: 3),
-                child: FadeInUp(
-                  duration: const Duration(milliseconds: 1700),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: SearchTextField(
-                      fieldValue: (String value) {
-                        searchFunc(value, seciliMasaGrubu);
-                      },
-                    ),
-                  ),
-                ),
+        appBar: AppBar(
+          title: FadeInUp(
+            duration: const Duration(milliseconds: 1700),
+            child: Align(
+              alignment: Alignment.center,
+              child: SearchTextField(
+                fieldValue: (String value) {
+                  setState(() {
+                    searchFunc(value, seciliMasaGrubu);
+                  });
+                },
               ),
             ),
+          ),
+          actions: [],
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            // CupertinoSliverNavigationBar(
+            //   backgroundColor: Theme.of(context).colorScheme.surface,
+            //   automaticallyImplyLeading: false,
+            //   largeTitle: FadeInUp(
+            //     duration: const Duration(milliseconds: 1700),
+            //     child: Align(
+            //       alignment: Alignment.center,
+            //       child: VeriSecici(
+            //         liste: MyList.masalar,
+            //         index: filterindex,
+            //         degistir: (int selectedItem) {
+            //           filterindex = selectedItem;
+            //           login = true;
+
+            //           setState(() {
+            //             verigetir();
+            //           });
+            //         },
+            //       ),
+            //     ),
+            //   ),
+            //   middle: Padding(
+            //     padding: const EdgeInsets.only(right: 30, left: 10, top: 3),
+            //     child: FadeInUp(
+            //       duration: const Duration(milliseconds: 1700),
+            //       child: Align(
+            //         alignment: Alignment.center,
+            //         child: SearchTextField(
+            //           fieldValue: (String value) {
+            //             setState(() {
+            //               searchFunc(value, seciliMasaGrubu);
+            //             });
+            //           },
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
           body: (login)
-              ? const Center(child: CupertinoActivityIndicator(radius: 10.0))
+              ? const Center(child: CircularProgressIndicator.adaptive())
               : Consumer(
                   builder: (context, ref, child) {
                     final adisyonNotifier = ref.watch(
@@ -706,70 +709,37 @@ class TableSelectionPageState extends State<TableSelectionPage> {
                       children: <Widget>[
                         Cuperform2(
                           tablo: false,
-                          ikon: Icon(
-                            Icons.person,
-                            color: Theme.of(context).hintColor,
+                          ikon: const Icon(
+                            Icons.list_alt_rounded,
+                            color: Colors.blue,
                             size: 24,
                           ),
                           baslik: Text(
-                            "Profilim",
+                            "Uygulama Logları",
                             style: TextStyle(
                               color: Theme.of(context).hintColor,
                             ),
                           ),
-                          onpress: () async {},
-                        ),
-                        Cuperform2(
-                          tablo: false,
-                          ikon: Icon(
-                            CupertinoIcons.shield_lefthalf_fill,
-                            color: Theme.of(context).hintColor,
-                            size: 24,
-                          ),
-                          baslik: Text(
-                            "Sistem Yönetimi",
-                            style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                          onpress: () {},
-                        ),
-                        Cuperform2(
-                          tablo: false,
-                          ikon: Icon(
-                            CupertinoIcons.paperplane_fill,
-                            color: Theme.of(context).hintColor,
-                            size: 24,
-                          ),
-                          baslik: Text(
-                            "Destek ve Hata Bildirimi",
-                            style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                          onpress: () {},
+                          onpress: () {
+                            // TODO: Logları Göster Metodu
+                          },
                         ),
                         Cuperform2(
                           tablo: false,
                           ikon: const Icon(
-                            CupertinoIcons.play_circle_fill,
-                            color: Colors.red,
+                            Icons.color_lens_rounded,
+                            color: Colors.blue,
                             size: 24,
                           ),
                           baslik: Text(
-                            "YouTube",
+                            "Tema Seçenekleri",
                             style: TextStyle(
                               color: Theme.of(context).hintColor,
                             ),
                           ),
-                          altbaslik: const Text(
-                            "YouTube kanalımızdan videolar ile ögrenin.",
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 169, 183, 190),
-                              fontSize: 14,
-                            ),
-                          ),
-                          onpress: () async {},
+                          onpress: () {
+                            // TODO: Ayarlar Metodu
+                          },
                         ),
                         Cuperform2(
                           tablo: false,
@@ -786,51 +756,7 @@ class TableSelectionPageState extends State<TableSelectionPage> {
                           ),
                           onpress: () async {
                             Navigator.pop(context);
-                            showCupertinoModalPopup<void>(
-                              context: context,
-                              builder: (context) {
-                                return StatefulBuilder(
-                                  builder: (BuildContext context, setState) {
-                                    return CupertinoActionSheet(
-                                      title: Text(
-                                        "$garsonadi hesabından çıkış yapılacak.\nDevam edilsin mi?",
-                                      ),
-                                      cancelButton: CupertinoActionSheetAction(
-                                        child: const Text("Vazgeç"),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      actions: <CupertinoActionSheetAction>[
-                                        CupertinoActionSheetAction(
-                                          isDestructiveAction: true,
-                                          child: const Text("Devam et"),
-                                          onPressed: () async {
-                                            Box box1;
-
-                                            box1 = await Hive.openBox(
-                                              'logininfo',
-                                            );
-
-                                            box1.put('password', '');
-
-                                            //ÇIKIŞ YAP METODu
-                                            if (!context.mounted) return;
-
-                                            Navigator.of(
-                                              context,
-                                            ).pushNamedAndRemoveUntil(
-                                              '/',
-                                              (Route<dynamic> route) => false,
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                            );
+                            _signOut(context);
                           },
                         ),
                       ],
@@ -842,6 +768,50 @@ class TableSelectionPageState extends State<TableSelectionPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _signOut(BuildContext context) {
+    return showCupertinoModalPopup<void>(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, setState) {
+            return CupertinoActionSheet(
+              title: Text(
+                "$garsonadi hesabından çıkış yapılacak.\nDevam edilsin mi?",
+              ),
+              cancelButton: CupertinoActionSheetAction(
+                child: const Text("Vazgeç"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              actions: <CupertinoActionSheetAction>[
+                CupertinoActionSheetAction(
+                  isDestructiveAction: true,
+                  child: const Text("Devam et"),
+                  onPressed: () async {
+                    Box box1;
+
+                    box1 = await Hive.openBox('logininfo');
+
+                    box1.put('password', '');
+
+                    //ÇIKIŞ YAP METODu
+                    if (!context.mounted) return;
+
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      '/',
+                      (Route<dynamic> route) => false,
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
