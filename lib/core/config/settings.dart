@@ -1,7 +1,6 @@
 import '../../features/data/models/dataGet/food_categori_model.dart';
 import '../../features/data/models/dataGet/food_item_model.dart';
 
-
 class Settings {
   //One instance, needs factory
 
@@ -62,5 +61,10 @@ class Settings {
 
   static void setFoodCategoriItems(List<FoodCategoriModel> deger) {
     foodCategoriItems = deger;
+    foodCategoriItems.sort((a, b) => a.adi!.compareTo(b.adi!));
+    foodCategoriItems.insert(
+      0,
+      FoodCategoriModel(id: 0, adi: 'Tümü', selected: false),
+    );
   }
 }

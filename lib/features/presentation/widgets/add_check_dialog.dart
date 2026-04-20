@@ -2,7 +2,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:quantum_restaurant/core/extensions/context_extension.dart';
 
+import '../../data/models/dataGet/card_item_model.dart';
 import '../../data/models/dataPost/adisyon_model.dart';
 import '../../data/models/food_item_info.dart';
 import '../../domain/entity/fast_description_entity.dart';
@@ -13,11 +15,12 @@ import '../pages/cuper_alert.dart';
 
 class AddCheckDialog extends ConsumerStatefulWidget {
   final int masaid, urunid;
-  final String masaadi, urunadi, aciklama;
+  final String masaadi, urunadi;
   final double mevcut;
   final List<SecenekModel> fruitliste;
   final bool adisyon;
   final VoidCallback? onOrderAdded;
+  final CardItemModel? existingOrder;
 
   const AddCheckDialog({
     super.key,
@@ -25,11 +28,11 @@ class AddCheckDialog extends ConsumerStatefulWidget {
     required this.masaadi,
     required this.urunid,
     required this.urunadi,
-    required this.aciklama,
     required this.mevcut,
     required this.fruitliste,
     required this.adisyon,
     this.onOrderAdded,
+    this.existingOrder,
   });
 
   @override
@@ -60,8 +63,14 @@ class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
 
   void _initializeData() {
     _activeAmount = widget.mevcut < 0.5 ? 1.0 : widget.mevcut;
-    _descriptionController = TextEditingController(text: widget.aciklama);
+    _descriptionController = TextEditingController(
+      text: widget.existingOrder?.ozellik1 ?? '',
+    );
     _options = List.from(widget.fruitliste);
+    _selectedOption = widget.existingOrder?.ozellik1 ?? "";
+    for (var option in _options) {
+      option.selected = option.secenek == _selectedOption;
+    }
 
     setState(() {
       _isLoading = false;
@@ -232,11 +241,16 @@ class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
           malzemeid: widget.urunid,
           fiyatd: 0,
           secenek: _selectedOption,
-          ozellik1: _descriptionController.text,
+          ozellik1: "",
           ozellik2: "",
           ozellik3: "",
           masaid: widget.masaid,
           adi: widget.urunadi,
+          etraozellikler: _options
+              .where((option) => option.selected == true)
+              .map((e) => e.secenek ?? "")
+              .toList(),
+          aciklama: _descriptionController.text,
         );
 
         final success1 = await ref
@@ -281,17 +295,18 @@ class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
     // Güncelleme için AdisyonModel oluştur
     final personCount = ref.read(adisyonNotifierProvider).personCount;
     final model = AdisyonModel(
-      id: widget.urunid, // Güncellenecek siparişin ID'si
+      id: widget.existingOrder?.id ?? 0, // Güncellenecek siparişin ID'si
       kisisayisi: personCount,
       miktar: _activeAmount,
       malzemeid: widget.urunid,
-      fiyatd: 0,
+      fiyatd: 10,
       secenek: _selectedOption,
-      ozellik1: _descriptionController.text,
+      ozellik1: "",
       ozellik2: "",
       ozellik3: "",
       masaid: widget.masaid,
       adi: widget.urunadi,
+      aciklama: _descriptionController.text,
     );
 
     // Güncelleme işlemini yap
@@ -300,11 +315,15 @@ class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
         .updateOrder(model);
 
     if (!success && mounted) {
-      CuperAlert.show(
-        context: context,
-        destructive: true,
-        title: 'Ürün Güncelleme Hatası! ${widget.urunadi}',
-        content: 'Bağlantınızı kontrol ediniz!',
+      // CuperAlert.show(
+      //   context: context,
+      //   destructive: true,
+      //   title: 'Ürün Güncelleme Hatası! ${widget.urunadi}',
+      //   content: 'Bağlantınızı kontrol ediniz!',
+      // );
+      context.showErrorNotification(
+        'Ürün Güncelleme Hatası!',
+        'Bağlantınızı kontrol ediniz!',
       );
     } else {
       // Güncelleme başarılı, callback'i çağır

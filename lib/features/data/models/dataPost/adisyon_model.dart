@@ -17,6 +17,7 @@ class AdisyonModel {
   List<String>? etraozellikler;
   bool isVeg = false;
   String? secenek;
+  String? aciklama;
 
   // Sipariş Girilen ürünler
 
@@ -33,6 +34,7 @@ class AdisyonModel {
     this.malzemeid,
     this.masaid,
     this.secenek,
+    this.aciklama,
   });
 
   AdisyonModel.fromJson(Map<String, dynamic> json) {
@@ -47,6 +49,7 @@ class AdisyonModel {
     malzemeid = json['MalzemeId'];
     masaid = json['MasaId'];
     secenek = json['Secenek'];
+    aciklama = json['Aciklama'];
   }
 
   Map<String, dynamic> toJson() {
@@ -62,6 +65,7 @@ class AdisyonModel {
     data['MalzemeId'] = malzemeid;
     data['MasaId'] = masaid;
     data['Secenek'] = secenek;
+    data['Aciklama'] = aciklama;
 
     return data;
   }

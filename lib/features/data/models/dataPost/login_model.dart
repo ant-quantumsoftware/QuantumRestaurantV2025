@@ -1,7 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../domain/entity/login/restaurant_login_entity.dart';
 import '../../dataSources/remote/http_services.dart';
+
+final loginModelProvider = StateProvider<RestaurantLoginModel?>((ref) => null);
 
 class RestaurantLoginModel extends RestaurantLoginEntity {
   const RestaurantLoginModel({
@@ -61,6 +65,7 @@ class LoginModel {
 
   Future<String> getLoginToken() async {
     final loginResult = await getRestaurantLogin();
+
     return loginResult?.token ?? '';
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:toastification/toastification.dart';
 
 extension MediaQueryExtension on BuildContext {
   /// Returns the MediaQuery data for the current context.
@@ -229,6 +230,98 @@ extension PlatformExtension on BuildContext {
 extension AccessibilityExtension on BuildContext {
   /// Returns true if a screen reader is enabled.
   bool get isScreenReaderEnabled => mediaQuery.accessibleNavigation;
+}
+
+extension NotificationExtension on BuildContext {
+  static const _autoCloseDuration = Duration(seconds: 4);
+  static const _animationDuration = Duration(milliseconds: 400);
+
+  void showNotification(
+    String title,
+    String body, {
+    ToastificationType type = ToastificationType.info,
+  }) {
+    final (backgroundColor, textColor) = _colorsForType(type);
+
+    toastification.show(
+      context: this,
+      style: ToastificationStyle.flat,
+      type: type,
+      autoCloseDuration: _autoCloseDuration,
+      title: Text(
+        title,
+        style: textTheme.titleMedium?.copyWith(
+          color: textColor,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      description: RichText(
+        text: TextSpan(
+          text: body,
+          style: textTheme.bodyMedium?.copyWith(
+            color: textColor.withValues(alpha: 0.8),
+          ),
+        ),
+      ),
+      alignment: Alignment.topRight,
+      animationDuration: _animationDuration,
+      animationBuilder: (context, animation, alignment, child) {
+        return SlideTransition(
+          position:
+              Tween<Offset>(
+                begin: const Offset(1.0, 0.0),
+                end: Offset.zero,
+              ).animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              ),
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      },
+      showIcon: true,
+      backgroundColor: backgroundColor,
+      foregroundColor: textColor,
+      borderSide: BorderSide(color: textColor.withValues(alpha: 0.2), width: 1),
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: textColor.withValues(alpha: 0.1),
+          blurRadius: 12,
+          offset: const Offset(0, 4),
+          spreadRadius: 0,
+        ),
+      ],
+    );
+  }
+
+  void showSuccessNotification(String title, String body) =>
+      showNotification(title, body, type: ToastificationType.success);
+
+  void showErrorNotification(String title, String body) =>
+      showNotification(title, body, type: ToastificationType.error);
+
+  void showWarningNotification(String title, String body) =>
+      showNotification(title, body, type: ToastificationType.warning);
+
+  void showInfoNotification(String title, String body) =>
+      showNotification(title, body, type: ToastificationType.info);
+
+  (Color backgroundColor, Color textColor) _colorsForType(
+    ToastificationType type,
+  ) => switch (type) {
+    ToastificationType.success => (
+      const Color(0xFFE8F5E8),
+      const Color(0xFF2E7D32),
+    ),
+    ToastificationType.error => (
+      const Color(0xFFFFEBEE),
+      const Color(0xFFC62828),
+    ),
+    ToastificationType.warning => (
+      const Color(0xFFFFF8E1),
+      const Color(0xFFF57C00),
+    ),
+    _ => (const Color(0xFFE3F2FD), const Color(0xFF1565C0)),
+  };
 }
 
 /// Adds utilities for DateTime formatting using Intl.

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../features/presentation/pages/app_logs_page.dart';
 import '../../features/presentation/pages/dialogmasa_aktar.dart';
 import '../../features/presentation/pages/fast_description_list_page.dart';
+import '../../features/presentation/pages/home/table_card_theme_page.dart';
 import '../../features/presentation/pages/home_page.dart';
 import '../../features/presentation/pages/login/api_ayari.dart';
 import '../../features/presentation/pages/login/login.dart';
@@ -16,6 +18,8 @@ class PageRoutes {
       RouteNames.settingspage: (context) => const ApiAyari(),
       RouteNames.fastDescriptionPage: (context) =>
           const FastDescriptionListPage(),
+      RouteNames.appLogsPage: (context) => const AppLogsPage(),
+      RouteNames.tableCardThemePage: (context) => const TableCardThemePage(),
       RouteNames.loginpage: (context) => const MyLogin(),
       RouteNames.masaaktar: (context) => const MyDialogMasaAktar(),
     };

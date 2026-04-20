@@ -1,34 +1,36 @@
 import 'dart:developer';
 
 import 'package:animate_do/animate_do.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:quantum_restaurant/core/extensions/context_extension.dart';
 
 import '../../../../core/config/config.dart';
 import '../../../../core/config/settings.dart';
 import '../../../data/models/dataGet/food_categori_model.dart';
 import '../../../data/models/dataGet/food_item_model.dart';
 import '../../../data/models/dataPost/login_model.dart';
-import '../../components/input2.dart';
 import '../../components/tablo_satir.dart';
-import '../../pages/cuper_alert.dart';
 import '../home/home_view.dart';
 import 'api_ayari.dart';
 
-class MyLogin extends StatefulWidget {
+class MyLogin extends ConsumerStatefulWidget {
   const MyLogin({super.key});
 
   @override
-  State<MyLogin> createState() => _MyLoginState();
+  ConsumerState<MyLogin> createState() => _MyLoginState();
 }
 
-class _MyLoginState extends State<MyLogin> {
+class _MyLoginState extends ConsumerState<MyLogin> {
   bool isChecked = false, passwordshow = true, autologin = true;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   String? hatatxt = "";
   late Box box1;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -77,6 +79,14 @@ class _MyLoginState extends State<MyLogin> {
   }
 
   @override
+  void dispose() {
+    _formKey.currentState?.dispose();
+    email.dispose();
+    password.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -89,16 +99,31 @@ class _MyLoginState extends State<MyLogin> {
           currentFocus.unfocus();
         }
       },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: autologin
-            ? _buildSplash(theme, colorScheme)
-            : _buildLoginBody(theme, colorScheme),
+      child: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: autologin
+              ? _buildSplash(theme, colorScheme)
+              : _buildLoginBody(theme, colorScheme),
+        ),
       ),
     );
   }
 
   Widget _buildSplash(ThemeData theme, ColorScheme colorScheme) {
+    final heroBase = colorScheme.primary;
+    final heroMid = Color.alphaBlend(
+      colorScheme.secondary.withValues(alpha: 0.28),
+      heroBase,
+    );
+    final heroEdge = Color.alphaBlend(
+      colorScheme.tertiary.withValues(alpha: 0.22),
+      heroBase,
+    );
+    final onHero = colorScheme.onPrimary;
+
     return Container(
       alignment: Alignment.center,
       width: double.infinity,
@@ -106,11 +131,7 @@ class _MyLoginState extends State<MyLogin> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            colorScheme.primary,
-            colorScheme.tertiary,
-            colorScheme.secondary,
-          ],
+          colors: [heroBase, heroMid, heroEdge],
         ),
       ),
       child: Stack(
@@ -118,12 +139,12 @@ class _MyLoginState extends State<MyLogin> {
           Positioned(
             top: -60,
             right: -30,
-            child: _buildGlow(140, Colors.white.withValues(alpha: 0.08)),
+            child: _buildGlow(140, onHero.withValues(alpha: 0.08)),
           ),
           Positioned(
             left: -50,
             bottom: -70,
-            child: _buildGlow(180, Colors.white.withValues(alpha: 0.05)),
+            child: _buildGlow(180, onHero.withValues(alpha: 0.05)),
           ),
           Center(
             child: FadeInUp(
@@ -137,11 +158,9 @@ class _MyLoginState extends State<MyLogin> {
                     height: 112,
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.12),
+                      color: onHero.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(28),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.18),
-                      ),
+                      border: Border.all(color: onHero.withValues(alpha: 0.2)),
                     ),
                     child: Image.asset('assets/logo.png', fit: BoxFit.contain),
                   ),
@@ -149,7 +168,7 @@ class _MyLoginState extends State<MyLogin> {
                   Text(
                     'Quantum',
                     style: theme.textTheme.headlineLarge?.copyWith(
-                      color: Colors.white,
+                      color: onHero,
                       fontSize: 34,
                       fontFamily: 'BakbakOne',
                       letterSpacing: 0.2,
@@ -159,7 +178,7 @@ class _MyLoginState extends State<MyLogin> {
                   Text(
                     'Restaurant',
                     style: theme.textTheme.titleMedium?.copyWith(
-                      color: Colors.white.withValues(alpha: 0.9),
+                      color: onHero.withValues(alpha: 0.88),
                       fontFamily: 'BakbakOne',
                       fontSize: 12,
                       letterSpacing: 1.8,
@@ -374,56 +393,112 @@ class _MyLoginState extends State<MyLogin> {
           _buildFieldLabel(theme, 'Kullanıcı Adı veya e-Posta'),
           const SizedBox(height: 6),
           _buildFieldShell(
-            child: Input2(
-              bgcolors: colorScheme.outline.withValues(alpha: 0.18),
-              textcolor: theme.colorScheme.onSurface,
-              texteditcontrol: email,
-              textsize: 15,
-              label: 'Kullanıcı adı / e-Posta',
-              solwidget: Icon(
-                CupertinoIcons.person_2_fill,
-                size: 18,
-                color: colorScheme.primary,
+            child: TextFormField(
+              controller: email,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
+                fontSize: 15,
               ),
-              textValue: (val) {
-                email.text = val.toString();
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Lütfen kullanıcı adınızı veya e-postanızı girin';
+                }
+                return null;
               },
-              inputValue: email.text,
+              decoration: InputDecoration(
+                hintText: 'Kullanıcı adı / e-Posta',
+                hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.hintColor,
+                  fontSize: 15,
+                ),
+                filled: true,
+                fillColor: colorScheme.outline.withValues(alpha: 0.18),
+                prefixIcon: Icon(
+                  CupertinoIcons.person_2_fill,
+                  size: 18,
+                  color: colorScheme.primary,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 14,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 14),
           _buildFieldLabel(theme, 'Parola'),
           const SizedBox(height: 6),
           _buildFieldShell(
-            child: Input2(
-              textcolor: theme.colorScheme.onSurface,
-              bgcolors: colorScheme.outline.withValues(alpha: 0.18),
-              textsize: 15,
-              texteditcontrol: password,
-              label: 'Parola',
-              maxline: 1,
-              passwordstatus: passwordshow,
-              textValue: (val) {
-                password.text = val.toString();
-              },
-              inputValue: password.text,
-              solwidget: Icon(
-                CupertinoIcons.lock_fill,
-                size: 18,
-                color: colorScheme.primary,
+            child: TextFormField(
+              controller: password,
+              maxLines: 1,
+              obscureText: passwordshow,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
+                fontSize: 15,
               ),
-              sagwigdet: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(
-                  passwordshow ? CupertinoIcons.eye : CupertinoIcons.eye_slash,
-                  size: 16,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Lütfen parolanızı girin';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                hintText: 'Parola',
+                hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.hintColor,
+                  fontSize: 15,
+                ),
+                filled: true,
+                fillColor: colorScheme.outline.withValues(alpha: 0.18),
+                prefixIcon: Icon(
+                  CupertinoIcons.lock_fill,
+                  size: 18,
                   color: colorScheme.primary,
                 ),
-                onPressed: () {
-                  setState(() {
-                    passwordshow = !passwordshow;
-                  });
-                },
+                suffixIcon: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: Icon(
+                    passwordshow
+                        ? CupertinoIcons.eye
+                        : CupertinoIcons.eye_slash,
+                    size: 16,
+                    color: colorScheme.primary,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      passwordshow = !passwordshow;
+                    });
+                  },
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 14,
+                ),
               ),
             ),
           ),
@@ -446,37 +521,14 @@ class _MyLoginState extends State<MyLogin> {
           const SizedBox(height: 14),
           FilledButton.icon(
             onPressed: () {
-              hatatxt = '';
-              login();
+              if (_formKey.currentState?.validate() ?? false) {
+                hatatxt = '';
+                login();
+              }
             },
             icon: const Icon(CupertinoIcons.arrow_right_circle_fill),
             label: const Text('Giriş Yap'),
           ),
-          if (hatatxt != null && hatatxt!.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              decoration: BoxDecoration(
-                color: colorScheme.errorContainer,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.warning_rounded, color: colorScheme.error),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      hatatxt!,
-                      style: TextStyle(
-                        color: colorScheme.onErrorContainer,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ],
       ),
     );
@@ -563,26 +615,29 @@ class _MyLoginState extends State<MyLogin> {
     String token = "";
 
     try {
-      var tokenkey = await LoginModel(
+      // var tokenkey = await LoginModel(
+      //   userName: email.text,
+      //   parola: password.text,
+      // ).getLoginToken();
+      //Wakelock.enable();
+      var restaurantLoginResult = await LoginModel(
         userName: email.text,
         parola: password.text,
-      ).getLoginToken();
-      //Wakelock.enable();
+      ).getRestaurantLogin();
+      var tokenkey = restaurantLoginResult?.token ?? '';
 
+      ref.read(loginModelProvider.notifier).state = restaurantLoginResult;
       token = tokenkey;
-    } on Exception catch (ex) {
-      if (!autologin && mounted) {
-        Navigator.pop(context);
-      }
-      String hata = ex.toString();
-      if (mounted) {
-        CuperAlert.show(
-          context: context,
-          destructive: true,
-          title: 'Erişim Hatası!',
-          content: 'Bağlantınızı Kontrol Ediniz!\n$hata',
-        );
-      }
+      log("oto login yapıldı");
+    } on DioException catch (ex) {
+      // if (!autologin && mounted) {
+      //   Navigator.pop(context);
+      // }
+
+      String hata =
+          ex.response?.data['Message'] ?? 'Bilinmeyen bir hata oluştu';
+      context.showErrorNotification('Giriş Hatası', hata);
+
       token = "";
       autologin = false;
       log("hata: $hata");

@@ -5,7 +5,6 @@ import '../../dataSources/remote/http_services.dart';
 class CardItemModel {
   int? id;
   String? adi;
-  String? fiyat;
   int? malzemeId;
   int? masaId;
   int? kisiSayisi;
@@ -18,13 +17,13 @@ class CardItemModel {
   late double miktar = 0;
   List<String>? extraozellikler;
   bool isVeg = false;
+  String? aciklama;
 
   // Sipariş Girilen ürünler
 
   CardItemModel({
     this.id,
     this.adi,
-    this.fiyat,
     this.extraozellikler,
     this.fiyatd,
     this.ozellik1,
@@ -32,19 +31,28 @@ class CardItemModel {
     this.ozellik3,
     this.miktar = 0,
     this.secenek,
+    this.genel,
+    this.malzemeId,
+    this.masaId,
+    this.kisiSayisi,
+    this.aciklama,
   });
 
   CardItemModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
     adi = json['Adi'];
     fiyatd = json['Fiyat'];
-    fiyat = json['Fiyat'].toString();
     miktar = json['Miktar'];
     ozellik1 = json['Ozellik1'];
     ozellik2 = json['Ozellik2'];
     ozellik3 = json['Ozellik3'];
     secenek = json['Secenek'];
+    extraozellikler = List<String>.from(json['EtraOzellikler'] ?? []);
+    malzemeId = json['MalzemeId'];
+    masaId = json['MasaId'];
+    kisiSayisi = json['KisiSayisi'];
     genel = (fiyatd! * miktar);
+    aciklama = json['Aciklama'];
   }
 
   Map<String, dynamic> toJson() {
@@ -57,7 +65,11 @@ class CardItemModel {
     data['Ozellik2'] = ozellik2;
     data['Ozellik3'] = ozellik3;
     data['Secenek'] = secenek;
-
+    data['EtraOzellikler'] = extraozellikler;
+    data['MalzemeId'] = malzemeId;
+    data['MasaId'] = masaId;
+    data['KisiSayisi'] = kisiSayisi;
+    data['Aciklama'] = aciklama;
     return data;
   }
 }

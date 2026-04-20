@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:grock/grock.dart';
+import 'package:quantum_restaurant/core/extensions/context_extension.dart';
 import 'package:quantum_restaurant/features/presentation/widgets/check_line_card.dart';
 
 import '../../../../core/config/config.dart';
@@ -12,6 +12,7 @@ import '../../../data/models/dataGet/card_item_model.dart';
 import '../../../data/models/dataGet/food_categori_model.dart';
 import '../../../data/models/dataGet/food_item_model.dart';
 import '../../../data/models/dataPost/adisyon_model.dart';
+import '../../../data/models/dataPost/login_model.dart';
 import '../../../data/models/food_item_info.dart';
 import '../../components/arama_kutusu.dart';
 import '../../components/cuper_alert.dart';
@@ -49,6 +50,36 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
   late List<FoodItemModel> foodItemsS = []; // Tüm Ürünler Arama Sonucu
   late List<FoodCategoriModel> foodCategoriItems = [];
 
+  List<BottomNavigationBarItem> getBottomNavigationItems(bool isAdmin) {
+    if (isAdmin) {
+      return [
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.plus_circle_fill),
+          label: 'Yeni Sipariş',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.doc_chart),
+          label: 'Adisyon',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.list_bullet),
+          label: 'İşlemler',
+        ),
+      ];
+    } else {
+      return [
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.plus_circle_fill),
+          label: 'Yeni Sipariş',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(CupertinoIcons.doc_chart),
+          label: 'Adisyon',
+        ),
+      ];
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -62,9 +93,10 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
   }
 
   Future<void> verigetir() async {
-    var katagoriler = Settings.getFoodCategoriItems();
+    var kategoriler = Settings.getFoodCategoriItems();
+
     var cartItemleri = await getCardItemGetirId(tableId);
-    foodCategoriItems = katagoriler;
+    foodCategoriItems = kategoriler;
     cartItems = cartItemleri;
     if (foodCategoriItems.isNotEmpty) {
       final safeIndex = currentIndex.clamp(0, foodCategoriItems.length - 1);
@@ -156,20 +188,9 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
             setState(() {});
           },
           height: 60,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.plus_circle_fill),
-              label: 'Yeni Sipariş',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.doc_chart),
-              label: 'Adisyon',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.list_bullet),
-              label: 'İşlemler',
-            ),
-          ],
+          items: getBottomNavigationItems(
+            ref.watch(loginModelProvider)?.adminYetki ?? false,
+          ),
         ),
         appBar: AppBar(
           backgroundColor: context.theme.scaffoldBackgroundColor,
@@ -210,6 +231,28 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
             ),
           ),
           centerTitle: true,
+          actions: [
+            IconButton(
+              padding: const EdgeInsets.only(left: 10),
+              onPressed: () async {
+                await openAlertKisiSayisi(context, tableId, tableName);
+              },
+              icon: Row(
+                children: [
+                  Icon(Icons.person, color: context.theme.hintColor, size: 28),
+                  const SizedBox(width: 4),
+                  Text(
+                    "Kişi Sayısı\nGüncelle",
+                    style: TextStyle(
+                      color: context.theme.hintColor,
+                      fontSize: 14,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                ],
+              ),
+            ),
+          ],
         ),
         body: (login)
             ? const Center(child: CupertinoActivityIndicator(radius: 15.0))
@@ -553,7 +596,6 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                               masaadi: tableName,
                               urunid: item.id ?? 0,
                               urunadi: item.adi ?? 'Ürün',
-                              aciklama: '',
                               mevcut: 1,
                               fruitliste: sourceIndex >= 0
                                   ? createFruit(sourceIndex, false)
@@ -638,8 +680,18 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                     verigetirMalzeme();
                     // katregoriye göre malzeme listesini yenile
                   });
+                  if (foodCategoriItem.id == 0) {
+                    categoryName = 'Tüm Ürünler';
+                    foodItemsS = Settings.getFoodItemAll();
+                    setState(() {
+                      currentIndex = index;
+                      logindetails = true;
+
+                      // tüm ürünleri göster
+                    });
+                  }
                 },
-                selectedcolor: (foodCategoriItem.selected!)
+                selectedcolor: (foodCategoriItem.selected ?? false)
                     ? scheme.primary.withValues(alpha: 0.18)
                     : Colors.transparent,
                 divider: true,
@@ -763,7 +815,7 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                         onTap: () async {
                           final allItems = Settings.getFoodItemAll();
                           final sourceIndex = allItems.indexWhere(
-                            (e) => e.id == cartItem.id,
+                            (e) => e.id == cartItem.malzemeId,
                           );
 
                           await Config.gotopage(
@@ -771,10 +823,10 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                             AddCheckDialog(
                               masaid: tableId,
                               masaadi: tableName,
-                              urunid: cartItem.id ?? 0,
+                              urunid: cartItem.malzemeId ?? 0,
                               urunadi: cartItem.adi ?? 'Ürün',
-                              aciklama: '',
                               mevcut: 1,
+                              existingOrder: cartItem,
                               fruitliste: sourceIndex >= 0
                                   ? createFruit(sourceIndex, false)
                                   : <SecenekModel>[],
@@ -828,27 +880,25 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                   onPressed: () async {
                     if (yazdirmaDurumuAdisyon == "Daha Önce Yazılmış!") {
                       if (!context.mounted) return;
-                      Config.showsnack(
-                        context,
-                        'Daha Önce Yazılmış!',
-                        color: const Color.fromARGB(255, 244, 67, 54),
+                      context.showErrorNotification(
+                        "Hata!",
+                        "Daha Önce Yazılmış!",
                       );
                     } else {
                       var sonuc = await adisyonYaz(tableId);
 
                       if (sonuc) {
                         if (!context.mounted) return;
-                        Config.showsnack(
-                          context,
-                          'Adisyon Yazıldı',
-                          color: const Color.fromARGB(255, 29, 157, 25),
+                        context.showSuccessNotification(
+                          "Başarılı!",
+                          "Adisyon Yazıldı",
                         );
                       } else {
                         if (!context.mounted) return;
-                        Config.showsnack(
-                          context,
-                          'Yazdırma Hatası',
-                          color: const Color.fromARGB(255, 244, 67, 54),
+
+                        context.showErrorNotification(
+                          "Hata!",
+                          "Yazdırma Hatası",
                         );
                       }
                     }
@@ -872,27 +922,24 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                   onPressed: () async {
                     if (yazdirmaDurumuMutfak == "Daha Önce Yazılmış!") {
                       if (!context.mounted) return;
-                      Config.showsnack(
-                        context,
-                        'Daha Önce Yazılmış!',
-                        color: const Color.fromARGB(255, 244, 67, 54),
+                      context.showErrorNotification(
+                        "Hata!",
+                        "Daha Önce Yazılmış!",
                       );
                     } else {
                       var sonuc = await adisyonMutfakYaz(tableId);
 
                       if (sonuc) {
                         if (!context.mounted) return;
-                        Config.showsnack(
-                          context,
-                          'Mutfak Yazıldı',
-                          color: const Color.fromARGB(255, 29, 157, 25),
+                        context.showSuccessNotification(
+                          "Başarılı!",
+                          "Mutfak Yazıldı",
                         );
                       } else {
                         if (!context.mounted) return;
-                        Config.showsnack(
-                          context,
-                          'Yazdırma Hatası',
-                          color: const Color.fromARGB(255, 244, 67, 54),
+                        context.showErrorNotification(
+                          "Hata!",
+                          "Yazdırma Hatası",
                         );
                       }
                     }
@@ -1300,18 +1347,27 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
       stringFuture = await printSiparisMutfak(id);
 
       if (stringFuture == false) {
+        context.showErrorNotification("Hata!", 'Daha Önce Yazılmış!');
         yazdirmaDurumuMutfak = "Daha Önce Yazılmış!";
       } else {
         yazdirmaDurumuMutfak = "Mutfak Bar Yazıldı.";
+        context.showSuccessNotification(
+          "Başarılı!",
+          'Mutfak Bar başarıyla yazıldı.',
+        );
       }
       setState(() {});
     } catch (error) {
       if (!mounted) return false;
-      CuperAlert.show(
-        context: context,
-        destructive: true,
-        title: 'Hata',
-        content: 'Mutfak Bar Yazma Hatası!\n$error',
+      // CuperAlert.show(
+      //   context: context,
+      //   destructive: true,
+      //   title: 'Hata',
+      //   content: 'Mutfak Bar Yazma Hatası!\n$error',
+      // );
+      context.showErrorNotification(
+        "Hata!",
+        'Mutfak Bar Yazma Hatası!\n$error',
       );
     }
     return stringFuture;
@@ -1324,22 +1380,29 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
     try {
       stringFuture = await printSiparisAdisyon(id);
       if (stringFuture == false) {
-        setState(() {
-          yazdirmaDurumuAdisyon = "Daha Önce Yazılmış!";
-        });
+        // setState(() {
+        //   yazdirmaDurumuAdisyon = "Daha Önce Yazılmış!";
+        // });
+        context.showErrorNotification("Hata!", 'Daha Önce Yazılmış!');
       } else {
         setState(() {
           yazdirmaDurumuAdisyon = "Adisyon Yazıldı.";
         });
+        context.showSuccessNotification(
+          "Başarılı!",
+          'Adisyon başarıyla yazıldı.',
+        );
       }
     } catch (error) {
       if (!mounted) return false;
-      CuperAlert.show(
-        context: context,
-        destructive: true,
-        title: 'Hata',
-        content: 'Adisyon Yazma Hatası!\n$error',
-      );
+      // CuperAlert.show(
+      //   context: context,
+      //   destructive: true,
+      //   title: 'Hata',
+      //   content: 'Adisyon Yazma Hatası!\n$error',
+      // );
+
+      context.showErrorNotification("Hata!", 'Adisyon Yazma Hatası!\n$error');
     }
 
     return stringFuture;
@@ -1379,11 +1442,12 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
 
       if (ref.read(adisyonNotifierProvider).isSuccess == true) {
         if (!mounted) return false;
-        Config.showsnack(
-          context,
-          'Silindi',
-          color: const Color.fromARGB(255, 244, 67, 54),
-        );
+        // Config.showsnack(
+        //   context,
+        //   'Silindi',
+        //   color: const Color.fromARGB(255, 244, 67, 54),
+        // );
+        context.showInfoNotification("Silindi!", 'Sipariş başarıyla silindi.');
       } else {
         if (!mounted) return false;
         CuperAlert.show(
@@ -1392,11 +1456,11 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
           title: 'Hata',
           content: 'Silme Hatası!\nMutfak veya Bar a Yazılmış!',
         );
-        Config.showsnack(context, 'Bir hata oluştu');
+        context.showErrorNotification("Hata!", 'Bir hata oluştu');
       }
     } catch (error) {
       if (!mounted) return false;
-      Config.showsnack(context, 'Bir hata oluştu$error');
+      context.showErrorNotification("Hata!", 'Bir hata oluştu$error');
     }
 
     return stringFuture;
@@ -1419,5 +1483,320 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
     }
 
     if (shouldUpdate) {}
+  }
+
+  Future<void> openAlertKisiSayisi(
+    BuildContext context,
+    int masaId,
+    String masaAdi,
+  ) async {
+    final initialCount =
+        cartItems.isNotEmpty && (cartItems.first.kisiSayisi ?? 0) > 0
+        ? cartItems.first.kisiSayisi!
+        : ref.read(adisyonNotifierProvider).personCount;
+    ref.read(adisyonNotifierProvider.notifier).setPersonCount(initialCount);
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+        final isDark = theme.brightness == Brightness.dark;
+        final dialogBackground = Color.lerp(
+          colorScheme.surface,
+          colorScheme.primary,
+          isDark ? 0.12 : 0.05,
+        )!;
+
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          elevation: 4,
+          backgroundColor: dialogBackground,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 360),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              color: dialogBackground,
+              border: Border.all(
+                color: colorScheme.outline.withValues(
+                  alpha: isDark ? 0.35 : 0.2,
+                ),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.12),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: Consumer(
+              builder: (context, ref, child) {
+                final personCount = ref
+                    .watch(adisyonNotifierProvider)
+                    .personCount;
+                final adisyonNotifier = ref.watch(
+                  adisyonNotifierProvider.notifier,
+                );
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primary.withValues(
+                                    alpha: 0.12,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Icon(
+                                  Icons.people_alt_rounded,
+                                  size: 20,
+                                  color: colorScheme.primary,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Kişi Sayısı',
+                                      style: theme.textTheme.titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                            color: colorScheme.onSurface,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      masaAdi,
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                            color: colorScheme.onSurface
+                                                .withValues(alpha: 0.7),
+                                          ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 14),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: colorScheme.surface.withValues(
+                                alpha: isDark ? 0.28 : 0.55,
+                              ),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: colorScheme.outline.withValues(
+                                  alpha: isDark ? 0.3 : 0.2,
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    // Bu ekranda kişi sayısı sadece arttırılabilir.
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 180),
+                                    curve: Curves.easeInOut,
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: colorScheme.outline.withValues(
+                                          alpha: 0.25,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      Icons.remove_rounded,
+                                      color: colorScheme.onSurface.withValues(
+                                        alpha: 0.4,
+                                      ),
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 74,
+                                  height: 64,
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.primary.withValues(
+                                      alpha: isDark ? 0.22 : 0.1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(
+                                      color: colorScheme.primary.withValues(
+                                        alpha: 0.45,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        AnimatedDefaultTextStyle(
+                                          duration: const Duration(
+                                            milliseconds: 180,
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w700,
+                                            color: colorScheme.primary,
+                                          ),
+                                          child: Text('$personCount'),
+                                        ),
+                                        Text(
+                                          'Kişi',
+                                          style: theme.textTheme.labelSmall
+                                              ?.copyWith(
+                                                color: colorScheme.onSurface
+                                                    .withValues(alpha: 0.7),
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (personCount < 10) {
+                                      adisyonNotifier.addPersonCount();
+                                    }
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 180),
+                                    curve: Curves.easeInOut,
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: personCount < 10
+                                          ? colorScheme.primary
+                                          : colorScheme.surface,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: colorScheme.outline.withValues(
+                                          alpha: 0.25,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      Icons.add_rounded,
+                                      color: personCount < 10
+                                          ? colorScheme.onPrimary
+                                          : colorScheme.onSurface.withValues(
+                                              alpha: 0.4,
+                                            ),
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Sadece arttırılabilir  Max: 10',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: colorScheme.onSurface.withValues(
+                                  alpha: 0.6,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  height: 42,
+                                  child: OutlinedButton.icon(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      adisyonNotifier.setPersonCount(
+                                        initialCount,
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.close_rounded,
+                                      size: 18,
+                                    ),
+                                    label: const Text('İptal'),
+                                    style: OutlinedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: SizedBox(
+                                  height: 42,
+                                  child: FilledButton.icon(
+                                    onPressed: () async {
+                                      await ref
+                                          .read(
+                                            adisyonNotifierProvider.notifier,
+                                          )
+                                          .getAdisyonList(masaId);
+                                      if (!context.mounted) return;
+                                      Navigator.of(context).pop();
+                                      await verigetirgirilenler();
+                                    },
+                                    icon: const Icon(
+                                      Icons.check_rounded,
+                                      size: 18,
+                                    ),
+                                    label: const Text('Güncelle'),
+                                    style: FilledButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 }

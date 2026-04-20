@@ -6,6 +6,7 @@ import '../../../core/config/config.dart';
 import '../../../core/utils/utils.dart';
 import '../../data/models/dataGet/table_item_model.dart';
 import '../module/adisyon_notifier.dart';
+import '../module/table_card_theme_notifier.dart';
 import '../pages/adisyon/order_list_view.dart';
 
 class TableCard extends ConsumerWidget {
@@ -15,20 +16,25 @@ class TableCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final adisyonNotifier = ref.watch(adisyonNotifierProvider.notifier);
+    final themeState = ref.watch(tableCardThemeNotifierProvider);
     final bool isOpen = table.masaAcik == true;
     final bool isBillWritten = table.adisyonYazildi == true;
 
+    final Color openBaseColor = themeState.openTableColor;
+    final Color closedBaseColor = themeState.closedTableColor;
+    final Color billBaseColor = themeState.billWrittenTableColor;
+
     final List<Color> gradientColors = isOpen
         ? isBillWritten
-              ? [const Color(0xFF5C3A10), const Color(0xFF7A5228)]
-              : [const Color(0xFF5A2020), const Color(0xFF7A3535)]
-        : [const Color(0xFF1E3A2A), const Color(0xFF2E5540)];
+              ? [_shadeForStart(billBaseColor), _shadeForEnd(billBaseColor)]
+              : [_shadeForStart(openBaseColor), _shadeForEnd(openBaseColor)]
+        : [_shadeForStart(closedBaseColor), _shadeForEnd(closedBaseColor)];
 
     final Color accentColor = isOpen
         ? isBillWritten
-              ? const Color(0xFFD4A96A)
-              : const Color(0xFFCC8080)
-        : const Color(0xFF6DAF8A);
+              ? _badgeColor(billBaseColor)
+              : _badgeColor(openBaseColor)
+        : _badgeColor(closedBaseColor);
     return GestureDetector(
       onTap: () async {
         if (table.kisiSayisi == null || table.kisiSayisi == 0) {
@@ -235,6 +241,18 @@ class TableCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Color _shadeForStart(Color color) {
+    return Color.lerp(color, Colors.black, 0.18) ?? color;
+  }
+
+  Color _shadeForEnd(Color color) {
+    return Color.lerp(color, Colors.white, 0.10) ?? color;
+  }
+
+  Color _badgeColor(Color color) {
+    return Color.lerp(color, Colors.white, 0.45) ?? color;
   }
 
   void _showPersonCountDialog(BuildContext context, TableItemModel table) {

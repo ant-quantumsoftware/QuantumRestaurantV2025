@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:animate_do/animate_do.dart';
@@ -10,6 +11,7 @@ import '../../../../core/config/sabit_list.dart';
 import '../../../../core/routes/route_names.dart';
 import '../../../data/models/dataGet/table_item_group.dart';
 import '../../../data/models/dataGet/table_item_model.dart';
+import '../../../data/models/dataPost/login_model.dart';
 import '../../components/arama_kutusu.dart';
 import '../../components/cuper_form_2.dart';
 import '../../components/cuper_picker.dart';
@@ -119,43 +121,6 @@ class HomeViewState extends State<HomeView> {
           break;
         }
     }
-
-    // TEST: 3 örnek masa — tüm renk durumlarını görmek için
-    cartItems.addAll([
-      TableItemModel(
-        id: -1,
-        adi: 'Test Kapalı',
-        masaAcik: false,
-        adisyonYazildi: false,
-        acanGarson: null,
-        sureDk: 0,
-        sonUrun: null,
-        toplam: 0,
-        grupadi: '',
-      ),
-      TableItemModel(
-        id: -2,
-        adi: 'Test Açık',
-        masaAcik: true,
-        adisyonYazildi: false,
-        acanGarson: 'Ahmet',
-        sureDk: 45,
-        sonUrun: 'Çay',
-        toplam: 120.50,
-        grupadi: '',
-      ),
-      TableItemModel(
-        id: -3,
-        adi: 'Test Adisyon',
-        masaAcik: true,
-        adisyonYazildi: true,
-        acanGarson: 'Mehmet',
-        sureDk: 90,
-        sonUrun: 'Kebap',
-        toplam: 850.00,
-        grupadi: '',
-      ),
-    ]);
 
     setState(() {
       ordersList = cartItems;
@@ -273,16 +238,22 @@ class HomeViewState extends State<HomeView> {
             },
           ),
           actions: [
-            Builder(
-              builder: (context) {
-                return IconButton(
-                  onPressed: () async {
-                    await _signOut(context);
+            Consumer(
+              builder: (context, ref, child) {
+                return Builder(
+                  builder: (context) {
+                    return IconButton(
+                      onPressed: () async {
+                        ref.read(loginModelProvider.notifier).state = null;
+                        await _signOut(context);
+                        log(ref.read(loginModelProvider).toString());
+                      },
+                      icon: const Icon(
+                        Icons.logout_rounded,
+                        color: Colors.redAccent,
+                      ),
+                    );
                   },
-                  icon: const Icon(
-                    Icons.logout_rounded,
-                    color: Colors.redAccent,
-                  ),
                 );
               },
             ),
@@ -551,7 +522,7 @@ class HomeViewState extends State<HomeView> {
                         Cuperform2(
                           tablo: false,
                           ikon: const Icon(
-                            Icons.list_alt_rounded,
+                            Icons.description_rounded,
                             color: Colors.blue,
                             size: 24,
                           ),
@@ -582,7 +553,10 @@ class HomeViewState extends State<HomeView> {
                             ),
                           ),
                           onpress: () {
-                            // TODO: Logları Göster Metodu
+                            Navigator.pop(context);
+                            Navigator.of(
+                              context,
+                            ).pushNamed(RouteNames.appLogsPage);
                           },
                         ),
                         Cuperform2(
@@ -599,7 +573,10 @@ class HomeViewState extends State<HomeView> {
                             ),
                           ),
                           onpress: () {
-                            // TODO: Ayarlar Metodu
+                            Navigator.pop(context);
+                            Navigator.of(
+                              context,
+                            ).pushNamed(RouteNames.tableCardThemePage);
                           },
                         ),
                         Cuperform2(
