@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 
 class FastDescriptionEntity extends Equatable {
   final int? id;
-  final int productId;
-  final int ingredientId;
+  final int? productId;
+  final int? ingredientId;
   final String? ingredientName;
   final String description;
   final String? localeCode;
@@ -11,8 +11,8 @@ class FastDescriptionEntity extends Equatable {
 
   const FastDescriptionEntity({
     this.id,
-    required this.productId,
-    required this.ingredientId,
+    this.productId,
+    this.ingredientId,
     this.ingredientName,
     this.description = '',
     this.localeCode,

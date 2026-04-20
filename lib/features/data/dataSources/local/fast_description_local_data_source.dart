@@ -16,6 +16,12 @@ class FastDescriptionLocalDataSource {
   FastDescriptionLocalDataSource(this._hiveDatabaseService);
 
   Future<void> saveDescription(FastDescriptionModel model) async {
+    if (model.productId == null &&
+        model.ingredientId == null &&
+        model.id == null) {
+      model.id = DateTime.now().microsecondsSinceEpoch;
+    }
+
     await _hiveDatabaseService.putData<FastDescriptionModel>(
       FastDescriptionModel.boxName,
       model.storageKey,
@@ -24,13 +30,15 @@ class FastDescriptionLocalDataSource {
   }
 
   Future<FastDescriptionModel?> getDescription({
-    required int productId,
-    required int ingredientId,
+    int? id,
+    int? productId,
+    int? ingredientId,
     String? localeCode,
   }) async {
     return _hiveDatabaseService.getData<FastDescriptionModel>(
       FastDescriptionModel.boxName,
       FastDescriptionModel.buildStorageKey(
+        id: id,
         productId: productId,
         ingredientId: ingredientId,
         localeCode: localeCode,
@@ -39,14 +47,14 @@ class FastDescriptionLocalDataSource {
   }
 
   Future<List<FastDescriptionModel>> getDescriptionsForProduct(
-    int productId, {
+    int? productId, {
     String? localeCode,
   }) async {
     final allDescriptions = await _hiveDatabaseService
         .getAllData<FastDescriptionModel>(FastDescriptionModel.boxName);
 
     return allDescriptions.where((model) {
-      final matchesProduct = model.productId == productId;
+      final matchesProduct = productId == null || model.productId == productId;
       final matchesLocale =
           localeCode == null ||
           localeCode.isEmpty ||
@@ -56,13 +64,15 @@ class FastDescriptionLocalDataSource {
   }
 
   Future<void> deleteDescription({
-    required int productId,
-    required int ingredientId,
+    int? id,
+    int? productId,
+    int? ingredientId,
     String? localeCode,
   }) async {
     await _hiveDatabaseService.deleteData<FastDescriptionModel>(
       FastDescriptionModel.boxName,
       FastDescriptionModel.buildStorageKey(
+        id: id,
         productId: productId,
         ingredientId: ingredientId,
         localeCode: localeCode,

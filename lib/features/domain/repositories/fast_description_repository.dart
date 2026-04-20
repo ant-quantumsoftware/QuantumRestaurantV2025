@@ -15,21 +15,23 @@ final fastDescriptionRepositoryProvider = Provider<FastDescriptionRepository>((
 
 abstract class FastDescriptionRepository {
   Future<Result<List<FastDescriptionEntity>>> getDescriptionsForProduct(
-    int productId, {
+    int? productId, {
     String? localeCode,
   });
 
   Future<Result<FastDescriptionEntity?>> getDescription({
-    required int productId,
-    required int ingredientId,
+    int? id,
+    int? productId,
+    int? ingredientId,
     String? localeCode,
   });
 
   Future<Result<void>> saveDescription(FastDescriptionEntity entity);
 
   Future<Result<void>> deleteDescription({
-    required int productId,
-    required int ingredientId,
+    int? id,
+    int? productId,
+    int? ingredientId,
     String? localeCode,
   });
 
@@ -43,7 +45,7 @@ class FastDescriptionRepositoryImpl implements FastDescriptionRepository {
 
   @override
   Future<Result<List<FastDescriptionEntity>>> getDescriptionsForProduct(
-    int productId, {
+    int? productId, {
     String? localeCode,
   }) async {
     try {
@@ -59,12 +61,14 @@ class FastDescriptionRepositoryImpl implements FastDescriptionRepository {
 
   @override
   Future<Result<FastDescriptionEntity?>> getDescription({
-    required int productId,
-    required int ingredientId,
+    int? id,
+    int? productId,
+    int? ingredientId,
     String? localeCode,
   }) async {
     try {
       final model = await _localDataSource.getDescription(
+        id: id,
         productId: productId,
         ingredientId: ingredientId,
         localeCode: localeCode,
@@ -89,12 +93,14 @@ class FastDescriptionRepositoryImpl implements FastDescriptionRepository {
 
   @override
   Future<Result<void>> deleteDescription({
-    required int productId,
-    required int ingredientId,
+    int? id,
+    int? productId,
+    int? ingredientId,
     String? localeCode,
   }) async {
     try {
       await _localDataSource.deleteDescription(
+        id: id,
         productId: productId,
         ingredientId: ingredientId,
         localeCode: localeCode,

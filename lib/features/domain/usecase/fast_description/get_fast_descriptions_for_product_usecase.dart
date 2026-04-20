@@ -6,11 +6,11 @@ import '../../entity/fast_description_entity.dart';
 import '../../repositories/fast_description_repository.dart';
 
 class GetFastDescriptionsForProductUsecaseParams {
-  final int productId;
+  final int? productId;
   final String? localeCode;
 
   const GetFastDescriptionsForProductUsecaseParams({
-    required this.productId,
+    this.productId,
     this.localeCode,
   });
 }

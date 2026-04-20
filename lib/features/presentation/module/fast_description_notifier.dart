@@ -36,7 +36,7 @@ class FastDescriptionNotifier extends StateNotifier<FastDescriptionState> {
   ) : super(const FastDescriptionState());
 
   Future<void> getDescriptionsForProduct(
-    int productId, {
+    int? productId, {
     String? localeCode,
   }) async {
     state = state.copyWith(
@@ -71,8 +71,9 @@ class FastDescriptionNotifier extends StateNotifier<FastDescriptionState> {
   }
 
   Future<void> getDescription({
-    required int productId,
-    required int ingredientId,
+    int? id,
+    int? productId,
+    int? ingredientId,
     String? localeCode,
   }) async {
     state = state.copyWith(
@@ -83,6 +84,7 @@ class FastDescriptionNotifier extends StateNotifier<FastDescriptionState> {
 
     final result = await _getOneUsecase.call(
       FastDescriptionUsecaseParams(
+        id: id,
         productId: productId,
         ingredientId: ingredientId,
         localeCode: localeCode,
@@ -138,8 +140,9 @@ class FastDescriptionNotifier extends StateNotifier<FastDescriptionState> {
   }
 
   Future<void> deleteDescription({
-    required int productId,
-    required int ingredientId,
+    int? id,
+    int? productId,
+    int? ingredientId,
     String? localeCode,
   }) async {
     state = state.copyWith(
@@ -150,6 +153,7 @@ class FastDescriptionNotifier extends StateNotifier<FastDescriptionState> {
 
     final result = await _deleteUsecase.call(
       DeleteFastDescriptionUsecaseParams(
+        id: id,
         productId: productId,
         ingredientId: ingredientId,
         localeCode: localeCode,

@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/dataPost/adisyon_model.dart';
 import '../../data/models/food_item_info.dart';
+import '../../domain/entity/fast_description_entity.dart';
 import '../components/input2.dart';
 import '../module/adisyon_notifier.dart';
+import '../module/fast_description_notifier.dart';
 import '../pages/cuper_alert.dart';
 
 class AddCheckDialog extends ConsumerStatefulWidget {
@@ -37,10 +39,12 @@ class AddCheckDialog extends ConsumerStatefulWidget {
 class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
   bool _isLoading = true;
   bool _isSubmitting = false;
+  bool _isReadyLoading = false;
   double _activeAmount = 1.0;
   String _selectedOption = "";
   late TextEditingController _descriptionController;
   late List<SecenekModel> _options;
+  List<FastDescriptionEntity> _readyDescriptions = [];
 
   @override
   void initState() {
@@ -62,6 +66,105 @@ class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
     setState(() {
       _isLoading = false;
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadReadyDescriptions();
+    });
+  }
+
+  Future<void> _loadReadyDescriptions() async {
+    if (!mounted) return;
+
+    setState(() {
+      _isReadyLoading = true;
+    });
+
+    final localeCode = Localizations.localeOf(context).languageCode;
+
+    await ref
+        .read(fastDescriptionNotifierProvider.notifier)
+        .getDescriptionsForProduct(null, localeCode: localeCode);
+
+    final allDescriptions = ref
+        .read(fastDescriptionNotifierProvider)
+        .descriptions;
+
+    final filtered =
+        allDescriptions.where((item) {
+          return item.productId == null || item.productId == widget.urunid;
+        }).toList()..sort((a, b) {
+          final aDate = a.updatedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+          final bDate = b.updatedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+          return bDate.compareTo(aDate);
+        });
+
+    if (!mounted) return;
+
+    setState(() {
+      _readyDescriptions = filtered;
+      _isReadyLoading = false;
+    });
+  }
+
+  Future<void> _openSaveReadyDescriptionDialog() async {
+    final textController = TextEditingController(
+      text: _descriptionController.text.trim(),
+    );
+
+    await showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Hazır Açıklamaya Ekle'),
+          content: TextField(
+            controller: textController,
+            maxLines: 4,
+            decoration: const InputDecoration(
+              labelText: 'Açıklama',
+              hintText: 'Kaydedilecek hazır açıklama',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Vazgeç'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                final description = textController.text.trim();
+                if (description.isEmpty) {
+                  return;
+                }
+
+                final localeCode = Localizations.localeOf(context).languageCode;
+
+                await ref
+                    .read(fastDescriptionNotifierProvider.notifier)
+                    .saveDescription(
+                      FastDescriptionEntity(
+                        productId: widget.urunid,
+                        ingredientId: widget.urunid,
+                        ingredientName: widget.urunadi,
+                        description: description,
+                        localeCode: localeCode,
+                        updatedAt: DateTime.now(),
+                      ),
+                    );
+
+                if (!mounted) return;
+
+                _descriptionController.text = description;
+                Navigator.pop(context);
+                await _loadReadyDescriptions();
+              },
+              child: const Text('Kaydet'),
+            ),
+          ],
+        );
+      },
+    );
+
+    textController.dispose();
   }
 
   void _adjustAmount(double delta) {
@@ -467,7 +570,7 @@ class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
         ),
       ),
       subtitle: Text(
-        "Siparişe açıklama yaz",
+        "Açıklama yaz veya hazır açıklama seç",
         style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 11),
       ),
       children: [
@@ -486,6 +589,100 @@ class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
             },
           ),
         ),
+        const SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton.icon(
+            onPressed: _openSaveReadyDescriptionDialog,
+            icon: const Icon(Icons.playlist_add),
+            label: const Text('Hazır Açıklamaya Kaydet'),
+          ),
+        ),
+        const SizedBox(height: 4),
+        if (_isReadyLoading)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: CupertinoActivityIndicator(),
+          )
+        else if (_readyDescriptions.isEmpty)
+          Text(
+            'Bu ürün veya genel için hazır açıklama bulunamadı.',
+            style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 12),
+          )
+        else
+          Container(
+            constraints: const BoxConstraints(maxHeight: 190),
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: _readyDescriptions.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 6),
+              itemBuilder: (context, index) {
+                final item = _readyDescriptions[index];
+                final isGlobal = item.productId == null;
+
+                return InkWell(
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: () {
+                    setState(() {
+                      _descriptionController.text = item.description;
+                    });
+                  },
+                  child: Ink(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: scheme.surface,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: scheme.outline.withValues(alpha: 0.25),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            item.description,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: scheme.onSurface,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isGlobal
+                                ? scheme.tertiaryContainer
+                                : scheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Text(
+                            isGlobal ? 'Genel' : 'Ürün',
+                            style: TextStyle(
+                              color: isGlobal
+                                  ? scheme.onTertiaryContainer
+                                  : scheme.onPrimaryContainer,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
       ],
     );
   }

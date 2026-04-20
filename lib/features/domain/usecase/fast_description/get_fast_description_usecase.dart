@@ -6,13 +6,15 @@ import '../../entity/fast_description_entity.dart';
 import '../../repositories/fast_description_repository.dart';
 
 class FastDescriptionUsecaseParams {
-  final int productId;
-  final int ingredientId;
+  final int? id;
+  final int? productId;
+  final int? ingredientId;
   final String? localeCode;
 
   const FastDescriptionUsecaseParams({
-    required this.productId,
-    required this.ingredientId,
+    this.id,
+    this.productId,
+    this.ingredientId,
     this.localeCode,
   });
 }
@@ -36,6 +38,7 @@ class GetFastDescriptionUsecase
   ) async {
     try {
       final result = await _fastDescriptionRepository.getDescription(
+        id: params.id,
         productId: params.productId,
         ingredientId: params.ingredientId,
         localeCode: params.localeCode,

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../../core/config/sabit_list.dart';
+import '../../../../core/routes/route_names.dart';
 import '../../../data/models/dataGet/table_item_group.dart';
 import '../../../data/models/dataGet/table_item_model.dart';
 import '../../components/arama_kutusu.dart';
@@ -547,6 +548,26 @@ class HomeViewState extends State<HomeView> {
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                       children: <Widget>[
+                        Cuperform2(
+                          tablo: false,
+                          ikon: const Icon(
+                            Icons.list_alt_rounded,
+                            color: Colors.blue,
+                            size: 24,
+                          ),
+                          baslik: Text(
+                            "Hazır Açıklamalar",
+                            style: TextStyle(
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          onpress: () {
+                            Navigator.pop(context);
+                            Navigator.of(
+                              context,
+                            ).pushNamed(RouteNames.fastDescriptionPage);
+                          },
+                        ),
                         Cuperform2(
                           tablo: false,
                           ikon: const Icon(

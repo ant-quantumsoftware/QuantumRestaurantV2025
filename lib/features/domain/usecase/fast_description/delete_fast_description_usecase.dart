@@ -5,13 +5,15 @@ import '../../../../core/usecase/result.dart';
 import '../../repositories/fast_description_repository.dart';
 
 class DeleteFastDescriptionUsecaseParams {
-  final int productId;
-  final int ingredientId;
+  final int? id;
+  final int? productId;
+  final int? ingredientId;
   final String? localeCode;
 
   const DeleteFastDescriptionUsecaseParams({
-    required this.productId,
-    required this.ingredientId,
+    this.id,
+    this.productId,
+    this.ingredientId,
     this.localeCode,
   });
 }
@@ -33,6 +35,7 @@ class DeleteFastDescriptionUsecase
   Future<Result<void>> call(DeleteFastDescriptionUsecaseParams params) async {
     try {
       final result = await _fastDescriptionRepository.deleteDescription(
+        id: params.id,
         productId: params.productId,
         ingredientId: params.ingredientId,
         localeCode: params.localeCode,

@@ -18,8 +18,8 @@ class FastDescriptionModelAdapter extends TypeAdapter<FastDescriptionModel> {
     };
     return FastDescriptionModel(
       id: fields[0] as int?,
-      productId: fields[1] as int,
-      ingredientId: fields[2] as int,
+      productId: fields[1] as int?,
+      ingredientId: fields[2] as int?,
       ingredientName: fields[3] as String?,
       description: fields[4] as String? ?? '',
       localeCode: fields[5] as String?,

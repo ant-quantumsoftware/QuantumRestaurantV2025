@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -76,6 +78,9 @@ class _MyLoginState extends State<MyLogin> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -86,396 +91,433 @@ class _MyLoginState extends State<MyLogin> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        body: (autologin)
-            ? Container(
-                alignment: Alignment.center,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    colors: [
-                      Colors.blue.shade400,
-                      Colors.blue.shade800,
-                      Colors.blue.shade900,
-                    ],
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FadeInUp(
-                      duration: const Duration(milliseconds: 3000),
-                      child: const Text(
-                        "Quantum",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 60,
-                          fontFamily: 'BakbakOne',
-                        ),
-                      ),
-                    ),
-                    FadeInUp(
-                      duration: const Duration(milliseconds: 5000),
-                      child: const Text(
-                        "Restaurant",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          fontFamily: 'BakbakOne',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            : Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    colors: [
-                      Colors.blue.shade100,
-                      Colors.blue.shade600,
-                      Colors.blue.shade900,
-                    ],
-                  ),
-                ),
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  backgroundColor: Colors.transparent,
-                  persistentFooterButtons: [
-                    FadeInUp(
-                      duration: const Duration(milliseconds: 1700),
-                      child: CupertinoButton(
-                        child: const Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Bağlantı Ayarları",
-                            style: TextStyle(fontSize: 16, color: Colors.white),
-                          ),
-                        ),
-                        onPressed: () => {
-                          Config.gotopage(
-                            context,
-                            const ApiAyari(),
-                            "",
-                            "Asansör Ana Sayfa",
-                            yarim: true,
-                            baslik: "Bağlantı Ayarları",
-                            message: "Lütfen IP Adresinizi yazın ve kaydedin.",
-                          ),
-                        },
-                      ),
-                    ),
-                    // FadeInUp(
-                    //   duration: const Duration(milliseconds: 1700),
-                    //   child: Align(
-                    //     alignment: Alignment.center,
-                    //     child: Container(
-                    //       height: 60,
-                    //       width: 180,
-                    //       alignment: Alignment.center,
-                    //       decoration: const BoxDecoration(
-                    //         image: DecorationImage(
-                    //           image: AssetImage("assets/logores.png"),
-                    //           fit: BoxFit.fill,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                  body: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      MediaQuery.of(context).size.height > 800
-                          ? const SizedBox(height: 50)
-                          : const SizedBox(height: 0),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    const SizedBox(height: 50),
-                                    FadeInUp(
-                                      duration: const Duration(
-                                        milliseconds: 1000,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 80,
-                                            height: 80,
-                                            child: Container(
-                                              decoration: const BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: AssetImage(
-                                                    "assets/logo.png",
-                                                  ),
-                                                  fit: BoxFit.fill,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          const Text(
-                                            "Quantum",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 50,
-                                              fontFamily: 'BakbakOne',
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    FadeInUp(
-                                      duration: const Duration(
-                                        milliseconds: 3000,
-                                      ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.only(left: 95),
-                                        child: Text(
-                                          "Restaurant",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.all(15),
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(60),
-                                    topRight: Radius.circular(60),
-                                    bottomLeft: Radius.circular(60),
-                                    bottomRight: Radius.circular(60),
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(30),
-                                  child: Column(
-                                    children: <Widget>[
-                                      const SizedBox(height: 20),
-                                      FadeInUp(
-                                        duration: const Duration(
-                                          milliseconds: 3000,
-                                        ),
-                                        child: const Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            "Kullanıcı Adı veya e-Posta",
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      FadeInUp(
-                                        duration: const Duration(
-                                          milliseconds: 1400,
-                                        ),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: Color.fromRGBO(
-                                                  27,
-                                                  90,
-                                                  225,
-                                                  0.306,
-                                                ),
-                                                blurRadius: 20,
-                                                offset: Offset(0, 10),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                              border: Border(
-                                                bottom: BorderSide(
-                                                  color: Colors.grey.shade200,
-                                                ),
-                                              ),
-                                            ),
-                                            child: Input2(
-                                              bgcolors: Colors.transparent,
-                                              textcolor: Colors.black,
-                                              texteditcontrol: email,
-                                              textsize: 16,
-                                              label:
-                                                  "Kullanıcı Adı, TC Kimlik, Tel, e-Posta",
-                                              solwidget: const Icon(
-                                                CupertinoIcons.person_2_fill,
-                                                size: 20,
-                                                color: Colors.grey,
-                                              ),
-                                              textValue: (val) {
-                                                email.text = val.toString();
-                                              },
-                                              inputValue: email.text,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 15),
-                                      FadeInUp(
-                                        duration: const Duration(
-                                          milliseconds: 3000,
-                                        ),
-                                        child: const Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            "Parola",
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      FadeInUp(
-                                        duration: const Duration(
-                                          milliseconds: 1500,
-                                        ),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            boxShadow: const [
-                                              BoxShadow(
-                                                color: Color.fromRGBO(
-                                                  27,
-                                                  90,
-                                                  225,
-                                                  0.306,
-                                                ),
-                                                blurRadius: 20,
-                                                offset: Offset(0, 10),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                padding: const EdgeInsets.all(
-                                                  10,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  border: Border(
-                                                    bottom: BorderSide(
-                                                      color:
-                                                          Colors.grey.shade200,
-                                                    ),
-                                                  ),
-                                                ),
-                                                child: Input2(
-                                                  textcolor: Colors.black,
-                                                  bgcolors: Colors.transparent,
-                                                  textsize: 16,
-                                                  texteditcontrol: password,
-                                                  label: "Parolanız",
-                                                  maxline: 1,
-                                                  passwordstatus: passwordshow,
-                                                  textValue: (val) {
-                                                    password.text = val
-                                                        .toString();
-                                                  },
-                                                  inputValue: password.text,
-                                                  solwidget: const Icon(
-                                                    CupertinoIcons.lock_fill,
-                                                    size: 20,
-                                                    color: Colors.grey,
-                                                  ),
-                                                  sagwigdet: CupertinoButton(
-                                                    padding: EdgeInsets.zero,
-                                                    child: passwordshow
-                                                        ? const Icon(
-                                                            CupertinoIcons.eye,
-                                                            size: 16,
-                                                          )
-                                                        : const Icon(
-                                                            CupertinoIcons
-                                                                .eye_slash,
-                                                            size: 16,
-                                                          ),
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        passwordshow =
-                                                            !passwordshow;
-                                                      });
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      FormSatir(
-                                        baslik: const Text("Beni Hatırla"),
-                                        onpress: () {
-                                          isChecked = !isChecked;
-                                          setState(() {});
-                                        },
-                                        komponet: CupertinoSwitch(
-                                          value: isChecked,
-                                          onChanged: (bool value) {
-                                            isChecked = value;
-                                            setState(() {});
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(height: 30),
-                                      FadeInUp(
-                                        duration: const Duration(
-                                          milliseconds: 1600,
-                                        ),
-                                        child: CupertinoButton.filled(
-                                          child: const Text("Giriş Yap"),
-                                          onPressed: () {
-                                            hatatxt = "";
+        body: autologin
+            ? _buildSplash(theme, colorScheme)
+            : _buildLoginBody(theme, colorScheme),
+      ),
+    );
+  }
 
-                                            login();
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+  Widget _buildSplash(ThemeData theme, ColorScheme colorScheme) {
+    return Container(
+      alignment: Alignment.center,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            colorScheme.primary,
+            colorScheme.tertiary,
+            colorScheme.secondary,
+          ],
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -60,
+            right: -30,
+            child: _buildGlow(140, Colors.white.withValues(alpha: 0.08)),
+          ),
+          Positioned(
+            left: -50,
+            bottom: -70,
+            child: _buildGlow(180, Colors.white.withValues(alpha: 0.05)),
+          ),
+          Center(
+            child: FadeInUp(
+              duration: const Duration(milliseconds: 1400),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 112,
+                    height: 112,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(28),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.18),
+                      ),
+                    ),
+                    child: Image.asset('assets/logo.png', fit: BoxFit.contain),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Quantum',
+                    style: theme.textTheme.headlineLarge?.copyWith(
+                      color: Colors.white,
+                      fontSize: 34,
+                      fontFamily: 'BakbakOne',
+                      letterSpacing: 0.2,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Restaurant',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontFamily: 'BakbakOne',
+                      fontSize: 12,
+                      letterSpacing: 1.8,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginBody(ThemeData theme, ColorScheme colorScheme) {
+    final tintedBackground = Color.alphaBlend(
+      colorScheme.primary.withValues(alpha: 0.03),
+      theme.scaffoldBackgroundColor,
+    );
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            colorScheme.primary.withValues(alpha: 0.07),
+            tintedBackground,
+            tintedBackground,
+          ],
+        ),
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.transparent,
+          body: Stack(
+            children: [
+              Positioned(
+                top: -40,
+                right: -30,
+                child: _buildGlow(
+                  120,
+                  colorScheme.primary.withValues(alpha: 0.08),
+                ),
+              ),
+              Positioned(
+                bottom: -55,
+                left: -35,
+                child: _buildGlow(
+                  160,
+                  colorScheme.tertiary.withValues(alpha: 0.08),
+                ),
+              ),
+              Column(
+                children: <Widget>[
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 520),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              FadeInUp(
+                                duration: const Duration(milliseconds: 900),
+                                child: _buildHeader(theme, colorScheme),
+                              ),
+                              const SizedBox(height: 22),
+                              FadeInUp(
+                                duration: const Duration(milliseconds: 1100),
+                                child: _buildLoginCard(theme, colorScheme),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: FadeInUp(
+                      duration: const Duration(milliseconds: 1200),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Config.gotopage(
+                              context,
+                              const ApiAyari(),
+                              '',
+                              'Asansör Ana Sayfa',
+                              yarim: true,
+                              baslik: 'Bağlantı Ayarları',
+                              message:
+                                  'Lütfen IP Adresinizi yazın ve kaydedin.',
+                            );
+                          },
+                          icon: const Icon(CupertinoIcons.settings),
+                          label: const Text('Bağlantı Ayarları'),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(ThemeData theme, ColorScheme colorScheme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: colorScheme.outline.withValues(alpha: 0.18),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: colorScheme.primary.withValues(alpha: 0.08),
+                    blurRadius: 24,
+                    offset: const Offset(0, 12),
+                  ),
+                ],
+              ),
+              child: Image.asset('assets/logo.png', fit: BoxFit.contain),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              'Quantum',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontFamily: 'BakbakOne',
+                fontSize: 42,
+                color: colorScheme.onSurface,
+                letterSpacing: 0.1,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Restaurant yönetim paneli',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.hintColor,
+                fontSize: 17,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        // Text(
+        //   'Hesabınıza giriş yapın',
+        //   textAlign: TextAlign.center,
+        //   style: theme.textTheme.headlineSmall?.copyWith(
+        //     fontSize: 24,
+        //     fontWeight: FontWeight.w800,
+        //   ),
+        // ),
+        // const SizedBox(height: 6),
+        Text(
+          'Kullanıcı bilgilerinizi girerek masalar ve sipariş yönetimine devam edin.',
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.hintColor,
+            fontSize: 13,
+            height: 1.35,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoginCard(ThemeData theme, ColorScheme colorScheme) {
+    final cardSurface = Color.alphaBlend(
+      colorScheme.primary.withValues(alpha: 0.04),
+      theme.scaffoldBackgroundColor,
+    );
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: cardSurface,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.12)),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.primary.withValues(alpha: 0.08),
+            blurRadius: 36,
+            offset: const Offset(0, 20),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildFieldLabel(theme, 'Kullanıcı Adı veya e-Posta'),
+          const SizedBox(height: 6),
+          _buildFieldShell(
+            child: Input2(
+              bgcolors: colorScheme.outline.withValues(alpha: 0.18),
+              textcolor: theme.colorScheme.onSurface,
+              texteditcontrol: email,
+              textsize: 15,
+              label: 'Kullanıcı adı / e-Posta',
+              solwidget: Icon(
+                CupertinoIcons.person_2_fill,
+                size: 18,
+                color: colorScheme.primary,
+              ),
+              textValue: (val) {
+                email.text = val.toString();
+              },
+              inputValue: email.text,
+            ),
+          ),
+          const SizedBox(height: 14),
+          _buildFieldLabel(theme, 'Parola'),
+          const SizedBox(height: 6),
+          _buildFieldShell(
+            child: Input2(
+              textcolor: theme.colorScheme.onSurface,
+              bgcolors: colorScheme.outline.withValues(alpha: 0.18),
+              textsize: 15,
+              texteditcontrol: password,
+              label: 'Parola',
+              maxline: 1,
+              passwordstatus: passwordshow,
+              textValue: (val) {
+                password.text = val.toString();
+              },
+              inputValue: password.text,
+              solwidget: Icon(
+                CupertinoIcons.lock_fill,
+                size: 18,
+                color: colorScheme.primary,
+              ),
+              sagwigdet: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Icon(
+                  passwordshow ? CupertinoIcons.eye : CupertinoIcons.eye_slash,
+                  size: 16,
+                  color: colorScheme.primary,
+                ),
+                onPressed: () {
+                  setState(() {
+                    passwordshow = !passwordshow;
+                  });
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          FormSatir(
+            baslik: Text('Beni Hatırla', style: theme.textTheme.titleSmall),
+            onpress: () {
+              isChecked = !isChecked;
+              setState(() {});
+            },
+            komponet: CupertinoSwitch(
+              activeTrackColor: colorScheme.primary,
+              value: isChecked,
+              onChanged: (bool value) {
+                isChecked = value;
+                setState(() {});
+              },
+            ),
+          ),
+          const SizedBox(height: 14),
+          FilledButton.icon(
+            onPressed: () {
+              hatatxt = '';
+              login();
+            },
+            icon: const Icon(CupertinoIcons.arrow_right_circle_fill),
+            label: const Text('Giriş Yap'),
+          ),
+          if (hatatxt != null && hatatxt!.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.warning_rounded, color: colorScheme.error),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      hatatxt!,
+                      style: TextStyle(
+                        color: colorScheme.onErrorContainer,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFieldLabel(ThemeData theme, String label) {
+    return Text(
+      label,
+      style: theme.textTheme.labelLarge?.copyWith(
+        fontWeight: FontWeight.w700,
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.72),
+      ),
+    );
+  }
+
+  Widget _buildFieldShell({required Widget child}) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final fieldSurface = Color.alphaBlend(
+      colorScheme.secondary.withValues(alpha: 0.025),
+      theme.scaffoldBackgroundColor,
+    );
+
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: fieldSurface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.12)),
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildGlow(double size, Color color) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(colors: [color, Colors.transparent]),
       ),
     );
   }
@@ -543,6 +585,7 @@ class _MyLoginState extends State<MyLogin> {
       }
       token = "";
       autologin = false;
+      log("hata: $hata");
       if (mounted) {
         setState(() {});
       }

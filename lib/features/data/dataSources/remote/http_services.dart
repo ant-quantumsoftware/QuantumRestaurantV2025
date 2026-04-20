@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, unused_local_variable
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 
@@ -50,6 +51,39 @@ class HttpServices {
     if (response.statusCode == 200) {
       return json.encode(response.data);
     } else {
+      return "";
+    }
+  }
+
+  Future<String> LoginRestaurantMethod(String UserName, String Password) async {
+    final dio = Dio();
+    token = Settings.getToken();
+    serveradres = Settings.getApiAdres();
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers["Auth"] = token;
+    dio.options.method = "POST";
+
+    var headers = {'Content-Type': 'application/json'};
+
+    var data = json.encode({
+      "Email": UserName,
+      "Parola": Password,
+      "SirketNo": "",
+    });
+
+    var response = await dio.request(
+      'http://$serveradres/RestLogin/LoginRestaurant',
+      options: Options(method: 'POST', headers: headers),
+      data: data,
+    );
+
+    if (response.statusCode == 200) {
+      return json.encode(response.data);
+    } else {
+      log(
+        "LoginRestaurantMethod failed with status code: ${response.statusCode}",
+      );
+      log("Response data: ${response.data}");
       return "";
     }
   }
