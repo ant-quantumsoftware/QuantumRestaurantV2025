@@ -14,11 +14,13 @@ class CheckLineCard extends ConsumerWidget {
     required this.cartItem,
     required this.onPressed,
     required this.onPressedDelete,
+    this.onTap,
   });
 
   final CardItemModel cartItem;
   final void Function(BuildContext)? onPressed;
   final void Function(BuildContext)? onPressedDelete;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -59,56 +61,61 @@ class CheckLineCard extends ConsumerWidget {
             ),
           ],
         ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: scheme.surface,
-            border: Border.all(color: scheme.outline.withValues(alpha: 0.14)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-            child: Cuperform2(
-              onpress: () async {},
-              ikon: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: scheme.primary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              color: scheme.surface,
+              border: Border.all(color: scheme.outline.withValues(alpha: 0.14)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
                 ),
-                child: Text(
-                  '${cartItem.miktar} X',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: scheme.primary,
+              ],
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              child: Cuperform2(
+                ikon: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: scheme.primary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${cartItem.miktar} X',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: scheme.primary,
+                    ),
                   ),
                 ),
-              ),
-              baslik: Text(
-                cartItem.adi ?? '-',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: scheme.onSurface,
+                baslik: Text(
+                  cartItem.adi ?? '-',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: scheme.onSurface,
+                  ),
                 ),
-              ),
-              komponet: Text(
-                '${Config.formatter.format(cartItem.genel)} ₺',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                  color: scheme.onSurface,
+                komponet: Text(
+                  '${Config.formatter.format(cartItem.genel)} ₺',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: scheme.onSurface,
+                  ),
                 ),
+                altbaslik: hasDetails
+                    ? Column(children: _buildDetailItems(context))
+                    : null,
               ),
-              altbaslik: hasDetails
-                  ? Column(children: _buildDetailItems(context))
-                  : null,
             ),
           ),
         ),

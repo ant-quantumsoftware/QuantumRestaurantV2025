@@ -18,8 +18,8 @@ import '../../components/cuper_alert.dart';
 import '../../components/cuper_form_2.dart';
 import '../../components/liste_menu.dart';
 import '../../module/adisyon_notifier.dart';
+import '../../widgets/add_check_dialog.dart';
 import '../order_description_dialog.dart';
-import 'adisyon_miktar.dart';
 
 class OrderListView extends ConsumerStatefulWidget {
   final int masaid;
@@ -267,7 +267,7 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
     switch (pageIndex) {
       case 0:
         {
-          return addPage(context);
+          return _addPage(context);
         }
       case 1:
         {
@@ -279,13 +279,12 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
         }
       default:
         {
-          return addPage(context);
+          return _addPage(context);
         }
     }
   }
 
-  Widget addPage(BuildContext context) {
-    final darkMode = Theme.of(context).brightness == Brightness.dark;
+  Widget _addPage(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
     return FadeInUp(
@@ -474,7 +473,7 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                         right: BorderSide(color: Colors.grey, width: 3.0),
                       ),
                     ),
-                    child: _categoryList(darkMode),
+                    child: _categoryList(),
                   ),
                 ),
                 const SizedBox(width: 2),
@@ -549,10 +548,10 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
 
                           await Config.gotopage(
                             context,
-                            AdsMiktar(
+                            AddCheckDialog(
                               masaid: tableId,
                               masaadi: tableName,
-                              urunid: item.id!,
+                              urunid: item.id ?? 0,
                               urunadi: item.adi ?? 'Ürün',
                               aciklama: '',
                               mevcut: 1,
@@ -610,7 +609,8 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
           );
   }
 
-  Widget _categoryList(bool darkMode) {
+  Widget _categoryList() {
+    final scheme = Theme.of(context).colorScheme;
     return foodCategoriItems.isNotEmpty
         ? ListView.builder(
             itemCount: foodCategoriItems.length,
@@ -640,17 +640,15 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                   });
                 },
                 selectedcolor: (foodCategoriItem.selected!)
-                    ? const Color.fromARGB(160, 91, 20, 150)
+                    ? scheme.primary.withValues(alpha: 0.18)
                     : Colors.transparent,
                 divider: true,
                 baslik: Text(
-                  foodCategoriItem.adi.toString(),
+                  foodCategoriItem.adi ?? "Kategori Adı Bulunamadı",
                   style: TextStyle(
-                    color: !(foodCategoriItem.selected!)
-                        ? darkMode
-                              ? Colors.white70
-                              : Colors.black
-                        : Colors.white,
+                    color: foodCategoriItem.selected!
+                        ? scheme.primary
+                        : scheme.onSurface,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -762,6 +760,36 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                     itemBuilder: (context, index) {
                       final cartItem = cartItems[index];
                       return CheckLineCard(
+                        onTap: () async {
+                          final allItems = Settings.getFoodItemAll();
+                          final sourceIndex = allItems.indexWhere(
+                            (e) => e.id == cartItem.id,
+                          );
+
+                          await Config.gotopage(
+                            context,
+                            AddCheckDialog(
+                              masaid: tableId,
+                              masaadi: tableName,
+                              urunid: cartItem.id ?? 0,
+                              urunadi: cartItem.adi ?? 'Ürün',
+                              aciklama: '',
+                              mevcut: 1,
+                              fruitliste: sourceIndex >= 0
+                                  ? createFruit(sourceIndex, false)
+                                  : <SecenekModel>[],
+                              adisyon: true,
+                              onOrderAdded: () {
+                                // Sipariş eklendikten sonra listeyi yenile
+                                verigetirgirilenler();
+                              },
+                            ),
+                            "",
+                            "Miktar",
+                            yarim: true,
+                            baslik: cartItem.adi ?? 'Ürün',
+                          );
+                        },
                         cartItem: cartItem,
                         onPressedDelete: (_) {
                           deleteSiparis(cartItem.id!);

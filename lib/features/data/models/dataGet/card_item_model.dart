@@ -5,7 +5,10 @@ import '../../dataSources/remote/http_services.dart';
 class CardItemModel {
   int? id;
   String? adi;
-  String? fiyats;
+  String? fiyat;
+  int? malzemeId;
+  int? masaId;
+  int? kisiSayisi;
   double? fiyatd;
   String? ozellik1;
   String? ozellik2;
@@ -21,7 +24,7 @@ class CardItemModel {
   CardItemModel({
     this.id,
     this.adi,
-    this.fiyats,
+    this.fiyat,
     this.extraozellikler,
     this.fiyatd,
     this.ozellik1,
@@ -35,7 +38,7 @@ class CardItemModel {
     id = json['Id'];
     adi = json['Adi'];
     fiyatd = json['Fiyat'];
-    fiyats = json['Fiyat'].toString();
+    fiyat = json['Fiyat'].toString();
     miktar = json['Miktar'];
     ozellik1 = json['Ozellik1'];
     ozellik2 = json['Ozellik2'];
