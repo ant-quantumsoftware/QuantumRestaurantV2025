@@ -2,14 +2,14 @@ import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/locale/locales.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/utils/utils.dart';
 import '../../data/models/dataGet/card_item_model.dart';
 import '../../data/models/dataGet/food_categori_model.dart';
 import '../../data/models/dataGet/food_item_model.dart';
 import '../components/custom_circular_button.dart';
-import '../../../core/locale/locales.dart';
 import '../pages/siparis_onaylama.dart';
-import '../../../core/theme/colors.dart';
-import '../../../core/utils/utils.dart';
 import 'dialog_miktar_siparis.dart';
 import 'item_info.dart';
 
@@ -313,12 +313,14 @@ class HomePageState extends State<HomePage> {
 
                                   const SizedBox(height: 5),
                                   // Özellik 1
-                                  (cartItems[index].ozellik1 != null &&
-                                          cartItems[index].ozellik1!.isNotEmpty)
+                                  (cartItems[index].ozellikAciklama != null &&
+                                          cartItems[index]
+                                              .ozellikAciklama!
+                                              .isNotEmpty)
                                       ? Row(
                                           children: [
                                             Text(
-                                              cartItems[index].ozellik1!,
+                                              cartItems[index].ozellikAciklama!,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .titleMedium!
@@ -331,12 +333,15 @@ class HomePageState extends State<HomePage> {
                                         )
                                       : const SizedBox.shrink(),
                                   // Özellik 2
-                                  (cartItems[index].ozellik2 != null &&
-                                          cartItems[index].ozellik2!.isNotEmpty)
+                                  (cartItems[index].ozellikAciklama2 != null &&
+                                          cartItems[index]
+                                              .ozellikAciklama2!
+                                              .isNotEmpty)
                                       ? Row(
                                           children: [
                                             Text(
-                                              cartItems[index].ozellik2!,
+                                              cartItems[index]
+                                                  .ozellikAciklama2!,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .titleMedium!
@@ -349,12 +354,15 @@ class HomePageState extends State<HomePage> {
                                         )
                                       : const SizedBox.shrink(),
                                   // Özellik 3
-                                  (cartItems[index].ozellik3 != null &&
-                                          cartItems[index].ozellik3!.isNotEmpty)
+                                  (cartItems[index].ozellikAciklama3 != null &&
+                                          cartItems[index]
+                                              .ozellikAciklama3!
+                                              .isNotEmpty)
                                       ? Row(
                                           children: [
                                             Text(
-                                              cartItems[index].ozellik3!,
+                                              cartItems[index]
+                                                  .ozellikAciklama3!,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .titleMedium!

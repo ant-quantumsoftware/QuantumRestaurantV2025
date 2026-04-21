@@ -9,9 +9,9 @@ class CardItemModel {
   int? masaId;
   int? kisiSayisi;
   double? fiyatd;
-  String? ozellik1;
-  String? ozellik2;
-  String? ozellik3;
+  String? ozellikAciklama;
+  String? ozellikAciklama2;
+  String? ozellikAciklama3;
   String? secenek;
   double? genel;
   late double miktar = 0;
@@ -26,9 +26,9 @@ class CardItemModel {
     this.adi,
     this.extraozellikler,
     this.fiyatd,
-    this.ozellik1,
-    this.ozellik2,
-    this.ozellik3,
+    this.ozellikAciklama,
+    this.ozellikAciklama2,
+    this.ozellikAciklama3,
     this.miktar = 0,
     this.secenek,
     this.genel,
@@ -43,9 +43,9 @@ class CardItemModel {
     adi = json['Adi'];
     fiyatd = json['Fiyat'];
     miktar = json['Miktar'];
-    ozellik1 = json['Ozellik1'];
-    ozellik2 = json['Ozellik2'];
-    ozellik3 = json['Ozellik3'];
+    ozellikAciklama = json['OzellikAciklama1'];
+    ozellikAciklama2 = json['OzellikAciklama2'];
+    ozellikAciklama3 = json['OzellikAciklama3'];
     secenek = json['Secenek'];
     extraozellikler = List<String>.from(json['EtraOzellikler'] ?? []);
     malzemeId = json['MalzemeId'];
@@ -61,9 +61,9 @@ class CardItemModel {
     data['Adi'] = adi;
     data['Fiyat'] = fiyatd;
     data['Miktar'] = miktar;
-    data['Ozellik1'] = ozellik1;
-    data['Ozellik2'] = ozellik2;
-    data['Ozellik3'] = ozellik3;
+    data['OzellikAciklama1'] = ozellikAciklama;
+    data['OzellikAciklama2'] = ozellikAciklama2;
+    data['OzellikAciklama3'] = ozellikAciklama3;
     data['Secenek'] = secenek;
     data['EtraOzellikler'] = extraozellikler;
     data['MalzemeId'] = malzemeId;

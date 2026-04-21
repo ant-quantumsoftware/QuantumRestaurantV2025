@@ -470,9 +470,9 @@ class MyDialogState extends State<MyDialog> {
                       malzemeid: malzemeidim,
                       fiyatd: 0,
                       secenek: seciliOzellik,
-                      ozellik1: "",
-                      ozellik2: "",
-                      ozellik3: "",
+                      ozellikAciklama1: "",
+                      ozellikAciklama2: "",
+                      ozellikAciklama3: "",
                       masaid: widget.masaid,
                     );
 

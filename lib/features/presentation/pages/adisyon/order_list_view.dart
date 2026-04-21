@@ -261,51 +261,6 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
     );
   }
 
-  Row _oldAppBar(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 3,
-          child: SizedBox(
-            width: 200,
-            child: CupertinoButton(
-              onPressed: () {
-                adisyonMutfakYaz(tableId);
-                Navigator.pop(context);
-              },
-              minimumSize: Size(20, 20),
-              child: Row(
-                children: [
-                  Icon(
-                    CupertinoIcons.back,
-                    color: context.theme.hintColor,
-                    size: 28,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 5,
-          child: Column(
-            children: [
-              Text(
-                tableName,
-                style: TextStyle(
-                  color: Theme.of(context).hintColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  fontFamily: 'BakbakOne',
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget selectedPage(BuildContext context) {
     switch (pageIndex) {
       case 0:
@@ -831,6 +786,7 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                                   ? createFruit(sourceIndex, false)
                                   : <SecenekModel>[],
                               adisyon: true,
+
                               onOrderAdded: () {
                                 // Sipariş eklendikten sonra listeyi yenile
                                 verigetirgirilenler();

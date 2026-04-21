@@ -115,11 +115,11 @@ class _MyLoginState extends ConsumerState<MyLogin> {
   Widget _buildSplash(ThemeData theme, ColorScheme colorScheme) {
     final heroBase = colorScheme.primary;
     final heroMid = Color.alphaBlend(
-      colorScheme.secondary.withValues(alpha: 0.28),
+      colorScheme.onPrimary.withValues(alpha: 0.08),
       heroBase,
     );
     final heroEdge = Color.alphaBlend(
-      colorScheme.tertiary.withValues(alpha: 0.22),
+      Colors.black.withValues(alpha: 0.14),
       heroBase,
     );
     final onHero = colorScheme.onPrimary;

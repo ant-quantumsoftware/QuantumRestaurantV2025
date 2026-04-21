@@ -119,9 +119,9 @@ class OrderDescriptionDialogState extends State<OrderDescriptionDialog> {
                     malzemeid: 0,
                     fiyatd: 0,
                     adi: '',
-                    ozellik1: myController.text.trim(),
-                    ozellik2: '',
-                    ozellik3: '',
+                    ozellikAciklama1: myController.text.trim(),
+                    ozellikAciklama2: '',
+                    ozellikAciklama3: '',
                     masaid: 0,
                   );
 

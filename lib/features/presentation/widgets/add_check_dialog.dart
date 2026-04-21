@@ -62,14 +62,14 @@ class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
   }
 
   void _initializeData() {
-    _activeAmount = widget.mevcut < 0.5 ? 1.0 : widget.mevcut;
+    _activeAmount = widget.existingOrder?.miktar ?? 1.0;
     _descriptionController = TextEditingController(
-      text: widget.existingOrder?.ozellik1 ?? '',
+      text: widget.existingOrder?.aciklama ?? '',
     );
     _options = List.from(widget.fruitliste);
-    _selectedOption = widget.existingOrder?.ozellik1 ?? "";
+    _selectedOption = widget.existingOrder?.secenek?.trim() ?? "";
     for (var option in _options) {
-      option.selected = option.secenek == _selectedOption;
+      option.selected = option.secenek?.trim() == _selectedOption;
     }
 
     setState(() {
@@ -198,7 +198,7 @@ class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
       }
       // Seçilen seçeneği true yap
       _options[index].selected = true;
-      _selectedOption = _options[index].secenek!;
+      _selectedOption = _options[index].secenek?.trim() ?? "";
     });
   }
 
@@ -241,9 +241,9 @@ class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
           malzemeid: widget.urunid,
           fiyatd: 0,
           secenek: _selectedOption,
-          ozellik1: "",
-          ozellik2: "",
-          ozellik3: "",
+          ozellikAciklama1: "",
+          ozellikAciklama2: "",
+          ozellikAciklama3: "",
           masaid: widget.masaid,
           adi: widget.urunadi,
           etraozellikler: _options
@@ -301,9 +301,9 @@ class _AddCheckDialogState extends ConsumerState<AddCheckDialog> {
       malzemeid: widget.urunid,
       fiyatd: 10,
       secenek: _selectedOption,
-      ozellik1: "",
-      ozellik2: "",
-      ozellik3: "",
+      ozellikAciklama1: "",
+      ozellikAciklama2: "",
+      ozellikAciklama3: "",
       masaid: widget.masaid,
       adi: widget.urunadi,
       aciklama: _descriptionController.text,

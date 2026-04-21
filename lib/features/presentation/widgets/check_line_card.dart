@@ -27,10 +27,11 @@ class CheckLineCard extends ConsumerWidget {
     final theme = context.theme;
     final scheme = theme.colorScheme;
     final hasDetails =
-        (cartItem.ozellik1?.trim().isNotEmpty ?? false) ||
-        (cartItem.ozellik2?.trim().isNotEmpty ?? false) ||
-        (cartItem.ozellik3?.trim().isNotEmpty ?? false) ||
-        (cartItem.secenek?.trim().isNotEmpty ?? false);
+        (cartItem.ozellikAciklama?.trim().isNotEmpty ?? false) ||
+        (cartItem.ozellikAciklama2?.trim().isNotEmpty ?? false) ||
+        (cartItem.ozellikAciklama3?.trim().isNotEmpty ?? false) ||
+        (cartItem.secenek?.trim().isNotEmpty ?? false) ||
+        (cartItem.aciklama?.trim().isNotEmpty ?? false);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(14),
@@ -137,34 +138,44 @@ class CheckLineCard extends ConsumerWidget {
       );
     }
 
-    if (cartItem.ozellik1?.trim().isNotEmpty ?? false) {
+    if (cartItem.ozellikAciklama?.trim().isNotEmpty ?? false) {
       items.add(
         _buildDetailLine(
           context,
-          text: cartItem.ozellik1!,
+          text: cartItem.ozellikAciklama!,
           icon: CupertinoIcons.checkmark_seal_fill,
           color: Colors.green[700]!,
         ),
       );
     }
 
-    if (cartItem.ozellik2?.trim().isNotEmpty ?? false) {
+    if (cartItem.ozellikAciklama2?.trim().isNotEmpty ?? false) {
       items.add(
         _buildDetailLine(
           context,
-          text: cartItem.ozellik2!,
+          text: cartItem.ozellikAciklama2!,
           icon: CupertinoIcons.checkmark_seal_fill,
           color: Colors.green[700]!,
         ),
       );
     }
 
-    if (cartItem.ozellik3?.trim().isNotEmpty ?? false) {
+    if (cartItem.ozellikAciklama3?.trim().isNotEmpty ?? false) {
       items.add(
         _buildDetailLine(
           context,
-          text: cartItem.ozellik3!,
+          text: cartItem.ozellikAciklama3!,
           icon: CupertinoIcons.checkmark_seal_fill,
+          color: Colors.green[700]!,
+        ),
+      );
+    }
+    if (cartItem.aciklama?.trim().isNotEmpty ?? false) {
+      items.add(
+        _buildDetailLine(
+          context,
+          text: cartItem.aciklama!,
+          icon: Icons.description_rounded,
           color: Colors.green[700]!,
         ),
       );

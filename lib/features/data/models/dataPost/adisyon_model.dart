@@ -6,9 +6,9 @@ class AdisyonModel {
   int? id;
   String? adi;
   double? fiyatd;
-  String? ozellik1;
-  String? ozellik2;
-  String? ozellik3;
+  String? ozellikAciklama1;
+  String? ozellikAciklama2;
+  String? ozellikAciklama3;
   int? kisisayisi;
   int? malzemeid;
   int? masaid;
@@ -26,9 +26,9 @@ class AdisyonModel {
     this.adi,
     this.etraozellikler,
     this.fiyatd,
-    this.ozellik1,
-    this.ozellik2,
-    this.ozellik3,
+    this.ozellikAciklama1,
+    this.ozellikAciklama2,
+    this.ozellikAciklama3,
     this.kisisayisi,
     this.miktar = 0,
     this.malzemeid,
@@ -42,9 +42,9 @@ class AdisyonModel {
     adi = json['Adi'];
     fiyatd = json['Fiyat'];
     miktar = json['Miktar'];
-    ozellik1 = json['Ozellik1'];
-    ozellik2 = json['Ozellik2'];
-    ozellik3 = json['Ozellik3'];
+    ozellikAciklama1 = json['OzellikAciklama1'];
+    ozellikAciklama2 = json['OzellikAciklama2'];
+    ozellikAciklama3 = json['OzellikAciklama3'];
     kisisayisi = json['KisiSayisi'];
     malzemeid = json['MalzemeId'];
     masaid = json['MasaId'];
@@ -58,9 +58,9 @@ class AdisyonModel {
     data['Adi'] = adi;
     data['Fiyat'] = fiyatd;
     data['Miktar'] = miktar;
-    data['Ozellik1'] = ozellik1;
-    data['Ozellik2'] = ozellik2;
-    data['Ozellik3'] = ozellik3;
+    data['OzellikAciklama1'] = ozellikAciklama1;
+    data['OzellikAciklama2'] = ozellikAciklama2;
+    data['OzellikAciklama3'] = ozellikAciklama3;
     data['KisiSayisi'] = kisisayisi;
     data['MalzemeId'] = malzemeid;
     data['MasaId'] = masaid;
