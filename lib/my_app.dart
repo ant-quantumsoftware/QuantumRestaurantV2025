@@ -6,6 +6,7 @@ import 'core/locale/language_cubit.dart';
 import 'core/locale/locales.dart';
 import 'core/routes/routes.dart';
 import 'core/theme/style.dart';
+import 'core/theme/theme_mode_cubit.dart';
 import 'features/presentation/pages/login/login.dart';
 
 class SuzlonOrdering extends StatelessWidget {
@@ -23,24 +24,31 @@ class SuzlonOrdering extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<LanguageCubit>(create: (context) => LanguageCubit()),
+        BlocProvider<ThemeModeCubit>(
+          create: (context) => ThemeModeCubit()..getCurrentThemeMode(),
+        ),
       ],
       child: BlocBuilder<LanguageCubit, Locale>(
         builder: (_, locale) {
-          return MaterialApp(
-            localizationsDelegates: const [
-              AppLocalizationsDelegate(),
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: AppLocalizations.getSupportedLocales(),
-            locale: locale,
-            debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.system,
-            home: const MyLogin(),
-            routes: PageRoutes().routes(),
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
+          return BlocBuilder<ThemeModeCubit, ThemeMode>(
+            builder: (_, themeMode) {
+              return MaterialApp(
+                localizationsDelegates: const [
+                  AppLocalizationsDelegate(),
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: AppLocalizations.getSupportedLocales(),
+                locale: locale,
+                debugShowCheckedModeBanner: false,
+                themeMode: themeMode,
+                home: const MyLogin(),
+                routes: PageRoutes().routes(),
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+              );
+            },
           );
         },
       ),

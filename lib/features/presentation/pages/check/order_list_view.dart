@@ -273,7 +273,7 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
         }
       case 2:
         {
-          return islempage(context);
+          return _actionsPage(context);
         }
       default:
         {
@@ -840,6 +840,7 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                         "Hata!",
                         "Daha Önce Yazılmış!",
                       );
+                      return;
                     } else {
                       var sonuc = await adisyonYaz(tableId);
 
@@ -882,15 +883,11 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                         "Hata!",
                         "Daha Önce Yazılmış!",
                       );
+                      return;
                     } else {
                       var sonuc = await adisyonMutfakYaz(tableId);
 
                       if (sonuc) {
-                        if (!context.mounted) return;
-                        context.showSuccessNotification(
-                          "Başarılı!",
-                          "Mutfak Yazıldı",
-                        );
                       } else {
                         if (!context.mounted) return;
                         context.showErrorNotification(
@@ -999,7 +996,7 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
     return Config.formatter.format(vergi);
   }
 
-  Widget islempage(BuildContext context) {
+  Widget _actionsPage(BuildContext context) {
     return FadeInUp(
       duration: const Duration(milliseconds: 500),
       child: SingleChildScrollView(
@@ -1113,75 +1110,75 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                 },
               ),
             ),
-            CupertinoFormRow(
-              child: ListeMenu(
-                ikon: const Text(
-                  "₺",
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 28,
-                    fontFamily: 'BakbakOne',
-                  ),
-                ),
-                baslik: Text(
-                  "Tahsilat",
-                  style: TextStyle(color: Theme.of(context).hintColor),
-                ),
-                komponet: const Icon(
-                  CupertinoIcons.forward,
-                  color: Colors.grey,
-                  size: 16,
-                ),
-                onpress: () {},
-              ),
-            ),
-            CupertinoFormRow(
-              child: ListeMenu(
-                ikon: const Icon(
-                  CupertinoIcons.arrow_right_arrow_left_square,
-                  color: Colors.blue,
-                  size: 32,
-                ),
-                baslik: Text(
-                  "Fişten Hareket Aktar",
-                  style: TextStyle(color: Theme.of(context).hintColor),
-                ),
-                altbaslik: const Text(
-                  "Masa içi ürünü başka masaya aktar",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                komponet: const Icon(
-                  CupertinoIcons.forward,
-                  color: Colors.grey,
-                  size: 16,
-                ),
-                onpress: () {},
-              ),
-            ),
-            CupertinoFormRow(
-              child: ListeMenu(
-                ikon: const Icon(
-                  CupertinoIcons.mail,
-                  color: Colors.blue,
-                  size: 32,
-                ),
-                baslik: Text(
-                  "TSM Gönder",
-                  style: TextStyle(color: Theme.of(context).hintColor),
-                ),
-                altbaslik: const Text(
-                  "Pos cihazına gönder",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                komponet: const Icon(
-                  CupertinoIcons.forward,
-                  color: Colors.grey,
-                  size: 16,
-                ),
-                onpress: () {},
-              ),
-            ),
+            // CupertinoFormRow(
+            //   child: ListeMenu(
+            //     ikon: const Text(
+            //       "₺",
+            //       style: TextStyle(
+            //         color: Colors.red,
+            //         fontWeight: FontWeight.bold,
+            //         fontSize: 28,
+            //         fontFamily: 'BakbakOne',
+            //       ),
+            //     ),
+            //     baslik: Text(
+            //       "Tahsilat",
+            //       style: TextStyle(color: Theme.of(context).hintColor),
+            //     ),
+            //     komponet: const Icon(
+            //       CupertinoIcons.forward,
+            //       color: Colors.grey,
+            //       size: 16,
+            //     ),
+            //     onpress: () {},
+            //   ),
+            // ),
+            // CupertinoFormRow(
+            //   child: ListeMenu(
+            //     ikon: const Icon(
+            //       CupertinoIcons.arrow_right_arrow_left_square,
+            //       color: Colors.blue,
+            //       size: 32,
+            //     ),
+            //     baslik: Text(
+            //       "Fişten Hareket Aktar",
+            //       style: TextStyle(color: Theme.of(context).hintColor),
+            //     ),
+            //     altbaslik: const Text(
+            //       "Masa içi ürünü başka masaya aktar",
+            //       style: TextStyle(color: Colors.grey),
+            //     ),
+            //     komponet: const Icon(
+            //       CupertinoIcons.forward,
+            //       color: Colors.grey,
+            //       size: 16,
+            //     ),
+            //     onpress: () {},
+            //   ),
+            // ),
+            // CupertinoFormRow(
+            //   child: ListeMenu(
+            //     ikon: const Icon(
+            //       CupertinoIcons.mail,
+            //       color: Colors.blue,
+            //       size: 32,
+            //     ),
+            //     baslik: Text(
+            //       "TSM Gönder",
+            //       style: TextStyle(color: Theme.of(context).hintColor),
+            //     ),
+            //     altbaslik: const Text(
+            //       "Pos cihazına gönder",
+            //       style: TextStyle(color: Colors.grey),
+            //     ),
+            //     komponet: const Icon(
+            //       CupertinoIcons.forward,
+            //       color: Colors.grey,
+            //       size: 16,
+            //     ),
+            //     onpress: () {},
+            //   ),
+            // ),
           ],
         ),
       ),

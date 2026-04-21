@@ -15,5 +15,11 @@ void main() async {
   Hive.registerAdapter(FoodItemModelAdapter());
   Hive.registerAdapter(FastDescriptionModelAdapter());
 
-  runApp(ProviderScope(child: Phoenix(child: const SuzlonOrdering())));
+  runApp(
+    ProviderScope(
+      child: Phoenix(
+        child: SafeArea(top: false, child: const SuzlonOrdering()),
+      ),
+    ),
+  );
 }

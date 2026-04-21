@@ -7,7 +7,7 @@ import '../../../core/utils/utils.dart';
 import '../../data/models/dataGet/table_item_model.dart';
 import '../module/adisyon_notifier.dart';
 import '../module/table_card_theme_notifier.dart';
-import '../pages/adisyon/order_list_view.dart';
+import '../pages/check/order_list_view.dart';
 
 class TableCard extends ConsumerWidget {
   const TableCard({super.key, required this.table});

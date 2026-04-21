@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/theme/theme_mode_cubit.dart';
 import '../../module/table_card_theme_notifier.dart';
 
 class TableCardThemePage extends ConsumerWidget {
@@ -25,9 +27,10 @@ class TableCardThemePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeState = ref.watch(tableCardThemeNotifierProvider);
     final notifier = ref.read(tableCardThemeNotifierProvider.notifier);
+    final selectedThemeMode = context.watch<ThemeModeCubit>().state;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Masa Karti Renkleri')),
+      appBar: AppBar(title: const Text('Tema Seçenekleri'), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -37,6 +40,13 @@ class TableCardThemePage extends ConsumerWidget {
               'Bu sayfadan masa kartlarinin Açık, Kapalı ve Adisyon renklerini seçip kaydedebilirsiniz.',
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            _ThemeModeSection(
+              selectedMode: selectedThemeMode,
+              onSelected: (mode) {
+                context.read<ThemeModeCubit>().setThemeMode(mode);
+              },
             ),
             const SizedBox(height: 16),
             _ColorSection(
@@ -64,6 +74,63 @@ class TableCardThemePage extends ConsumerWidget {
               openColor: themeState.openTableColor,
               closedColor: themeState.closedTableColor,
               billColor: themeState.billWrittenTableColor,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ThemeModeSection extends StatelessWidget {
+  final ThemeMode selectedMode;
+  final ValueChanged<ThemeMode> onSelected;
+
+  const _ThemeModeSection({
+    required this.selectedMode,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Text(
+                'Uygulama Teması',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            RadioListTile<ThemeMode>(
+              value: ThemeMode.system,
+              groupValue: selectedMode,
+              onChanged: (value) {
+                if (value != null) onSelected(value);
+              },
+              title: const Text('Sistem Varsayılanı'),
+            ),
+            RadioListTile<ThemeMode>(
+              value: ThemeMode.light,
+              groupValue: selectedMode,
+              onChanged: (value) {
+                if (value != null) onSelected(value);
+              },
+              title: const Text('Açık Tema'),
+            ),
+            RadioListTile<ThemeMode>(
+              value: ThemeMode.dark,
+              groupValue: selectedMode,
+              onChanged: (value) {
+                if (value != null) onSelected(value);
+              },
+              title: const Text('Koyu Tema'),
             ),
           ],
         ),
