@@ -15,7 +15,7 @@ import '../../../data/models/dataGet/food_item_model.dart';
 import '../../../data/models/dataPost/login_model.dart';
 import '../../components/tablo_satir.dart';
 import '../home/home_view.dart';
-import 'api_ayari.dart';
+import 'connection_settings.dart';
 
 class MyLogin extends ConsumerStatefulWidget {
   const MyLogin({super.key});
@@ -25,6 +25,7 @@ class MyLogin extends ConsumerStatefulWidget {
 }
 
 class _MyLoginState extends ConsumerState<MyLogin> {
+  static const String _defaultAdminSettingsPassword = '026012016';
   bool isChecked = false, passwordshow = true, autologin = true;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
@@ -267,18 +268,7 @@ class _MyLoginState extends ConsumerState<MyLogin> {
                       child: SizedBox(
                         width: double.infinity,
                         child: OutlinedButton.icon(
-                          onPressed: () {
-                            Config.gotopage(
-                              context,
-                              const ApiAyari(),
-                              '',
-                              'Asansör Ana Sayfa',
-                              yarim: true,
-                              baslik: 'Bağlantı Ayarları',
-                              message:
-                                  'Lütfen IP Adresinizi yazın ve kaydedin.',
-                            );
-                          },
+                          onPressed: _openConnectionSettingsWithAdminGate,
                           icon: const Icon(CupertinoIcons.settings),
                           label: const Text('Bağlantı Ayarları'),
                         ),
@@ -574,6 +564,77 @@ class _MyLoginState extends ConsumerState<MyLogin> {
     );
   }
 
+  Future<void> _openConnectionSettingsWithAdminGate() async {
+    String adminPasswordInput = '';
+
+    final enteredPassword = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Admin Doğrulaması'),
+          content: TextField(
+            obscureText: true,
+            autofocus: true,
+            decoration: const InputDecoration(
+              labelText: 'Admin parolası',
+              hintText: 'Parolayı girin',
+            ),
+            onChanged: (value) {
+              adminPasswordInput = value;
+            },
+            onSubmitted: (value) {
+              Navigator.of(dialogContext).pop(value.trim());
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Vazgeç'),
+            ),
+            FilledButton(
+              onPressed: () =>
+                  Navigator.of(dialogContext).pop(adminPasswordInput.trim()),
+              child: const Text('Doğrula'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!mounted || enteredPassword == null) {
+      return;
+    }
+
+    if (enteredPassword != _getStoredAdminSettingsPassword()) {
+      context.showErrorNotification(
+        'Yetkisiz Erişim',
+        'Admin parolası hatalı.',
+      );
+      return;
+    }
+
+    Config.gotopage(
+      context,
+      const ConnectionSettings(),
+      '',
+      'Asansör Ana Sayfa',
+      yarim: true,
+      baslik: 'Bağlantı Ayarları',
+      message: 'Lütfen IP Adresinizi yazın ve kaydedin.',
+    );
+  }
+
+  String _getStoredAdminSettingsPassword() {
+    final storedAdminPassword = box1.get('adminParolasi');
+
+    if (storedAdminPassword is String &&
+        storedAdminPassword.trim().isNotEmpty) {
+      return storedAdminPassword.trim();
+    }
+
+    return _defaultAdminSettingsPassword;
+  }
+
   // void commandLaunch(command) async {
   //   if (await canLaunch(command)) {
   //     await launch(command);
@@ -629,6 +690,7 @@ class _MyLoginState extends ConsumerState<MyLogin> {
       ref.read(loginModelProvider.notifier).state = restaurantLoginResult;
       token = tokenkey;
       log("oto login yapıldı");
+      log("$restaurantLoginResult", name: "LoginModel Result");
     } on DioException catch (ex) {
       // if (!autologin && mounted) {
       //   Navigator.pop(context);

@@ -212,7 +212,11 @@ class HomeViewState extends State<HomeView> {
         //   ),
         // ),
         // floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-        drawer: _buildDrawer(context),
+        drawer: Consumer(
+          builder: (context, ref, child) {
+            return _buildDrawer(context, ref);
+          },
+        ),
         appBar: AppBar(
           title: FadeInUp(
             duration: const Duration(milliseconds: 1700),
@@ -245,7 +249,7 @@ class HomeViewState extends State<HomeView> {
                     return IconButton(
                       onPressed: () async {
                         ref.read(loginModelProvider.notifier).state = null;
-                        await _signOut(context);
+                        await _signOut(context, ref);
                         log(ref.read(loginModelProvider).toString());
                       },
                       icon: const Icon(
@@ -463,7 +467,8 @@ class HomeViewState extends State<HomeView> {
     });
   }
 
-  Widget _buildDrawer(BuildContext context) {
+  Widget _buildDrawer(BuildContext context, WidgetRef ref) {
+    final userName = ref.read(loginModelProvider)?.adiSoyadi ?? 'Garson';
     return Drawer(
       child: Scaffold(
         backgroundColor: Theme.of(context).splashColor,
@@ -495,7 +500,7 @@ class HomeViewState extends State<HomeView> {
                             Navigator.pop(context);
                           },
                           child: Text(
-                            garsonadi ?? "Garson",
+                            userName,
                             style: TextStyle(
                               color: Theme.of(context).hintColor,
                               fontSize: 22,
@@ -594,7 +599,7 @@ class HomeViewState extends State<HomeView> {
                           ),
                           onpress: () async {
                             Navigator.pop(context);
-                            _signOut(context);
+                            _signOut(context, ref);
                           },
                         ),
                       ],
@@ -609,7 +614,8 @@ class HomeViewState extends State<HomeView> {
     );
   }
 
-  Future<void> _signOut(BuildContext context) {
+  Future<void> _signOut(BuildContext context, WidgetRef ref) async {
+    final userName = ref.read(loginModelProvider)?.adiSoyadi ?? 'Garson';
     return showCupertinoModalPopup<void>(
       context: context,
       builder: (context) {
@@ -617,7 +623,7 @@ class HomeViewState extends State<HomeView> {
           builder: (BuildContext context, setState) {
             return CupertinoActionSheet(
               title: Text(
-                "$garsonadi hesabından çıkış yapılacak.\nDevam edilsin mi?",
+                "$userName hesabından çıkış yapılacak.\nDevam edilsin mi?",
               ),
               cancelButton: CupertinoActionSheetAction(
                 child: const Text("Vazgeç"),

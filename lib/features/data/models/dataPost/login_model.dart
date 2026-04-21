@@ -9,6 +9,8 @@ final loginModelProvider = StateProvider<RestaurantLoginModel?>((ref) => null);
 
 class RestaurantLoginModel extends RestaurantLoginEntity {
   const RestaurantLoginModel({
+    super.kullaniciAdi,
+    super.adiSoyadi,
     super.tokenExtDate,
     super.token,
     super.restaurantGarson,
@@ -23,6 +25,8 @@ class RestaurantLoginModel extends RestaurantLoginEntity {
 
   factory RestaurantLoginModel.fromJson(Map<String, dynamic> json) {
     return RestaurantLoginModel(
+      kullaniciAdi: (json['KullaniciAdi'] ?? '').toString(),
+      adiSoyadi: (json['AdiSoyadi'] ?? '').toString(),
       tokenExtDate: DateTime.tryParse((json['TokenExtDate'] ?? '').toString()),
       token: (json['Token'] ?? '').toString(),
       restaurantGarson: json['RestaurantGarson'] == true,
@@ -42,6 +46,8 @@ class RestaurantLoginModel extends RestaurantLoginEntity {
 
   Map<String, dynamic> toJson() {
     return {
+      'KullaniciAdi': kullaniciAdi,
+      'AdiSoyadi': adiSoyadi,
       'TokenExtDate': tokenExtDate?.toIso8601String(),
       'Token': token,
       'RestaurantGarson': restaurantGarson,

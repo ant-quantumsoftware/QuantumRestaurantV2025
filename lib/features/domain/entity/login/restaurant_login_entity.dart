@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 class RestaurantLoginEntity extends Equatable {
+  final String kullaniciAdi;
+  final String adiSoyadi;
   final DateTime? tokenExtDate;
   final String token;
   final bool restaurantGarson;
@@ -13,6 +15,8 @@ class RestaurantLoginEntity extends Equatable {
   final bool adminYetki;
 
   const RestaurantLoginEntity({
+    this.kullaniciAdi = '',
+    this.adiSoyadi = '',
     this.tokenExtDate,
     this.token = '',
     this.restaurantGarson = false,
@@ -27,6 +31,8 @@ class RestaurantLoginEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+    kullaniciAdi,
+    adiSoyadi,
     tokenExtDate,
     token,
     restaurantGarson,

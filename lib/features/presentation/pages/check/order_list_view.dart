@@ -178,6 +178,7 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
 
   @override
   Widget build(BuildContext context) {
+    final loginModel = ref.watch(loginModelProvider);
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -188,9 +189,7 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
             setState(() {});
           },
           height: 60,
-          items: getBottomNavigationItems(
-            ref.watch(loginModelProvider)?.adminYetki ?? false,
-          ),
+          items: getBottomNavigationItems(loginModel?.adminYetki ?? false),
         ),
         appBar: AppBar(
           backgroundColor: context.theme.scaffoldBackgroundColor,
@@ -676,7 +675,7 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
   Widget _checkPage(BuildContext context) {
     final cartItems = ref.watch(adisyonNotifierProvider).adisyonList ?? [];
     final theme = Theme.of(context);
-
+    final loginModel = ref.watch(loginModelProvider);
     return Column(
       children: [
         Padding(
@@ -834,30 +833,38 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                     ],
                   ),
                   onPressed: () async {
-                    if (yazdirmaDurumuAdisyon == "Daha Önce Yazılmış!") {
+                    if (loginModel?.fastSellRestaurantAdisyonYaz ?? false) {
+                      if (yazdirmaDurumuAdisyon == "Daha Önce Yazılmış!") {
+                        if (!context.mounted) return;
+                        context.showErrorNotification(
+                          "Hata!",
+                          "Daha Önce Yazılmış!",
+                        );
+                        return;
+                      } else {
+                        var sonuc = await adisyonYaz(tableId);
+
+                        if (sonuc) {
+                          if (!context.mounted) return;
+                          context.showSuccessNotification(
+                            "Başarılı!",
+                            "Adisyon Yazıldı",
+                          );
+                        } else {
+                          if (!context.mounted) return;
+
+                          context.showErrorNotification(
+                            "Hata!",
+                            "Yazdırma Hatası",
+                          );
+                        }
+                      }
+                    } else {
                       if (!context.mounted) return;
                       context.showErrorNotification(
                         "Hata!",
-                        "Daha Önce Yazılmış!",
+                        "Adisyon Yazma İzni Verilmemiş!",
                       );
-                      return;
-                    } else {
-                      var sonuc = await adisyonYaz(tableId);
-
-                      if (sonuc) {
-                        if (!context.mounted) return;
-                        context.showSuccessNotification(
-                          "Başarılı!",
-                          "Adisyon Yazıldı",
-                        );
-                      } else {
-                        if (!context.mounted) return;
-
-                        context.showErrorNotification(
-                          "Hata!",
-                          "Yazdırma Hatası",
-                        );
-                      }
                     }
                   },
                 ),
