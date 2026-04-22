@@ -6,14 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:quantum_restaurant/features/presentation/widgets/app_drawer.dart';
 
 import '../../../../core/config/sabit_list.dart';
-import '../../../../core/routes/route_names.dart';
 import '../../../data/models/dataGet/table_item_group.dart';
 import '../../../data/models/dataGet/table_item_model.dart';
 import '../../../data/models/dataPost/login_model.dart';
 import '../../components/arama_kutusu.dart';
-import '../../components/cuper_form_2.dart';
 import '../../components/cuper_picker.dart';
 import '../../components/custom_circular_button.dart';
 import '../../widgets/table_card.dart';
@@ -38,6 +37,8 @@ class HomeView extends StatefulWidget {
 // }
 
 class HomeViewState extends State<HomeView> {
+  static const double _topBarIconSize = 21;
+
   // Yeni Metodlar
   bool login = true;
   bool logindetails = true;
@@ -214,7 +215,7 @@ class HomeViewState extends State<HomeView> {
         // floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
         drawer: Consumer(
           builder: (context, ref, child) {
-            return _buildDrawer(context, ref);
+            return AppDrawer();
           },
         ),
         appBar: AppBar(
@@ -231,33 +232,38 @@ class HomeViewState extends State<HomeView> {
               ),
             ),
           ),
-          leading: Builder(
-            builder: (context) {
-              return IconButton(
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                icon: const Icon(Icons.menu_rounded),
-              );
-            },
+          leading: Container(
+            margin: const EdgeInsets.only(top: 6, bottom: 6),
+            padding: const EdgeInsets.only(left: 10),
+            child: _buildTopBarActionButton(
+              context: context,
+              icon: Icons.menu_rounded,
+              iconSize: _topBarIconSize,
+              iconVisualScale: 1.14,
+              tooltip: 'Menü',
+              onTap: () {
+                scaffoldKey.currentState?.openDrawer();
+              },
+            ),
           ),
           actions: [
             Consumer(
               builder: (context, ref, child) {
-                return Builder(
-                  builder: (context) {
-                    return IconButton(
-                      onPressed: () async {
-                        ref.read(loginModelProvider.notifier).state = null;
-                        await _signOut(context, ref);
-                        log(ref.read(loginModelProvider).toString());
-                      },
-                      icon: const Icon(
-                        Icons.logout_rounded,
-                        color: Colors.redAccent,
-                      ),
-                    );
-                  },
+                return Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: _buildTopBarActionButton(
+                    context: context,
+                    icon: Icons.logout_rounded,
+                    iconSize: _topBarIconSize,
+                    iconVisualScale: 1.14,
+                    tooltip: 'Çıkış',
+                    destructive: true,
+                    onTap: () async {
+                      ref.read(loginModelProvider.notifier).state = null;
+                      await _signOut(context, ref);
+                      log(ref.read(loginModelProvider).toString());
+                    },
+                  ),
                 );
               },
             ),
@@ -293,76 +299,34 @@ class HomeViewState extends State<HomeView> {
             ),
           ),
         ),
-        body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            // CupertinoSliverNavigationBar(
-            //   backgroundColor: Theme.of(context).colorScheme.surface,
-            //   automaticallyImplyLeading: false,
-            //   largeTitle: FadeInUp(
-            //     duration: const Duration(milliseconds: 1700),
-            //     child: Align(
-            //       alignment: Alignment.center,
-            //       child: VeriSecici(
-            //         liste: MyList.masalar,
-            //         index: filterindex,
-            //         degistir: (int selectedItem) {
-            //           filterindex = selectedItem;
-            //           login = true;
-
-            //           setState(() {
-            //             verigetir();
-            //           });
-            //         },
-            //       ),
-            //     ),
-            //   ),
-            //   middle: Padding(
-            //     padding: const EdgeInsets.only(right: 30, left: 10, top: 3),
-            //     child: FadeInUp(
-            //       duration: const Duration(milliseconds: 1700),
-            //       child: Align(
-            //         alignment: Alignment.center,
-            //         child: SearchTextField(
-            //           fieldValue: (String value) {
-            //             setState(() {
-            //               searchFunc(value, seciliMasaGrubu);
-            //             });
-            //           },
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-          ],
-          body: (login)
-              ? const Center(child: CircularProgressIndicator.adaptive())
-              : Consumer(
-                  builder: (context, ref, child) {
-                    return RefreshIndicator.adaptive(
-                      triggerMode: RefreshIndicatorTriggerMode.anywhere,
-                      onRefresh: _refreshlist,
-                      child: GridView.builder(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 15,
-                          horizontal: 15,
-                        ),
-                        itemCount: ordersLists.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 5,
-                              mainAxisSpacing: 5,
-                              childAspectRatio: 1.65,
-                            ),
-                        itemBuilder: (context, index) {
-                          final table = ordersLists[index];
-                          return TableCard(table: table);
-                        },
+        body: (login)
+            ? const Center(child: CircularProgressIndicator.adaptive())
+            : Consumer(
+                builder: (context, ref, child) {
+                  return RefreshIndicator.adaptive(
+                    triggerMode: RefreshIndicatorTriggerMode.anywhere,
+                    onRefresh: _refreshlist,
+                    child: GridView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 15,
+                        horizontal: 15,
                       ),
-                    );
-                  },
-                ),
-        ),
+                      itemCount: ordersLists.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 5,
+                            mainAxisSpacing: 5,
+                            childAspectRatio: 1.65,
+                          ),
+                      itemBuilder: (context, index) {
+                        final table = ordersLists[index];
+                        return TableCard(table: table);
+                      },
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }
@@ -373,6 +337,53 @@ class HomeViewState extends State<HomeView> {
     });
 
     return Future.delayed(const Duration(seconds: 0));
+  }
+
+  Widget _buildTopBarActionButton({
+    required BuildContext context,
+    required IconData icon,
+    required double iconSize,
+    double iconVisualScale = 1,
+    required String tooltip,
+    required VoidCallback onTap,
+    bool destructive = false,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    final iconColor = destructive
+        ? Colors.redAccent
+        : colorScheme.onSurface.withValues(alpha: 0.88);
+    final backgroundColor = destructive
+        ? Colors.red.withValues(alpha: 0.08)
+        : colorScheme.surfaceContainerHighest.withValues(alpha: 0.66);
+    final borderColor = destructive
+        ? Colors.red.withValues(alpha: 0.24)
+        : colorScheme.outline.withValues(alpha: 0.2);
+
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onTap,
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: borderColor),
+            ),
+            child: Transform.scale(
+              scale: iconVisualScale,
+              child: Icon(icon, size: iconSize, color: iconColor),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   CustomButton buildItemsInGarson(BuildContext context) {
@@ -467,155 +478,11 @@ class HomeViewState extends State<HomeView> {
     });
   }
 
-  Widget _buildDrawer(BuildContext context, WidgetRef ref) {
-    final userName = ref.read(loginModelProvider)?.adiSoyadi ?? 'Garson';
-    return Drawer(
-      child: Scaffold(
-        backgroundColor: Theme.of(context).splashColor,
-        persistentFooterAlignment: AlignmentDirectional.centerStart,
-        persistentFooterButtons: const [
-          Text(
-            'Copyright © 2005\nQuantum Yazılım',
-            style: TextStyle(
-              color: Color.fromARGB(85, 128, 131, 133),
-              fontSize: 14,
-            ),
-          ),
-        ],
-        body: Column(
-          children: [
-            SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 90),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            userName,
-                            style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                              fontSize: 22,
-                              fontFamily: "Montserrat-Bold",
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    CupertinoFormSection(
-                      backgroundColor: Colors.transparent,
-                      header: const Text(""),
-                      margin: const EdgeInsets.only(
-                        right: 15,
-                        left: 15,
-                        bottom: 15,
-                        top: 0,
-                      ),
-                      decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      children: <Widget>[
-                        Cuperform2(
-                          tablo: false,
-                          ikon: const Icon(
-                            Icons.description_rounded,
-                            color: Colors.blue,
-                            size: 24,
-                          ),
-                          baslik: Text(
-                            "Hazır Açıklamalar",
-                            style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                          onpress: () {
-                            Navigator.pop(context);
-                            Navigator.of(
-                              context,
-                            ).pushNamed(RouteNames.fastDescriptionPage);
-                          },
-                        ),
-                        Cuperform2(
-                          tablo: false,
-                          ikon: const Icon(
-                            Icons.list_alt_rounded,
-                            color: Colors.blue,
-                            size: 24,
-                          ),
-                          baslik: Text(
-                            "Uygulama Logları",
-                            style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                          onpress: () {
-                            Navigator.pop(context);
-                            Navigator.of(
-                              context,
-                            ).pushNamed(RouteNames.appLogsPage);
-                          },
-                        ),
-                        Cuperform2(
-                          tablo: false,
-                          ikon: const Icon(
-                            Icons.color_lens_rounded,
-                            color: Colors.blue,
-                            size: 24,
-                          ),
-                          baslik: Text(
-                            "Tema Seçenekleri",
-                            style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                          onpress: () {
-                            Navigator.pop(context);
-                            Navigator.of(
-                              context,
-                            ).pushNamed(RouteNames.tableCardThemePage);
-                          },
-                        ),
-                        Cuperform2(
-                          tablo: false,
-                          ikon: const Icon(
-                            Icons.power_settings_new,
-                            color: Colors.red,
-                            size: 24,
-                          ),
-                          baslik: Text(
-                            "Çıkış",
-                            style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                          onpress: () async {
-                            Navigator.pop(context);
-                            _signOut(context, ref);
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
-    final userName = ref.read(loginModelProvider)?.adiSoyadi ?? 'Garson';
+    final userName =
+        ref.read(loginModelProvider)?.adiSoyadi.trim().isNotEmpty == true
+        ? ref.read(loginModelProvider)!.adiSoyadi.trim()
+        : 'Garson';
     return showCupertinoModalPopup<void>(
       context: context,
       builder: (context) {
