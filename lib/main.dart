@@ -17,9 +17,7 @@ void main() async {
 
   runApp(
     ProviderScope(
-      child: Phoenix(
-        child: SafeArea(top: false, child: const SuzlonOrdering()),
-      ),
+      child: Phoenix(child: SafeArea(top: false, child: const MyApp())),
     ),
   );
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'colors.dart';
 
@@ -75,6 +76,17 @@ ThemeData _buildTheme(Brightness brightness) {
       centerTitle: false,
       surfaceTintColor: Colors.transparent,
       iconTheme: IconThemeData(color: colorScheme.onSurface),
+      systemOverlayStyle: isDark
+          ? SystemUiOverlayStyle.light.copyWith(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.light,
+              statusBarBrightness: Brightness.dark,
+            )
+          : SystemUiOverlayStyle.dark.copyWith(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.dark,
+              statusBarBrightness: Brightness.light,
+            ),
     ),
     cardTheme: CardThemeData(
       color: surfaceColor,

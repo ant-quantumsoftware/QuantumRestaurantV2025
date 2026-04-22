@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/locale/language_cubit.dart';
 import 'core/locale/locales.dart';
 import 'core/routes/routes.dart';
-import 'core/theme/style.dart';
+import 'core/theme/app_theme.dart';
 import 'core/theme/theme_mode_cubit.dart';
 import 'features/presentation/pages/login/login.dart';
 
-class SuzlonOrdering extends StatelessWidget {
-  const SuzlonOrdering({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -33,6 +34,27 @@ class SuzlonOrdering extends StatelessWidget {
           return BlocBuilder<ThemeModeCubit, ThemeMode>(
             builder: (_, themeMode) {
               return MaterialApp(
+                builder: (context, child) {
+                  final isDark =
+                      Theme.of(context).brightness == Brightness.dark;
+
+                  final overlayStyle = isDark
+                      ? SystemUiOverlayStyle.light.copyWith(
+                          statusBarColor: Colors.transparent,
+                          statusBarIconBrightness: Brightness.light,
+                          statusBarBrightness: Brightness.dark,
+                        )
+                      : SystemUiOverlayStyle.dark.copyWith(
+                          statusBarColor: Colors.transparent,
+                          statusBarIconBrightness: Brightness.dark,
+                          statusBarBrightness: Brightness.light,
+                        );
+
+                  return AnnotatedRegion<SystemUiOverlayStyle>(
+                    value: overlayStyle,
+                    child: child ?? const SizedBox.shrink(),
+                  );
+                },
                 localizationsDelegates: const [
                   AppLocalizationsDelegate(),
                   GlobalMaterialLocalizations.delegate,
