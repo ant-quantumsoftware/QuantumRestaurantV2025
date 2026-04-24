@@ -201,7 +201,7 @@ class HttpServices {
 
     try {
       final response = await dio.post(endpoint, data: data);
-
+      log(data);
       final isSuccess = response.statusCode == 200;
       await _saveRequestLog(
         method: 'POST',

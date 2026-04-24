@@ -845,11 +845,11 @@ class _OrderListViewState extends ConsumerState<OrderListView> {
                         var sonuc = await adisyonYaz(tableId);
 
                         if (sonuc) {
-                          if (!context.mounted) return;
-                          context.showSuccessNotification(
-                            "Başarılı!",
-                            "Adisyon Yazıldı",
-                          );
+                          // if (!context.mounted) return;
+                          // context.showSuccessNotification(
+                          //   "Başarılı!",
+                          //   "Adisyon Yazıldı",
+                          // );
                         } else {
                           if (!context.mounted) return;
 

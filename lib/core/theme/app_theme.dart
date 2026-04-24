@@ -27,6 +27,8 @@ class AppTheme {
 
 ThemeData _buildTheme(Brightness brightness) {
   final bool isDark = brightness == Brightness.dark;
+  final Color lightScaffoldColor = const Color(0xFFF1F4F8);
+  final Color lightSurfaceColor = const Color(0xFFF8FAFD);
   final Color primaryColor = isDark
       ? const Color(0xff8A93A6)
       : const Color(0xff5E6F86);
@@ -38,7 +40,7 @@ ThemeData _buildTheme(Brightness brightness) {
         primary: primaryColor,
         secondary: AppColors.newOrderColor,
         tertiary: isDark ? const Color(0xff89A9C2) : const Color(0xff4F7898),
-        surface: isDark ? const Color(0xff1A1B20) : Colors.white,
+        surface: isDark ? const Color(0xff1A1B20) : lightSurfaceColor,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: isDark ? AppColors.darkTextColor : AppColors.lightTextColor,
@@ -46,13 +48,13 @@ ThemeData _buildTheme(Brightness brightness) {
 
   final Color scaffoldColor = isDark
       ? AppColors.darkBackgroundColor
-      : AppColors.lightBackgroundColor;
+      : lightScaffoldColor;
   final Color surfaceColor = isDark
       ? AppColors.darkSurfaceColor
-      : AppColors.lightSurfaceColor;
+      : lightSurfaceColor;
   final Color outlineColor = isDark
       ? const Color(0x22FFFFFF)
-      : const Color(0x14000000);
+      : const Color(0x1F2B3444);
 
   return ThemeData(
     useMaterial3: true,
